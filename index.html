@@ -258,7 +258,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/wanglinyong.github.io/2017/10/14/hello-world/" itemprop="url">Hello World</a></h1>
+                <a class="post-title-link" href="/wanglinyong.github.io/2017/10/14/hello-world/" itemprop="url">c#结合DevExpress控件制作计时器</a></h1>
         
 
         <div class="post-meta">
@@ -320,15 +320,30 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+            <p>这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。</p>
+<h2 id="DevExpress控件"><a href="#DevExpress控件" class="headerlink" title="DevExpress控件"></a>DevExpress控件</h2><h3 id="GaugeControl"><a href="#GaugeControl" class="headerlink" title="GaugeControl"></a>GaugeControl</h3><p>利用工具箱中的GaugeControl控件制作计时器显示界面.<br>主要代码如下：<br>   public int currentCount = 0;<br>        private void timer1_Tick(object sender, EventArgs e)<br>        {<br>            //string[] arr = digitalGauge1.Text.Split(“:”);<br>            //设置定时间隔(毫秒为单位)<br>            System.Timers.Timer timer = new System.Timers.Timer(1000);<br>            //设置执行一次（false）还是一直执行(true)<br>            timer.AutoReset = true;<br>            //设置是否执行System.Timers.Timer.Elapsed事件<br>            timer.Enabled = true;<br>            currentCount += 1;</p>
+<pre><code>    string second = (currentCount % 60)+&quot;&quot;;
+    string minute = (currentCount / 60 % 60)+&quot;&quot;;
+    string hour = (currentCount / 3600)+&quot;&quot;;
+    if (int.Parse(second) &lt; 10)
+    {
+        second = &quot;0&quot; + second;
+    }
+    else {
+
+    }
+    if (int.Parse(minute) &lt; 10)
+    {
+        minute = &quot;0&quot; + minute;
+    }
+    if (int.Parse(hour) &lt; 10)
+    {
+        hour = &quot;0&quot; + hour;
+    }
+
+    digitalGauge1.Text = hour + &quot;:&quot; + minute + &quot;:&quot; + second;
+}
+</code></pre><p>My Blog: <a href="https://wanglinyong.github.io/wanglinyong.github.io">Deployment</a></p>
 
           
         
