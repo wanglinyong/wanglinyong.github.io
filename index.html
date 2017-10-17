@@ -476,7 +476,14 @@
         
           
             <p>这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。</p>
-<h2 id="DevExpress控件"><a href="#DevExpress控件" class="headerlink" title="DevExpress控件"></a>DevExpress控件</h2><h3 id="GaugeControl"><a href="#GaugeControl" class="headerlink" title="GaugeControl"></a>GaugeControl</h3><p>利用工具箱中的GaugeControl控件制作计时器显示界面.<br>主要代码如下：<br>   public int currentCount = 0;<br>        private void timer1_Tick(object sender, EventArgs e)<br>        {<br>            //string[] arr = digitalGauge1.Text.Split(“:”);<br>            //设置定时间隔(毫秒为单位)<br>            System.Timers.Timer timer = new System.Timers.Timer(1000);<br>            //设置执行一次（false）还是一直执行(true)<br>            timer.AutoReset = true;<br>            //设置是否执行System.Timers.Timer.Elapsed事件<br>            timer.Enabled = true;<br>            currentCount += 1;</p>
+<h2 id="DevExpress控件"><a href="#DevExpress控件" class="headerlink" title="DevExpress控件"></a>DevExpress控件</h2><h3 id="GaugeControl"><a href="#GaugeControl" class="headerlink" title="GaugeControl"></a>GaugeControl</h3><p>1.从工具箱中查找定时任务timer</p>
+<p><img src="/2.png" alt="images"></p>
+<p>2.从工具箱中查找GaugeControl，选择合适的界面</p>
+<p><img src="/3.png" alt="images"></p>
+<p><img src="/3.png" alt="images"></p>
+<p>3.控件界面效果如下</p>
+<p><img src="/1.png" alt="images"></p>
+<p>利用工具箱中的GaugeControl控件制作计时器显示界面.<br>首先要添加一个定时任务：timer,给timer一个timer1_Tick事件<br>主要代码如下：<br>   public int currentCount = 0;<br>        private void timer1_Tick(object sender, EventArgs e)<br>        {<br>            //string[] arr = digitalGauge1.Text.Split(“:”);<br>            //设置定时间隔(毫秒为单位)<br>            System.Timers.Timer timer = new System.Timers.Timer(1000);<br>            //设置执行一次（false）还是一直执行(true)<br>            timer.AutoReset = true;<br>            //设置是否执行System.Timers.Timer.Elapsed事件<br>            timer.Enabled = true;<br>            currentCount += 1;</p>
 <pre><code>    string second = (currentCount % 60)+&quot;&quot;;
     string minute = (currentCount / 60 % 60)+&quot;&quot;;
     string hour = (currentCount / 3600)+&quot;&quot;;
