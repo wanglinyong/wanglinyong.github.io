@@ -79,16 +79,17 @@
 
 
 
-<meta name="description" content="JAVA，Python，C#，Node.js，个人博客，Github，hexo">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Wang&#39;s Blog">
-<meta property="og:url" content="https://wanglinyong.github.io/index.html">
+<meta name="description" content="TCP-帮助理解TCP网络编程中connect()、listen()和accept()三者之间的关系基于 TCP 的网络编程开发分为服务器端和客户端两部分，常见的核心步骤和流程如下： connect()函数对于客户端的 connect() 函数，该函数的功能为客户端主动连接服务器，建立连接是通过三次握手，而这个连接的过程是由内核完成，不是这个函数完成的，这个函数的作用仅仅是通知 Linux 内核，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tcp_Socket通讯">
+<meta property="og:url" content="https://wanglinyong.github.io/2017/11/05/JAVA-基于TCP的Socket实现/index.html">
 <meta property="og:site_name" content="Wang&#39;s Blog">
-<meta property="og:description" content="JAVA，Python，C#，Node.js，个人博客，Github，hexo">
+<meta property="og:description" content="TCP-帮助理解TCP网络编程中connect()、listen()和accept()三者之间的关系基于 TCP 的网络编程开发分为服务器端和客户端两部分，常见的核心步骤和流程如下： connect()函数对于客户端的 connect() 函数，该函数的功能为客户端主动连接服务器，建立连接是通过三次握手，而这个连接的过程是由内核完成，不是这个函数完成的，这个函数的作用仅仅是通知 Linux 内核，">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-11-06T02:21:37.564Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Wang&#39;s Blog">
-<meta name="twitter:description" content="JAVA，Python，C#，Node.js，个人博客，Github，hexo">
+<meta name="twitter:title" content="tcp_Socket通讯">
+<meta name="twitter:description" content="TCP-帮助理解TCP网络编程中connect()、listen()和accept()三者之间的关系基于 TCP 的网络编程开发分为服务器端和客户端两部分，常见的核心步骤和流程如下： connect()函数对于客户端的 connect() 函数，该函数的功能为客户端主动连接服务器，建立连接是通过三次握手，而这个连接的过程是由内核完成，不是这个函数完成的，这个函数的作用仅仅是通知 Linux 内核，">
 
 
 
@@ -118,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://wanglinyong.github.io/"/>
+  <link rel="canonical" href="https://wanglinyong.github.io/2017/11/05/JAVA-基于TCP的Socket实现/"/>
 
 
 
 
 
-  <title>Wang's Blog</title>
+  <title>tcp_Socket通讯 | Wang's Blog</title>
   
 
 
@@ -153,8 +154,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 	<a href="https://github.com/wanglinyong/wanglinyong.github.io/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -247,9 +247,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -279,9 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2017/11/05/JAVA-基于TCP的Socket实现/" itemprop="url">tcp_Socket通讯</a></h1>
+          <h1 class="post-title" itemprop="name headline">tcp_Socket通讯</h1>
         
 
         <div class="post-meta">
@@ -341,9 +339,7 @@
       
 
       
-        
-          
-            <h1 id="TCP-帮助理解"><a href="#TCP-帮助理解" class="headerlink" title="TCP-帮助理解"></a>TCP-帮助理解</h1><p>TCP网络编程中connect()、listen()和accept()三者之间的关系<br>基于 TCP 的网络编程开发分为服务器端和客户端两部分，常见的核心步骤和流程如下：</p>
+        <h1 id="TCP-帮助理解"><a href="#TCP-帮助理解" class="headerlink" title="TCP-帮助理解"></a>TCP-帮助理解</h1><p>TCP网络编程中connect()、listen()和accept()三者之间的关系<br>基于 TCP 的网络编程开发分为服务器端和客户端两部分，常见的核心步骤和流程如下：</p>
 <p>connect()函数<br>对于客户端的 connect() 函数，该函数的功能为客户端主动连接服务器，建立连接是通过三次握手，而这个连接的过程是由内核完成，不是这个函数完成的，这个函数的作用仅仅是通知 Linux 内核，让 Linux 内核自动完成 TCP 三次握手连接（三次握手详情，请看《浅谈 TCP 三次握手》），最后把连接的结果返回给这个函数的返回值（成功连接为0， 失败为-1）。</p>
 <p>通常的情况，客户端的 connect() 函数默认会一直阻塞，直到三次握手成功或超时失败才返回（正常的情况，这个过程很快完成）。</p>
 <p>listen()函数<br>对于服务器，它是被动连接的。举一个生活中的例子，通常的情况下，移动的客服（相当于服务器）是等待着客户（相当于客户端）电话的到来。而这个过程，需要调用listen()函数。</p>
@@ -587,8 +583,6 @@ public static void main(String[] args) {
 }
 </code></pre><p>}</p>
 <font color="#A52A2A"><br>在实际开发中，基于Socket编程，一般传递的并非字符串，很多情况下是对象，让对象实现序列化接口Serializable，依靠对象输出流（ObjectOutputStream）和对象输入流（ObjectInputStream）进行序列化和反序列化。<br></font>
-          
-        
       
     </div>
     
@@ -605,144 +599,28 @@ public static void main(String[] args) {
       
 
       
-
-      
-
       
       
-        <div class="post-eof"></div>
+
       
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/10/14/maven手动安装jar到仓库/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2017/10/14/maven手动安装jar到仓库/" itemprop="url">maven手动安装jar到仓库</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-14T14:25:06+08:00">
-                2017-10-14
-              </time>
+              <a href="/wanglinyong.github.io/2017/10/14/maven手动安装jar到仓库/" rel="next" title="maven手动安装jar到仓库">
+                <i class="fa fa-chevron-left"></i> maven手动安装jar到仓库
+              </a>
             
+          </div>
 
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2017/10/14/maven手动安装jar到仓库/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/10/14/maven手动安装jar到仓库/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <p>1.首先保证有maven环境，可在cmd命令下输入mvn查看</p>
-<p>2.在cmd命令输入如下命令：<br>mvn install:install-file -Dfile=D:\JProject\gsm-location-udp-jar\target\gsm-location.jar -DgroupId=com.dj.nms -DartifactId=gsm-location -Dversion=3.0.0 -Dpackaging=jar -DgeneratePom=true -DcreateChecksum=true</p>
-<p>3.说明：<br>D:\JProject\gsm-location-udp-jar\target\gsm-location.jar：jar包所在位置<br>com.dj.nms：jar在仓库位置<br>gsm-location：jar包在仓库名称<br>3.0.0：jar包在仓库版本信息</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -752,170 +630,11 @@ public static void main(String[] args) {
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/10/14/csharp计时器/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2017/10/14/csharp计时器/" itemprop="url">c#结合DevExpress控件制作计时器</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-14T13:28:54+08:00">
-                2017-10-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2017/10/14/csharp计时器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/10/14/csharp计时器/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。</p>
-<h2 id="DevExpress控件"><a href="#DevExpress控件" class="headerlink" title="DevExpress控件"></a>DevExpress控件</h2><h3 id="GaugeControl"><a href="#GaugeControl" class="headerlink" title="GaugeControl"></a>GaugeControl</h3><p>1.从工具箱中查找定时任务timer</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/2.png" alt=""></p>
-<p>2.从工具箱中查找GaugeControl，选择合适的界面</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/3.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/4.png" alt=""></p>
-<p>3.控件界面效果如下</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png" alt=""></p>
-<p>利用工具箱中的GaugeControl控件制作计时器显示界面.<br>首先要添加一个定时任务：timer,给timer一个timer1_Tick事件<br>主要代码如下：<br>   public int currentCount = 0;<br>        private void timer1_Tick(object sender, EventArgs e)<br>        {<br>            //string[] arr = digitalGauge1.Text.Split(“:”);<br>            //设置定时间隔(毫秒为单位)<br>            System.Timers.Timer timer = new System.Timers.Timer(1000);<br>            //设置执行一次（false）还是一直执行(true)<br>            timer.AutoReset = true;<br>            //设置是否执行System.Timers.Timer.Elapsed事件<br>            timer.Enabled = true;<br>            currentCount += 1;</p>
-<pre><code>    string second = (currentCount % 60)+&quot;&quot;;
-    string minute = (currentCount / 60 % 60)+&quot;&quot;;
-    string hour = (currentCount / 3600)+&quot;&quot;;
-    if (int.Parse(second) &lt; 10)
-    {
-        second = &quot;0&quot; + second;
-    }
-    else {
-
-    }
-    if (int.Parse(minute) &lt; 10)
-    {
-        minute = &quot;0&quot; + minute;
-    }
-    if (int.Parse(hour) &lt; 10)
-    {
-        hour = &quot;0&quot; + hour;
-    }
-
-    digitalGauge1.Text = hour + &quot;:&quot; + minute + &quot;:&quot; + second;
-}
-</code></pre><p>My Blog: <a href="https://wanglinyong.github.io/wanglinyong.github.io">Deployment</a></p>
-
-          
-        
+    <div class="post-spread">
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
-
-  
 
 
           </div>
@@ -923,6 +642,17 @@ public static void main(String[] args) {
 
 
           
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2017/11/05/JAVA-基于TCP的Socket实现/"
+           data-title="tcp_Socket通讯" data-url="https://wanglinyong.github.io/2017/11/05/JAVA-基于TCP的Socket实现/">
+      </div>
+    </div>
+
+  
+
+
 
         </div>
         
@@ -943,8 +673,17 @@ public static void main(String[] args) {
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -988,6 +727,22 @@ public static void main(String[] args) {
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP-帮助理解"><span class="nav-number">1.</span> <span class="nav-text">TCP-帮助理解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java为Socket编程封装了几个重要的类"><span class="nav-number">2.</span> <span class="nav-text">Java为Socket编程封装了几个重要的类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-Socket类"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 Socket类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-DatagramSocket类"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 DatagramSocket类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-ServerSocket类"><span class="nav-number">2.3.</span> <span class="nav-text">1.3 ServerSocket类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-SocketAddress"><span class="nav-number">2.4.</span> <span class="nav-text">1.4 SocketAddress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-InetSocketAddress"><span class="nav-number">2.5.</span> <span class="nav-text">1.5 InetSocketAddress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-DatagramPacket"><span class="nav-number">2.6.</span> <span class="nav-text">1.6. DatagramPacket</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Socket通信步骤：（简单分为4步）"><span class="nav-number">3.</span> <span class="nav-text">Socket通信步骤：（简单分为4步）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#代码实现"><span class="nav-number">3.1.</span> <span class="nav-text">代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端TCPServer-java"><span class="nav-number">3.1.1.</span> <span class="nav-text">服务端TCPServer.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端TCPClient-java"><span class="nav-number">3.1.2.</span> <span class="nav-text">客户端TCPClient.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线程操作类：SocketThread-java"><span class="nav-number">3.1.3.</span> <span class="nav-text">线程操作类：SocketThread.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务端类：Server-java"><span class="nav-number">3.1.4.</span> <span class="nav-text">服务端类：Server.java</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端类-Client-java"><span class="nav-number">3.1.5.</span> <span class="nav-text">客户端类:Client.java</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1128,6 +883,10 @@ public static void main(String[] args) {
 
 
   
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/wanglinyong.github.io/js/src/post-details.js?v=5.1.3"></script>
+
+
 
   
 
