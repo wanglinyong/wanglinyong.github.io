@@ -351,26 +351,20 @@
 <p>这里需要注意的是，listen()函数不会阻塞，它主要做的事情为，将该套接字和套接字对应的连接队列长度告诉 Linux 内核，然后，listen()函数就结束。</p>
 <p>这样的话，当有一个客户端主动连接（connect()），Linux 内核就自动完成TCP 3次握手，将建立好的链接自动存储到队列中，如此重复。</p>
 <p>所以，只要 TCP 服务器调用了 listen()，客户端就可以通过 connect() 和服务器建立连接，而这个连接的过程是由内核完成。</p>
+<h1 id="Java为Socket编程封装了几个重要的类"><a href="#Java为Socket编程封装了几个重要的类" class="headerlink" title="Java为Socket编程封装了几个重要的类"></a>Java为Socket编程封装了几个重要的类</h1><h2 id="1-1-Socket类"><a href="#1-1-Socket类" class="headerlink" title="1.1 Socket类"></a>1.1 Socket类</h2><p>Socket类实现了一个客户端socket，作为两台机器通信的终端，默认采用的传输层协议为TCP，是一个可靠传输的协议。Socket类除了构造函数返回一个socket外，还提供了connect, getOutputStream, getInputStream和close方法。connect方法用于请求一个socket连接，getOutputStream用于获得写socket的输出流，getInputStream用于获得读socket的输入流，close方法用于关闭一个流。</p>
+<p>Socket(InetAddress address, int port)<br>创建一个流套接字并将其连接到指定 IP 地址的指定端口号。</p>
+<p>getInetAddress() 返回套接字连接的地址。</p>
+<p>shutdownInput()<br>此套接字的输入流置于“流的末尾”。单方向的关闭输入流，并不会关闭socket</p>
+<p>shutdownOutput()<br>禁用此套接字的输出流。单方向的关闭输出流，并不会关闭socket</p>
+<h2 id="1-2-DatagramSocket类"><a href="#1-2-DatagramSocket类" class="headerlink" title="1.2 DatagramSocket类"></a>1.2 DatagramSocket类</h2><p>DatagramSocket类实现了一个发送和接收数据报的socket，传输层协议使用UDP，不能保证数据报的可靠传输。DataGramSocket主要有send, receive和close三个方法。send用于发送一个数据报，Java提供了DatagramPacket对象用来表达一个数据报。receive用于接收一个数据报，调用该方法后，一直阻塞接收到直到数据报或者超时。close是关闭一个socket。</p>
+<h2 id="1-3-ServerSocket类"><a href="#1-3-ServerSocket类" class="headerlink" title="1.3 ServerSocket类"></a>1.3 ServerSocket类</h2><p>ServerSocket类实现了一个服务器socket，一个服务器socket等待客户端网络请求，然后基于这些请求执行操作，并返回给请求者一个结果。ServerSocket提供了bind、accept和close三个方法。bind方法为ServerSocket绑定一个IP地址和端口，并开始监听该端口。accept方法为ServerSocket接受请求并返回一个Socket对象，accept方法调用后，将一直阻塞直到有请求到达。close方法关闭一个ServerSocket对象。</p>
+<h2 id="1-4-SocketAddress"><a href="#1-4-SocketAddress" class="headerlink" title="1.4 SocketAddress"></a>1.4 SocketAddress</h2><p>SocketAddress提供了一个socket地址，不关心传输层协议。这是一个虚类，由子类来具体实现功能、绑定传输协议。它提供了一个不可变的对象，被socket用来绑定、连接或者返回数值。</p>
+<h2 id="1-5-InetSocketAddress"><a href="#1-5-InetSocketAddress" class="headerlink" title="1.5 InetSocketAddress"></a>1.5 InetSocketAddress</h2><p>InetSocketAddress实现了IP地址的SocketAddress，也就是有IP地址和端口号表达Socket地址。如果不制定具体的IP地址和端口号，那么IP地址默认为本机地址，端口号随机选择一个。</p>
+<h2 id="1-6-DatagramPacket"><a href="#1-6-DatagramPacket" class="headerlink" title="1.6. DatagramPacket"></a>1.6. DatagramPacket</h2><p>DatagramSocket是面向数据报socket通信的一个可选通道。数据报通道不是对网络数据报socket通信的完全抽象。socket通信的控制由DatagramSocket对象实现。DatagramPacket需要与DatagramSocket配合使用才能完成基于数据报的socket通信。</p>
 <h1 id="Socket通信步骤：（简单分为4步）"><a href="#Socket通信步骤：（简单分为4步）" class="headerlink" title="Socket通信步骤：（简单分为4步）"></a>Socket通信步骤：（简单分为4步）</h1><p>1.建立服务端ServerSocket和客户端Socket</p>
 <p>2.打开连接到Socket的输出输入流</p>
 <p>3.按照协议进行读写操作</p>
 <p>4.关闭相对应的资源</p>
-<h2 id="类-ServerSocket"><a href="#类-ServerSocket" class="headerlink" title="类 ServerSocket"></a>类 ServerSocket</h2><p>此类实现服务器套接字。服务器套接字等待请求通过网络传入。它基于该请求执行某些操作，然后可能向请求者返回结果。</p>
-<p>服务器套接字的实际工作由 SocketImpl 类的实例执行。应用程序可以更改创建套接字实现的套接字工厂来配置它自身，从而创建适合本地防火墙的套接字。 </p>
-<p>一些重要的方法：（具体大家查看官方api吧）</p>
-<p>ServerSocket(int port, int backlog)<br>利用指定的 backlog 创建服务器套接字并将其绑定到指定的本地端口号。</p>
-<p>bind(SocketAddress endpoint, int backlog)<br>将 ServerSocket 绑定到特定地址（IP 地址和端口号）。</p>
-<p>accept()<br>侦听并接受到此套接字的连接</p>
-<p>getInetAddress()<br>返回此服务器套接字的本地地址。</p>
-<p> close()<br>关闭此套接字。</p>
-<h2 id="类-Socket"><a href="#类-Socket" class="headerlink" title="类 Socket"></a>类 Socket</h2><p>此类实现客户端套接字（也可以就叫“套接字”）。套接字是两台机器间通信的端点。</p>
-<p>套接字的实际工作由 SocketImpl 类的实例执行。应用程序通过更改创建套接字实现的套接字工厂可以配置它自身，以创建适合本地防火墙的套接字。</p>
-<p>一些重要的方法：（具体大家查看官方api吧）</p>
-<p>Socket(InetAddress address, int port)<br>创建一个流套接字并将其连接到指定 IP 地址的指定端口号。</p>
-<p>getInetAddress()<br>返回套接字连接的地址。</p>
-<p>shutdownInput()<br>此套接字的输入流置于“流的末尾”。单方向的关闭输入流，并不会关闭socket</p>
-<p>shutdownOutput()<br>禁用此套接字的输出流。单方向的关闭输出流，并不会关闭socket</p>
-<p>close()<br>关闭此套接字。</p>
 <h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="服务端TCPServer-java"><a href="#服务端TCPServer-java" class="headerlink" title="服务端TCPServer.java"></a>服务端TCPServer.java</h3><p>1.创建ServerSocket对象，绑定并监听端口</p>
 <p>2.通过accept监听客户端的请求</p>
 <p>3.建立连接后，通过输出输入流进行读写操作</p>
