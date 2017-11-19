@@ -79,22 +79,17 @@
 
 
 
-<meta name="description" content="这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。 DevExpress控件GaugeControl1.从工具箱中查找定时任务timer  2.从工具箱中查找GaugeControl，选择合适的界面   3.控件界面效果如下  利用工具箱中的GaugeControl控件制作计时器显示界面.首先要添加一个定时任务：timer,给timer一个timer1_Tick事件">
+<meta name="description" content="实际应用场景python客户端与服务端（c程序）进行通讯，需接收服务端发来的16进制码流，并对16进制数据进行解码，得到相应字段的数据，并可以将数据打包成对应格式的码流发送给服务端，多字节整数传输采用网络字节序。 1.1 网络字节序网络字节顺序是TCP/IP中规定好的一种数据表示格式，它与具体的CPU类型、操作系统等无关，从而可以保证数据在不同主机之间传输时能够被正确解释。网络字节顺序采用big">
 <meta property="og:type" content="article">
-<meta property="og:title" content="c#结合DevExpress控件制作计时器">
-<meta property="og:url" content="https://wanglinyong.github.io/2017/10/14/csharp计时器/index.html">
+<meta property="og:title" content="Python-十六进制数据传递与接收">
+<meta property="og:url" content="https://wanglinyong.github.io/2017/11/17/python-十六进制数据传递与接收/index.html">
 <meta property="og:site_name" content="Wang&#39;s Blog">
-<meta property="og:description" content="这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。 DevExpress控件GaugeControl1.从工具箱中查找定时任务timer  2.从工具箱中查找GaugeControl，选择合适的界面   3.控件界面效果如下  利用工具箱中的GaugeControl控件制作计时器显示界面.首先要添加一个定时任务：timer,给timer一个timer1_Tick事件">
+<meta property="og:description" content="实际应用场景python客户端与服务端（c程序）进行通讯，需接收服务端发来的16进制码流，并对16进制数据进行解码，得到相应字段的数据，并可以将数据打包成对应格式的码流发送给服务端，多字节整数传输采用网络字节序。 1.1 网络字节序网络字节顺序是TCP/IP中规定好的一种数据表示格式，它与具体的CPU类型、操作系统等无关，从而可以保证数据在不同主机之间传输时能够被正确解释。网络字节顺序采用big">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/2.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/3.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/4.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png">
-<meta property="og:updated_time" content="2017-11-05T09:51:06.009Z">
+<meta property="og:updated_time" content="2017-11-19T06:39:48.884Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="c#结合DevExpress控件制作计时器">
-<meta name="twitter:description" content="这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。 DevExpress控件GaugeControl1.从工具箱中查找定时任务timer  2.从工具箱中查找GaugeControl，选择合适的界面   3.控件界面效果如下  利用工具箱中的GaugeControl控件制作计时器显示界面.首先要添加一个定时任务：timer,给timer一个timer1_Tick事件">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/2.png">
+<meta name="twitter:title" content="Python-十六进制数据传递与接收">
+<meta name="twitter:description" content="实际应用场景python客户端与服务端（c程序）进行通讯，需接收服务端发来的16进制码流，并对16进制数据进行解码，得到相应字段的数据，并可以将数据打包成对应格式的码流发送给服务端，多字节整数传输采用网络字节序。 1.1 网络字节序网络字节顺序是TCP/IP中规定好的一种数据表示格式，它与具体的CPU类型、操作系统等无关，从而可以保证数据在不同主机之间传输时能够被正确解释。网络字节顺序采用big">
 
 
 
@@ -124,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://wanglinyong.github.io/2017/10/14/csharp计时器/"/>
+  <link rel="canonical" href="https://wanglinyong.github.io/2017/11/17/python-十六进制数据传递与接收/"/>
 
 
 
 
 
-  <title>c#结合DevExpress控件制作计时器 | Wang's Blog</title>
+  <title>Python-十六进制数据传递与接收 | Wang's Blog</title>
   
 
 
@@ -267,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/10/14/csharp计时器/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/11/17/python-十六进制数据传递与接收/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -284,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">c#结合DevExpress控件制作计时器</h1>
+          <h1 class="post-title" itemprop="name headline">Python-十六进制数据传递与接收</h1>
         
 
         <div class="post-meta">
@@ -296,8 +291,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-14T13:28:54+08:00">
-                2017-10-14
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-17T20:58:06+08:00">
+                2017-11-17
               </time>
             
 
@@ -315,8 +310,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2017/10/14/csharp计时器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/10/14/csharp计时器/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2017/11/17/python-十六进制数据传递与接收/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/17/python-十六进制数据传递与接收/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -344,38 +339,133 @@
       
 
       
-        <p>这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。</p>
-<h2 id="DevExpress控件"><a href="#DevExpress控件" class="headerlink" title="DevExpress控件"></a>DevExpress控件</h2><h3 id="GaugeControl"><a href="#GaugeControl" class="headerlink" title="GaugeControl"></a>GaugeControl</h3><p>1.从工具箱中查找定时任务timer</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/2.png" alt=""></p>
-<p>2.从工具箱中查找GaugeControl，选择合适的界面</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/3.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/4.png" alt=""></p>
-<p>3.控件界面效果如下</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png" alt=""></p>
-<p>利用工具箱中的GaugeControl控件制作计时器显示界面.<br>首先要添加一个定时任务：timer,给timer一个timer1_Tick事件<br>主要代码如下：<br>   public int currentCount = 0;<br>        private void timer1_Tick(object sender, EventArgs e)<br>        {<br>            //string[] arr = digitalGauge1.Text.Split(“:”);<br>            //设置定时间隔(毫秒为单位)<br>            System.Timers.Timer timer = new System.Timers.Timer(1000);<br>            //设置执行一次（false）还是一直执行(true)<br>            timer.AutoReset = true;<br>            //设置是否执行System.Timers.Timer.Elapsed事件<br>            timer.Enabled = true;<br>            currentCount += 1;</p>
-<pre><code>    string second = (currentCount % 60)+&quot;&quot;;
-    string minute = (currentCount / 60 % 60)+&quot;&quot;;
-    string hour = (currentCount / 3600)+&quot;&quot;;
-    if (int.Parse(second) &lt; 10)
-    {
-        second = &quot;0&quot; + second;
-    }
-    else {
+        <h1 id="实际应用场景"><a href="#实际应用场景" class="headerlink" title="实际应用场景"></a>实际应用场景</h1><p>python客户端与服务端（c程序）进行通讯，需接收服务端发来的16进制码流，并对16进制数据进行解码，得到相应字段的数据，并可以将数据打包成对应格式的码流发送给服务端，多字节整数传输采用网络字节序。</p>
+<h2 id="1-1-网络字节序"><a href="#1-1-网络字节序" class="headerlink" title="1.1 网络字节序"></a>1.1 网络字节序</h2><p>网络字节顺序是TCP/IP中规定好的一种数据表示格式，它与具体的CPU类型、操作系统等无关，从而可以保证数据在不同主机之间传输时能够被正确解释。网络字节顺序采用big endian（大端）排序方式。</p>
+<p>为了同c中的结构体交换数据，还要考虑c或c++编译器使用了字节对齐，通常是以4个字节为单位的32位系统，故而struct根据本地机器字节顺序转换.可以用格式中的第一个字符来改变对齐方式.定义如下</p>
+<pre><code>Character      Byte order        Size              Alignment
 
-    }
-    if (int.Parse(minute) &lt; 10)
-    {
-        minute = &quot;0&quot; + minute;
-    }
-    if (int.Parse(hour) &lt; 10)
-    {
-        hour = &quot;0&quot; + hour;
-    }
+@(默认)            本机              本机             本机,凑够4字节
 
-    digitalGauge1.Text = hour + &quot;:&quot; + minute + &quot;:&quot; + second;
-}
-</code></pre><p>My Blog: <a href="https://wanglinyong.github.io/wanglinyong.github.io">Deployment</a></p>
+=                 本机                标准              none,按原字节数
 
+&lt;                 小端                标准              none,按原字节数
+
+&gt;                 大端                标准              none,按原字节数
+
+!              network(大端)        标准              none,按原字节数
+</code></pre><h2 id="1-2-python-struct的模块"><a href="#1-2-python-struct的模块" class="headerlink" title="1.2 python struct的模块"></a>1.2 python struct的模块</h2><p>作用：按照指定格式将Python数据转换为字符串,该字符串为字节流,如网络传输时,不能传输int,此时先将int转化为字节流,然后再发送;<br>按照指定格式将字节流转换为Python指定的数据类型;<br>处理二进制数据,如果用struct来处理文件的话,需要用’wb’,’rb’以二进制(字节流)写,读的方式来处理文件;<br>处理c语言中的结构体;</p>
+<p>struct中两个重要的函数：</p>
+<p>（1）pack(fmt,v1,v2…)：打包函数    </p>
+<p>返回值类型：string    </p>
+<p>按照给定的格式(fmt),把数据转换成字符串(字节流),并将该字符串返回.</p>
+<p>（2）unpack(fmt,v1,v2…..)：解包函数</p>
+<p>返回值类型：tuple</p>
+<p>按照给定的格式(fmt)解析字节流,并返回解析结果</p>
+<h2 id="2-消息发送的格式"><a href="#2-消息发送的格式" class="headerlink" title="2.消息发送的格式"></a>2.消息发送的格式</h2><p>消息采用消息头+消息体格式。</p>
+<pre><code>UINT8         1字节            8位无符号整形      
+UINT16        2字节            16位无符号整形         
+UINT32        4字节            32位无符号整形
+UINT64        8字节            64位无符号整形
+</code></pre><p>1.消息头</p>
+<pre><code>字段                  类型                  说明
+
+消息编号            UINT8                    -
+
+保留    UINT8         用0填充                  -
+
+消息体长度           UINT16      不包括消息头的长度，范围：0 -- 65535
+</code></pre><p>1.1消息编号</p>
+<pre><code>编号            消息                    用途                     说明
+
+0xe1     W_HEARTBEAT              心跳消息                消息体长度为0
+
+0xq1      QUERY_SM                  查询SM请求            消息体长度为0
+
+0xq2     QUERYSM_RPT             查询SM数据上报        
+
+0xs1     SCAN_PL                    扫描PL请求            消息体长度为0
+
+0xs2     SCANPL_ACK                    扫描PL请求应答
+</code></pre><p>1.2消息体格式 </p>
+<p>（1）心跳消息(W_HEARTBEAT)     每30秒发送一次，无消息体</p>
+<p>（2）QUERY_SM       查询SM数据请求   无消息体</p>
+<p>（3）QUERYSM_RPT     查询SM数据应答    消息体长度为27</p>
+<pre><code>  字段           长度      类型           说明
+
+reserved         6         CHAR            ——
+
+strName            16         CHAR           字符串
+
+RS                 4         INT32           信号强度(-140～-44dBm)
+                                              0：RS值无效
+
+Rs_si           1              BYTE            0:SI
+                                       1:RS
+</code></pre><p>（4）SCAN_PL     扫描PL请求   消息体长度为0</p>
+<p>（5）SCANPL_ACK   扫描PL请求应答</p>
+<pre><code> 字段                长度      类型           说明
+
+reserved         4         UINT32            ——
+
+result             2         UINT16           0:成功，1：失败
+
+count             2         UINT16           info数量
+
+info            13 * 10     info[10]     最多10个info列表
+</code></pre><p>5-1） info消息体</p>
+<pre><code>字段                长度          类型             说明
+
+ID                     4            UINT32              ID值
+
+Num                 6            CHAR              号码
+
+fn                 2            UINT16              fn频率
+
+power               1            UINT8              功率
+</code></pre><h2 id="3-代码示例如下"><a href="#3-代码示例如下" class="headerlink" title="3.代码示例如下"></a>3.代码示例如下</h2><p>3.1 发送程序（打包程序）：</p>
+<pre><code>def th_heart():
+    while True:
+        logging.info(&apos;SEND W_HEARTBEAT&apos;)
+        cmd_word = 0xe1
+        tx_buf = struct.pack(&apos;&lt;i&apos;, cmd_word)
+        ModuleSocket.sendto(tx_buf, (&apos;192.168.1.209&apos;, 2843))
+           time.sleep(60)
+
+def send_query_sm(id):
+       header = 0xq1
+      b = 0
+       b_len = 0
+       body = struct.pack(&quot;&lt;2BH&quot;, header, b, b_len)
+      send_msg(id, body)
+
+def send_scan_pl(id):
+       header = 0xs1
+      b = 0
+       b_len = 0
+       body = struct.pack(&quot;&lt;2BH&quot;, header, b, b_len)
+      send_msg(id, body)
+
+def send_msg(id,body):     
+    addr = (192.168.1.209,2843)
+    ModuleSocket.sendto(body, addr)
+    msg = repr(body)
+    logging.info(&apos;send serial %s to %s&apos; % (msg, addr))    
+</code></pre><p>3.2 接收程序（解包程序）：</p>
+<pre><code> if temp.find(&apos;0xq2&apos;) &gt;=0:
+    logging.info(&apos;QUERYSM_RPT&apos;)
+    header,b,b_len,reserved,strName,RS,Rs_si = struct.unpack(&quot;&gt;2BH6s16siB&quot;, body)
+    strName = strName[0:-1]
+    logging.info(&quot;header:%s, b:%s, b_len:%s,reserved:%s, strName:%s, RS:%s, Rs_si:%s&quot; % (header, b, b_len, reserved, strName, RS, Rs_si))
+    sm_rpt(moduleId, strName)
+
+if temp.find(&apos;0xs2&apos;) &gt;= 0:
+    logging.info(&apos;SCANPL_ACK&apos;)
+    header, b, b_len, reserved, result, count = struct.unpack(&quot;&gt;2BHIHH&quot;, body[0:12])
+    ID,Num,fn,power = struct.unpack(&quot;&gt;I6sHB&quot;, body[12:25])
+    logging.info(&quot;reserved:%s, result:%s, count:%s&quot; %(reserved,result,count))
+    logging.info(&quot;ID:%s, Num:%s, fn:%s, power:%s&quot; % (ID, Num, fn, power))
+    pl_rpt(moduleId, ID, Num,fn,power)    
+</code></pre>
       
     </div>
     
@@ -399,15 +489,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/wanglinyong.github.io/2017/11/05/JAVA-基于TCP的Socket实现/" rel="next" title="JAVA-基于TCP的Socket实现">
+                <i class="fa fa-chevron-left"></i> JAVA-基于TCP的Socket实现
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/wanglinyong.github.io/2017/10/14/maven手动安装jar到仓库/" rel="prev" title="maven手动安装jar到仓库">
-                maven手动安装jar到仓库 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -438,8 +528,8 @@
 
   
     <div class="comments" id="comments">
-      <div class="ds-thread" data-thread-key="2017/10/14/csharp计时器/"
-           data-title="c#结合DevExpress控件制作计时器" data-url="https://wanglinyong.github.io/2017/10/14/csharp计时器/">
+      <div class="ds-thread" data-thread-key="2017/11/17/python-十六进制数据传递与接收/"
+           data-title="Python-十六进制数据传递与接收" data-url="https://wanglinyong.github.io/2017/11/17/python-十六进制数据传递与接收/">
       </div>
     </div>
 
@@ -530,7 +620,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DevExpress控件"><span class="nav-number">1.</span> <span class="nav-text">DevExpress控件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GaugeControl"><span class="nav-number">1.1.</span> <span class="nav-text">GaugeControl</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#实际应用场景"><span class="nav-number">1.</span> <span class="nav-text">实际应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-网络字节序"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 网络字节序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-python-struct的模块"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 python struct的模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-消息发送的格式"><span class="nav-number">1.3.</span> <span class="nav-text">2.消息发送的格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-代码示例如下"><span class="nav-number">1.4.</span> <span class="nav-text">3.代码示例如下</span></a></li></ol></li></ol></div>
             
 
           </div>
