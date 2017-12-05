@@ -353,7 +353,7 @@ model.addAttribute(&quot;numbers&quot;,numbers);
 <pre><code>&lt;c:forEach var=&quot;item&quot; items=&quot;${list.list }&quot; varStatus=&quot;s&quot;&gt;
         &lt;tr target=&quot;item_id&quot; rel=&quot;${item.id}&quot;&gt;
             &lt;td&gt;${item.name }&lt;/td&gt;
-            &lt;font color=&quot;#FF0000&quot;&gt;&lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;&lt;/font&gt; 
+            &lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;
             &lt;td&gt;${item.area }&lt;/td&gt;
             &lt;td&gt;${item.moduleName }&lt;/td&gt;
             &lt;td&gt;&lt;fmt:formatDate value=&quot;${item.rptTime}&quot; pattern=&quot;yyyy-MM-dd HH:mm:ss&quot;&gt;&lt;/fmt:formatDate&gt;&lt;/td&gt;           

@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="Wang&#39;s Blog">
 <meta property="og:description" content="比如后台系统传递两个集合: model.addAttribute(&amp;quot;list&amp;quot;,list); model.addAttribute(&amp;quot;numbers&amp;quot;,numbers); 前台系统: 1.首先引入标签库 &amp;lt;%@ taglib prefix=&amp;quot;c&amp;quot; uri=&amp;quot;http://java.sun.com/jsp/jstl/core">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-05T09:18:01.215Z">
+<meta property="og:updated_time" content="2017-12-05T09:23:03.215Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JSP遍历两个集合的情况">
 <meta name="twitter:description" content="比如后台系统传递两个集合: model.addAttribute(&amp;quot;list&amp;quot;,list); model.addAttribute(&amp;quot;numbers&amp;quot;,numbers); 前台系统: 1.首先引入标签库 &amp;lt;%@ taglib prefix=&amp;quot;c&amp;quot; uri=&amp;quot;http://java.sun.com/jsp/jstl/core">
@@ -349,7 +349,7 @@ model.addAttribute(&quot;numbers&quot;,numbers);
 <pre><code>&lt;c:forEach var=&quot;item&quot; items=&quot;${list.list }&quot; varStatus=&quot;s&quot;&gt;
         &lt;tr target=&quot;item_id&quot; rel=&quot;${item.id}&quot;&gt;
             &lt;td&gt;${item.name }&lt;/td&gt;
-            &lt;font color=&quot;#FF0000&quot;&gt;&lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;&lt;/font&gt; 
+            &lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;
             &lt;td&gt;${item.area }&lt;/td&gt;
             &lt;td&gt;${item.moduleName }&lt;/td&gt;
             &lt;td&gt;&lt;fmt:formatDate value=&quot;${item.rptTime}&quot; pattern=&quot;yyyy-MM-dd HH:mm:ss&quot;&gt;&lt;/fmt:formatDate&gt;&lt;/td&gt;           
