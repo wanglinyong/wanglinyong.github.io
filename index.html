@@ -262,6 +262,155 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/" itemprop="url">JSP遍历两个集合的情况</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T19:36:06+08:00">
+                2017-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/12/05/jsp遍历两个集合情况/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="jsp中使用同时遍历两个list集合"><a href="#jsp中使用同时遍历两个list集合" class="headerlink" title="jsp中使用同时遍历两个list集合"></a>jsp中使用<c:foreach>同时遍历两个list集合</c:foreach></h1><p>比如后台系统传递两个集合:</p>
+<pre><code>model.addAttribute(&quot;list&quot;,list);
+model.addAttribute(&quot;numbers&quot;,numbers);
+</code></pre><p>前台系统:</p>
+<p>1.首先引入标签库</p>
+<pre><code>&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;  
+</code></pre><p>2.编写js代码</p>
+<pre><code>&lt;c:forEach var=&quot;item&quot; items=&quot;${list.list }&quot; varStatus=&quot;s&quot;&gt;
+        &lt;tr target=&quot;item_id&quot; rel=&quot;${item.id}&quot;&gt;
+            &lt;td&gt;${item.name }&lt;/td&gt;
+            &lt;td&gt;&lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;&lt;/td&gt;
+            &lt;td&gt;${item.area }&lt;/td&gt;
+            &lt;td&gt;${item.moduleName }&lt;/td&gt;
+            &lt;td&gt;&lt;fmt:formatDate value=&quot;${item.rptTime}&quot; pattern=&quot;yyyy-MM-dd HH:mm:ss&quot;&gt;&lt;/fmt:formatDate&gt;&lt;/td&gt;           
+        &lt;/tr&gt;
+&lt;/c:forEach&gt;
+</code></pre><p>说明：</p>
+<pre><code>&lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;
+其中name是numbers集合存储的对象类型的属性，如果numbers集合存储的是String，可以直接使用
+&lt;td&gt;${numbers[s.count-1]}&lt;/td&gt;
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/11/26/linux系统各服务相关设置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2035,7 +2184,7 @@ public static void main(String[] args) {
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
