@@ -86,10 +86,13 @@
 <meta property="og:site_name" content="Wang&#39;s Blog">
 <meta property="og:description" content="一、配置JDK环境变量#vi /etc/profile 在该profile文件中最下面添加： export JAVA_HOME=/root/softs/jdk1.8.0_77 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar export PATH=$PATH:$JAVA_HOME/bin 添加完毕保存退出 友情提示">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-08T11:27:43.223Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mqc.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mq.png">
+<meta property="og:updated_time" content="2017-12-08T11:57:59.023Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux系统各服务相关设置">
 <meta name="twitter:description" content="一、配置JDK环境变量#vi /etc/profile 在该profile文件中最下面添加： export JAVA_HOME=/root/softs/jdk1.8.0_77 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar export PATH=$PATH:$JAVA_HOME/bin 添加完毕保存退出 友情提示">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mqc.png">
 
 
 
@@ -356,7 +359,7 @@ export PATH=$PATH:$JAVA_HOME/bin
 <p>Java(TM) SE Runtime Environment (build 1.7.0-b147)</p>
 <p>Java HotSpot(TM) Client VM (build 21.0-b17, mixed mode, sharing)</p>
 <p>2.查看JAVA_HOME路径</p>
-<pre><code># echo$JAVA_HOME
+<pre><code># echo $JAVA_HOME
 </code></pre><p>/usr/java/jdk1.7.0</p>
 <p>出现以上提示说明配置成功！</p>
 <h1 id="二、防火墙设置"><a href="#二、防火墙设置" class="headerlink" title="二、防火墙设置"></a>二、防火墙设置</h1><p>1.要开放的端口如下：</p>
@@ -448,7 +451,9 @@ cygwin=false
 </code></pre><p>在最后一个#后面添加</p>
 <pre><code>export JAVA_HOME=/root/softs/jdk1.8.0_77
 ACTIVEMQ_HOME=/root/softs/apache-activemq-5.13.2
-</code></pre><p>7、修改权限</p>
+</code></pre><p>如下图(路径改为自己的)：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mqc.png" alt=""></p>
+<p>7、修改权限</p>
 <pre><code>chmod +x activemq
 </code></pre><p>8、添加系统服务</p>
 <pre><code>chkconfig --add activemq
@@ -460,7 +465,12 @@ netconsole         0:关    1:关    2:关    3:关    4:关    5:关    6:关
 network            0:关    1:关    2:开    3:开    4:开    5:开    6:关
 rds_start          0:关    1:关    2:开    3:开    4:开    5:开    6:关
 redis              0:关    1:关    2:开    3:开    4:开    5:开    6:关
-</code></pre><h2 id="拓展-1"><a href="#拓展-1" class="headerlink" title="拓展"></a>拓展</h2><p>在Ubuntu中，有可能没有chkconfig命令或者执行失败，可以用Ubuntu的update-rc.d命令替换</p>
+</code></pre><p>如果想通过网页访问activemq,还需开启8161端口</p>
+<pre><code>firewall-cmd --zone=public --add-port=8161/tcp --permanent
+firewall-cmd --reload 
+</code></pre><p>然后通过8161端口即可访问activemq网页</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mq.png" alt=""></p>
+<h2 id="拓展-1"><a href="#拓展-1" class="headerlink" title="拓展"></a>拓展</h2><p>在Ubuntu中，有可能没有chkconfig命令或者执行失败，可以用Ubuntu的update-rc.d命令替换</p>
 <p>问题：<br>cp 到/etc/init.d目录下的时候，有时候启动会提示找不到路径等等问题，但是在安装目录启动就可以，所以可以通过软连接来实现启动脚本：</p>
 <pre><code>ln -s /usr/local/activemq/bin/activemq /etc/init.d/
  /etc/init.d/activemq
