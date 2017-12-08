@@ -88,7 +88,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mqc.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mq.png">
-<meta property="og:updated_time" content="2017-12-08T11:57:59.023Z">
+<meta property="og:updated_time" content="2017-12-08T12:17:34.207Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux系统各服务相关设置">
 <meta name="twitter:description" content="一、配置JDK环境变量#vi /etc/profile 在该profile文件中最下面添加： export JAVA_HOME=/root/softs/jdk1.8.0_77 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar export PATH=$PATH:$JAVA_HOME/bin 添加完毕保存退出 友情提示">
@@ -511,7 +511,7 @@ EXEC=/root/softs/redis-3.2.5/src/redis-server    #改为你的server路径
 REDIS_CLI=/root/softs/redis-3.2.5/src/redis-cli   #改为你的client路径
 
 PIDFILE=/var/run/redis.pid   
-CONF=&quot;/usr/redisbin/redis.conf&quot;  
+CONF=&quot;/root/softs/redis-3.2.5/redis.conf&quot;       #改为你的redis.conf路径
 AUTH=&quot;1234&quot;  
 
 case &quot;$1&quot; in   
@@ -563,7 +563,7 @@ esac
 <pre><code>Starting Redis server...
 Redis is running...
 </code></pre><p>使用redis-cli测试：</p>
-<pre><code>[root@rk ~]# /usr/redisbin/redis-cli
+<pre><code>[root@rk ~]# /root/softs/redis-3.2.5/src/redis-cli
 127.0.0.1:6379&gt; set foo bar
 OK
 127.0.0.1:6379&gt; get foo

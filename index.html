@@ -1267,7 +1267,7 @@ EXEC=/root/softs/redis-3.2.5/src/redis-server    #改为你的server路径
 REDIS_CLI=/root/softs/redis-3.2.5/src/redis-cli   #改为你的client路径
 
 PIDFILE=/var/run/redis.pid   
-CONF=&quot;/usr/redisbin/redis.conf&quot;  
+CONF=&quot;/root/softs/redis-3.2.5/redis.conf&quot;       #改为你的redis.conf路径
 AUTH=&quot;1234&quot;  
 
 case &quot;$1&quot; in   
@@ -1319,7 +1319,7 @@ esac
 <pre><code>Starting Redis server...
 Redis is running...
 </code></pre><p>使用redis-cli测试：</p>
-<pre><code>[root@rk ~]# /usr/redisbin/redis-cli
+<pre><code>[root@rk ~]# /root/softs/redis-3.2.5/src/redis-cli
 127.0.0.1:6379&gt; set foo bar
 OK
 127.0.0.1:6379&gt; get foo
