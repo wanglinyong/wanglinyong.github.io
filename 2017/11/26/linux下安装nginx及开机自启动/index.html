@@ -87,7 +87,8 @@
 <meta property="og:description" content="一、安装nginx1.从http://nginx.org/download/上下载相应的版本(或者wget http://nginx.org/download/nginx-1.5.9.tar.gz直接在Linux上用命令下载) wget http://nginx.org/download/nginx-1.5.9.tar.gz 2.解压  tar -zxvf nginx-1.5.9.tar.gz">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/nginx.png">
-<meta property="og:updated_time" content="2018-01-05T11:52:28.978Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png">
+<meta property="og:updated_time" content="2018-01-05T12:41:20.118Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux下安装nginx及开机自启动">
 <meta name="twitter:description" content="一、安装nginx1.从http://nginx.org/download/上下载相应的版本(或者wget http://nginx.org/download/nginx-1.5.9.tar.gz直接在Linux上用命令下载) wget http://nginx.org/download/nginx-1.5.9.tar.gz 2.解压  tar -zxvf nginx-1.5.9.tar.gz">
@@ -493,7 +494,161 @@ NGINX_CONF_FILE=&quot;/usr/local/nginx/conf/nginx.conf&quot; 修改成配置文�
 service nginx stop
 </code></pre><p>8.设置终端模式开机启动</p>
 <pre><code>chkconfig nginx on
-</code></pre>
+</code></pre><h1 id="三、发布静态资源"><a href="#三、发布静态资源" class="headerlink" title="三、发布静态资源"></a>三、发布静态资源</h1><p>1.确定静态资源存放位置</p>
+<pre><code>/home/images
+</code></pre><p>2.修改nginx.conf配置文件</p>
+<pre><code>vi /usr/local/nginx/conf/nginx.conf
+</code></pre><p>3.主要修改如下：</p>
+<pre><code>#user  nobody;
+worker_processes  1;
+
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+
+#pid        logs/nginx.pid;
+
+
+events {
+worker_connections  1024;
+}
+
+
+http {
+include       mime.types;
+default_type  application/octet-stream;
+
+#log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;
+#                  &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;
+#                  &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;
+
+#access_log  logs/access.log  main;
+
+sendfile        on;
+#tcp_nopush     on;
+
+#keepalive_timeout  0;
+keepalive_timeout  65;
+
+#gzip  on;
+
+server {
+    listen       80;
+    server_name  localhost;
+
+    #charset koi8-r;
+     charset utf-8;    
+
+    #access_log  logs/host.access.log  main;
+
+     location ~ .*\.(gif|jpg|jpeg|png)$ {    
+    expires 24h;    
+        root /home/images/;#指定图片存放路径    
+        access_log /home/softs/nginx-1.5.9/logs/images.log;#日志存放路径    
+        proxy_store on;    
+        proxy_store_access user:rw group:rw all:rw;    
+        proxy_temp_path         /home/images/;#图片访问路径    
+        proxy_redirect          off;    
+        proxy_set_header        Host 127.0.0.1;    
+        client_max_body_size    10m;    
+        client_body_buffer_size 1280k;    
+        proxy_connect_timeout   900;    
+        proxy_send_timeout      900;    
+        proxy_read_timeout      900;    
+        proxy_buffer_size       40k;    
+        proxy_buffers           40 320k;    
+        proxy_busy_buffers_size 640k;    
+        proxy_temp_file_write_size 640k;    
+        if ( !-e $request_filename)    
+        {    
+             proxy_pass  http://127.0.0.1;#默认80端口    
+        }    
+}      
+
+    location / {
+        root   /home/html; #html访问路径  
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache&apos;s document root
+    # concurs with nginx&apos;s one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+
+
+# another virtual host using mix of IP-, name-, and port-based configuration
+#
+#server {
+#    listen       8000;
+#    listen       somename:8080;
+#    server_name  somename  alias  another.alias;
+
+#    location / {
+#        root   html;
+#        index  index.html index.htm;
+#    }
+#}
+
+
+# HTTPS server
+#
+#server {
+#    listen       443 ssl;
+#    server_name  localhost;
+
+#    ssl_certificate      cert.pem;
+#    ssl_certificate_key  cert.key;
+
+#    ssl_session_cache    shared:SSL:1m;
+#    ssl_session_timeout  5m;
+
+#    ssl_ciphers  HIGH:!aNULL:!MD5;
+#    ssl_prefer_server_ciphers  on;
+
+#    location / {
+#        root   html;
+#        index  index.html index.htm;
+#    }
+#}
+
+}
+</code></pre><p>4.查看编译是否出错，如果没出错则成功</p>
+<pre><code>cd /usr/local/nginx/sbin/
+./nginx -t
+</code></pre><p>5.显示如下即代表成功（如果报目录不存在错误，就创建目录即可）</p>
+<pre><code>nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful
+</code></pre><p>6.访问静态资源:192.168.120.139/1.png</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png" alt=""></p>
+
       
     </div>
     
@@ -517,8 +672,8 @@ service nginx stop
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/wanglinyong.github.io/2017/11/22/linux系统如何移动mysql存放文件的位置/" rel="next" title="linux系统如何移动mysql存放文件的位置">
-                <i class="fa fa-chevron-left"></i> linux系统如何移动mysql存放文件的位置
+              <a href="/wanglinyong.github.io/2017/11/26/linux系统各服务相关设置/" rel="next" title="linux系统各服务相关设置">
+                <i class="fa fa-chevron-left"></i> linux系统各服务相关设置
               </a>
             
           </div>
@@ -527,8 +682,8 @@ service nginx stop
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/wanglinyong.github.io/2017/11/26/linux系统各服务相关设置/" rel="prev" title="linux系统各服务相关设置">
-                linux系统各服务相关设置 <i class="fa fa-chevron-right"></i>
+              <a href="/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/" rel="prev" title="JSP遍历两个集合的情况">
+                JSP遍历两个集合的情况 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -652,7 +807,7 @@ service nginx stop
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、安装nginx"><span class="nav-number">1.</span> <span class="nav-text">一、安装nginx</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、nginx开机自启动"><span class="nav-number">2.</span> <span class="nav-text">二、nginx开机自启动</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、安装nginx"><span class="nav-number">1.</span> <span class="nav-text">一、安装nginx</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、nginx开机自启动"><span class="nav-number">2.</span> <span class="nav-text">二、nginx开机自启动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、发布静态资源"><span class="nav-number">3.</span> <span class="nav-text">三、发布静态资源</span></a></li></ol></div>
             
 
           </div>
