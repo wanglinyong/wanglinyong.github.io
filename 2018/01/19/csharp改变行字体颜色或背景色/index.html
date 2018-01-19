@@ -79,22 +79,22 @@
 
 
 
-<meta name="description" content="一、根据列表数据改变行字体颜色或者背景色1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串  string color =  tePhone1.Color.Name; 2.将颜色字符串存入数据库 3.在显示列表点击Run Designer，在事件列表中找到RowStyle,给一个事件名称   4.具体实现代码如下 //颜色字符串转颜色对象 public stat">
+<meta name="description" content="一、根据列表数据改变行字体颜色或者背景色1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串  string color =  tePhone1.Color.Name; 2.将颜色字符串存入数据库，附上数据库Dao代码     namespace rdms.DB    { public class StudentDao {     private static I">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C# Gridview 改变行字体颜色或背景色">
 <meta property="og:url" content="https://wanglinyong.github.io/2018/01/19/csharp改变行字体颜色或背景色/index.html">
 <meta property="og:site_name" content="Wang&#39;s Blog">
-<meta property="og:description" content="一、根据列表数据改变行字体颜色或者背景色1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串  string color =  tePhone1.Color.Name; 2.将颜色字符串存入数据库 3.在显示列表点击Run Designer，在事件列表中找到RowStyle,给一个事件名称   4.具体实现代码如下 //颜色字符串转颜色对象 public stat">
+<meta property="og:description" content="一、根据列表数据改变行字体颜色或者背景色1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串  string color =  tePhone1.Color.Name; 2.将颜色字符串存入数据库，附上数据库Dao代码     namespace rdms.DB    { public class StudentDao {     private static I">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color3.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color4.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color1.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color2.png">
-<meta property="og:updated_time" content="2018-01-19T07:56:50.763Z">
+<meta property="og:updated_time" content="2018-01-19T08:46:12.185Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C# Gridview 改变行字体颜色或背景色">
-<meta name="twitter:description" content="一、根据列表数据改变行字体颜色或者背景色1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串  string color =  tePhone1.Color.Name; 2.将颜色字符串存入数据库 3.在显示列表点击Run Designer，在事件列表中找到RowStyle,给一个事件名称   4.具体实现代码如下 //颜色字符串转颜色对象 public stat">
+<meta name="twitter:description" content="一、根据列表数据改变行字体颜色或者背景色1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串  string color =  tePhone1.Color.Name; 2.将颜色字符串存入数据库，附上数据库Dao代码     namespace rdms.DB    { public class StudentDao {     private static I">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color.png">
 
 
@@ -348,7 +348,49 @@
         <h1 id="一、根据列表数据改变行字体颜色或者背景色"><a href="#一、根据列表数据改变行字体颜色或者背景色" class="headerlink" title="一、根据列表数据改变行字体颜色或者背景色"></a>一、根据列表数据改变行字体颜色或者背景色</h1><p>1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串</p>
 <p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color.png" alt=""></p>
 <pre><code>string color =  tePhone1.Color.Name;
-</code></pre><p>2.将颜色字符串存入数据库</p>
+</code></pre><p>2.将颜色字符串存入数据库，附上数据库Dao代码</p>
+<pre><code>    namespace rdms.DB
+   {
+public class StudentDao
+{
+    private static ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    public static List&lt;Student&gt; GetAll()
+    {
+        return DBContext.ScodeSession.From&lt;Student&gt;().Select().ToList();
+    }
+
+    public static int Update(Student s)
+    {        
+        // DBContext.ScodeSession.FromSql(&quot;UPDATE  Student  SET  color = &apos;&quot;+s.color+ &quot;&apos; where s_id = &quot; + s.s_id);
+        return DBContext.ScodeSession.Update(s);
+
+    }
+
+    public static Student getStudent(int id)
+    {
+        List&lt;Student&gt; list = DBContext.ScodeSession.FromSql(&quot;SELECT *  FROM Student  where s_id = &quot; + id).ToList&lt;Student&gt;();
+        if (list != null &amp;&amp; list.Count &gt; 0)
+        {
+            return list[0];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static int Add(Student s)
+    {
+        return DBContext.ScodeSession.Insert(s);
+    }
+
+    public static void Delete(Student s)
+    {
+        DBContext.ScodeSession.Delete&lt;Student&gt;(s);
+    }
+
+}
+</code></pre><p>}</p>
 <p>3.在显示列表点击Run Designer，在事件列表中找到RowStyle,给一个事件名称</p>
 <p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color3.png" alt=""></p>
 <p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color4.png" alt=""></p>
