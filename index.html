@@ -343,16 +343,31 @@
       
         
           
-            <h1 id="Mysql每天定时清空表"><a href="#Mysql每天定时清空表" class="headerlink" title="Mysql每天定时清空表"></a>Mysql每天定时清空表</h1><p>1.设置每天定时清空表upvote</p>
-<pre><code>SET GLOBAL event_scheduler = 1;   
+            <h1 id="Mysql每天定时清空表"><a href="#Mysql每天定时清空表" class="headerlink" title="Mysql每天定时清空表"></a>Mysql每天定时清空表</h1><p>1.设置开启event scheduler</p>
+<pre><code>SET GLOBAL event_scheduler=1;
+</code></pre><p>2.验证event_scheduler是否已经开启</p>
+<pre><code>show variables like &apos;%event%&apos;;  #值为 ON 表明已开启
+SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
+</code></pre><p>3.创建event</p>
+<pre><code>DROP EVENT IF EXISTS e_delete_upvote;
+ CREATE  EVENT e_delete_upvote   
+ ON SCHEDULE EVERY 1 day STARTS date_add(concat(current_date(), &apos; 00:00:00&apos;), interval 0 second)
+ ON COMPLETION PRESERVE ENABLE
+ DO
+ TRUNCATE TABLE dreamland.upvote;
 
-CREATE EVENT IF NOT EXISTS event_clear_data  
-
-ON SCHEDULE EVERY 1 DAY
-
-DO TRUNCATE TABLE dreamland.upvote;
-</code></pre><p>2.删除event</p>
-<pre><code>DROP EVENT event_clear_data
+#说明：
+ ON SCHEDULE EVERY 1 day 指定循环间隔为每天执行
+ STARTS date_add(concat(current_date(), &apos; 23:59:00&apos;), interval 0 second) 指定运行时间为23:59:00
+ ON COMPLETION PRESERVE ENABLE 指定创建完成后即启用，否则需手动启动
+</code></pre><p>4.手动关闭事件</p>
+<pre><code>ALTER EVENT e_delete_upvote DISABLE;
+</code></pre><p>5.手动该事件为可用</p>
+<pre><code>ALTER EVENT e_delete_upvote ENABLE;
+</code></pre><p>6.查看已有的定时事件任务</p>
+<pre><code>SHOW EVENTS;
+</code></pre><p>7.删除事件</p>
+<pre><code>DROP EVENT e_delete_upvote;
 </code></pre>
           
         

@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="Mysql每天定时清空表1.设置每天定时清空表upvote SET GLOBAL event_scheduler = 1;     CREATE EVENT IF NOT EXISTS event_clear_data    ON SCHEDULE EVERY 1 DAY  DO TRUNCATE TABLE dreamland.upvote; 2.删除event DROP EVENT event">
+<meta name="description" content="Mysql每天定时清空表1.设置开启event scheduler SET GLOBAL event_scheduler=1; 2.验证event_scheduler是否已经开启 show variables like &amp;apos;%event%&amp;apos;;  #值为 ON 表明已开启 SHOW VARIABLES LIKE &amp;apos;event_scheduler&amp;apos;; 3.创建ev">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Mysql每天定时清空表">
 <meta property="og:url" content="https://wanglinyong.github.io/2018/01/26/mysql定时清空表/index.html">
 <meta property="og:site_name" content="Wang&#39;s Blog">
-<meta property="og:description" content="Mysql每天定时清空表1.设置每天定时清空表upvote SET GLOBAL event_scheduler = 1;     CREATE EVENT IF NOT EXISTS event_clear_data    ON SCHEDULE EVERY 1 DAY  DO TRUNCATE TABLE dreamland.upvote; 2.删除event DROP EVENT event">
+<meta property="og:description" content="Mysql每天定时清空表1.设置开启event scheduler SET GLOBAL event_scheduler=1; 2.验证event_scheduler是否已经开启 show variables like &amp;apos;%event%&amp;apos;;  #值为 ON 表明已开启 SHOW VARIABLES LIKE &amp;apos;event_scheduler&amp;apos;; 3.创建ev">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-26T11:16:19.192Z">
+<meta property="og:updated_time" content="2018-01-30T01:12:36.722Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql每天定时清空表">
-<meta name="twitter:description" content="Mysql每天定时清空表1.设置每天定时清空表upvote SET GLOBAL event_scheduler = 1;     CREATE EVENT IF NOT EXISTS event_clear_data    ON SCHEDULE EVERY 1 DAY  DO TRUNCATE TABLE dreamland.upvote; 2.删除event DROP EVENT event">
+<meta name="twitter:description" content="Mysql每天定时清空表1.设置开启event scheduler SET GLOBAL event_scheduler=1; 2.验证event_scheduler是否已经开启 show variables like &amp;apos;%event%&amp;apos;;  #值为 ON 表明已开启 SHOW VARIABLES LIKE &amp;apos;event_scheduler&amp;apos;; 3.创建ev">
 
 
 
@@ -339,16 +339,31 @@
       
 
       
-        <h1 id="Mysql每天定时清空表"><a href="#Mysql每天定时清空表" class="headerlink" title="Mysql每天定时清空表"></a>Mysql每天定时清空表</h1><p>1.设置每天定时清空表upvote</p>
-<pre><code>SET GLOBAL event_scheduler = 1;   
+        <h1 id="Mysql每天定时清空表"><a href="#Mysql每天定时清空表" class="headerlink" title="Mysql每天定时清空表"></a>Mysql每天定时清空表</h1><p>1.设置开启event scheduler</p>
+<pre><code>SET GLOBAL event_scheduler=1;
+</code></pre><p>2.验证event_scheduler是否已经开启</p>
+<pre><code>show variables like &apos;%event%&apos;;  #值为 ON 表明已开启
+SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
+</code></pre><p>3.创建event</p>
+<pre><code>DROP EVENT IF EXISTS e_delete_upvote;
+ CREATE  EVENT e_delete_upvote   
+ ON SCHEDULE EVERY 1 day STARTS date_add(concat(current_date(), &apos; 00:00:00&apos;), interval 0 second)
+ ON COMPLETION PRESERVE ENABLE
+ DO
+ TRUNCATE TABLE dreamland.upvote;
 
-CREATE EVENT IF NOT EXISTS event_clear_data  
-
-ON SCHEDULE EVERY 1 DAY
-
-DO TRUNCATE TABLE dreamland.upvote;
-</code></pre><p>2.删除event</p>
-<pre><code>DROP EVENT event_clear_data
+#说明：
+ ON SCHEDULE EVERY 1 day 指定循环间隔为每天执行
+ STARTS date_add(concat(current_date(), &apos; 23:59:00&apos;), interval 0 second) 指定运行时间为23:59:00
+ ON COMPLETION PRESERVE ENABLE 指定创建完成后即启用，否则需手动启动
+</code></pre><p>4.手动关闭事件</p>
+<pre><code>ALTER EVENT e_delete_upvote DISABLE;
+</code></pre><p>5.手动该事件为可用</p>
+<pre><code>ALTER EVENT e_delete_upvote ENABLE;
+</code></pre><p>6.查看已有的定时事件任务</p>
+<pre><code>SHOW EVENTS;
+</code></pre><p>7.删除事件</p>
+<pre><code>DROP EVENT e_delete_upvote;
 </code></pre>
       
     </div>
