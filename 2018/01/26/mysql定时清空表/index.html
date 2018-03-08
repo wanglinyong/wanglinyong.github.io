@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="Wang&#39;s Blog">
 <meta property="og:description" content="Mysql每天定时清空表1.设置开启event scheduler SET GLOBAL event_scheduler=1; 2.验证event_scheduler是否已经开启 show variables like &amp;apos;%event%&amp;apos;;  #值为 ON 表明已开启 SHOW VARIABLES LIKE &amp;apos;event_scheduler&amp;apos;; 3.创建ev">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-30T01:12:36.722Z">
+<meta property="og:updated_time" content="2018-03-08T01:16:02.727Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mysql每天定时清空表">
 <meta name="twitter:description" content="Mysql每天定时清空表1.设置开启event scheduler SET GLOBAL event_scheduler=1; 2.验证event_scheduler是否已经开启 show variables like &amp;apos;%event%&amp;apos;;  #值为 ON 表明已开启 SHOW VARIABLES LIKE &amp;apos;event_scheduler&amp;apos;; 3.创建ev">
@@ -364,7 +364,7 @@ SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
 <pre><code>SHOW EVENTS;
 </code></pre><p>7.删除事件</p>
 <pre><code>DROP EVENT e_delete_upvote;
-</code></pre>
+</code></pre><h3 id="注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql-ini文件中加入event-scheduler-ON-的语句"><a href="#注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql-ini文件中加入event-scheduler-ON-的语句" class="headerlink" title="注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql.ini文件中加入event_scheduler = ON; 的语句"></a>注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql.ini文件中加入event_scheduler = ON; 的语句</h3>
       
     </div>
     
@@ -519,7 +519,7 @@ SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mysql每天定时清空表"><span class="nav-number">1.</span> <span class="nav-text">Mysql每天定时清空表</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mysql每天定时清空表"><span class="nav-number">1.</span> <span class="nav-text">Mysql每天定时清空表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql-ini文件中加入event-scheduler-ON-的语句"><span class="nav-number">1.0.1.</span> <span class="nav-text">注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql.ini文件中加入event_scheduler = ON; 的语句</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
