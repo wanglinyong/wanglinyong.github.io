@@ -2382,7 +2382,7 @@ value   : The object must be serialized into a byte array
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/12/10/linux系统使用Gogs搭建自己的git服务/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -2401,7 +2401,7 @@ value   : The object must be serialized into a byte array
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/" itemprop="url">JSP遍历两个集合的情况</a></h1>
+                <a class="post-title-link" href="/wanglinyong.github.io/2017/12/10/linux系统使用Gogs搭建自己的git服务/" itemprop="url">linux系统使用Gogs搭建自己的git服务</a></h1>
         
 
         <div class="post-meta">
@@ -2413,8 +2413,8 @@ value   : The object must be serialized into a byte array
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T19:36:06+08:00">
-                2017-12-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-10T20:28:25+08:00">
+                2017-12-10
               </time>
             
 
@@ -2432,8 +2432,8 @@ value   : The object must be serialized into a byte array
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/12/05/jsp遍历两个集合情况/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2017/12/10/linux系统使用Gogs搭建自己的git服务/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/12/10/linux系统使用Gogs搭建自己的git服务/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -2463,26 +2463,145 @@ value   : The object must be serialized into a byte array
       
         
           
-            <p>比如后台系统传递两个集合:</p>
-<pre><code>model.addAttribute(&quot;list&quot;,list);
-model.addAttribute(&quot;numbers&quot;,numbers);
-</code></pre><p>前台系统:</p>
-<p>1.首先引入标签库</p>
-<pre><code>&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;  
-</code></pre><p>2.编写js代码</p>
-<pre><code>&lt;c:forEach var=&quot;item&quot; items=&quot;${list.list }&quot; varStatus=&quot;s&quot;&gt;
-        &lt;tr target=&quot;item_id&quot; rel=&quot;${item.id}&quot;&gt;
-            &lt;td&gt;${item.name }&lt;/td&gt;
-            &lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;
-            &lt;td&gt;${item.area }&lt;/td&gt;
-            &lt;td&gt;${item.moduleName }&lt;/td&gt;
-            &lt;td&gt;&lt;fmt:formatDate value=&quot;${item.rptTime}&quot; pattern=&quot;yyyy-MM-dd HH:mm:ss&quot;&gt;&lt;/fmt:formatDate&gt;&lt;/td&gt;           
-        &lt;/tr&gt;
-&lt;/c:forEach&gt;
-</code></pre><p>说明：</p>
-<pre><code>&lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;
-其中name是numbers集合存储的对象类型的属性，如果numbers集合存储的是String，可以直接使用
-&lt;td&gt;${numbers[s.count-1]}&lt;/td&gt;
+            <h1 id="一、安装Gogs服务"><a href="#一、安装Gogs服务" class="headerlink" title="一、安装Gogs服务"></a>一、安装Gogs服务</h1><h2 id="1-新建用户"><a href="#1-新建用户" class="headerlink" title="1.新建用户"></a>1.新建用户</h2><p>Gogs默认以 git 用户运行（你不会想用一个能修改 ssh 配置的程序以 root 用户运行吧）。 </p>
+<pre><code>sudo adduser git  # 新建git用户。 
+</code></pre><p> 以 git 用户登录，到 git 用户的主目录中新建好 .ssh 文件夹。(新建git用户后我的出现在/home目录下)</p>
+<pre><code>su git
+
+cd /home/git
+
+mkdir .ssh
+</code></pre><h2 id="2-下载安装包并解压"><a href="#2-下载安装包并解压" class="headerlink" title="2.下载安装包并解压"></a>2.下载安装包并解压</h2><p>我使用的是预编译的二进制包。下载链接</p>
+<pre><code>https://gogs.io/docs/installation/install_from_binary
+</code></pre><p>查看linux系统是32位还是64位系统命令，32位选择386，64位选择amd64</p>
+<pre><code>getconf LONG_BIT
+</code></pre><p>需要从源码编译的话，请参考一般 Go 语言项目的编译。下载后解包到你喜欢的地方，例如 /usr/share/gogs/ 或者 /home/git/gogs/ 。文件夹的内容如下。</p>
+<pre><code>gogs  LICENSE  public  README.md  README_ZH.md  scripts  templates
+</code></pre><h2 id="3-创建数据库"><a href="#3-创建数据库" class="headerlink" title="3.创建数据库"></a>3.创建数据库</h2><p>创建database,名称为gogs</p>
+<pre><code>CREATE DATABASE gogs CHARACTER SET utf8 COLLATE utf8_bin;
+
+GRANT ALL PRIVILEGES ON gogs.* TO &apos;root&apos;@&apos;localhost&apos; identified by &apos;root&apos;;
+
+FLUSH PRIVILEGES;
+</code></pre><p>在 Gogs 目录的 scripts/mysql.sql 文件是数据库初始化文件。执行</p>
+<pre><code>mysql -u root -p &lt; scripts/mysql.sql （需要输入密码）即可初始化好数据库。
+</code></pre><p>然后登录 MySQL 创建一个新用户 gogs，并将数据库 gogs 的所有权限都赋予该用户。</p>
+<pre><code>$ mysql -u root -p
+
+&gt; # （输入密码）
+
+&gt; create user &apos;gogs&apos;@&apos;localhost&apos; identified by &apos;密码&apos;;
+
+&gt; grant all privileges on gogs.* to &apos;gogs&apos;@&apos;localhost&apos;;
+
+&gt; flush privileges;
+
+&gt; exit;
+</code></pre><h2 id="3-运行-gogs-web"><a href="#3-运行-gogs-web" class="headerlink" title="3.运行 gogs web"></a>3.运行 gogs web</h2><p>进入gogs目录下，并运行gogs</p>
+<pre><code>cd /home/git/gogs/gogs
+
+nohup ./gogs web &amp; tail -f nohup.out #并打印日志
+
+nohup ./gogs web &amp; #仅后台运行
+
+ ./gogs web  #前台运行
+</code></pre><p>然后访问 <a href="http://服务器IP:3000/" target="_blank" rel="external">http://服务器IP:3000/</a> 来进行安装，填写好表单之后提交就可以了。</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>1.如果访问网页失败，可能防火墙没有打开3000的端口，防火墙相关配置请查看linux系统相关服务这篇博客。</p>
+<p>2.还有0.6.9.0903 Beta 版本有个 bug，允许在关闭注册的情况下不添加管理员，这样安装完成之后将没有任何用户可以登录。所以请务必在安装界面指定一个管理员帐号。</p>
+<h2 id="4-相关配置"><a href="#4-相关配置" class="headerlink" title="4.相关配置"></a>4.相关配置</h2><p>1.配置文件位于 Gogs 目录的 custom/conf/app.ini ，是 INI 格式的文本文件。详细的配置解释和默认值请参考官方文档 ，其中关键的配置大概是下面这些。</p>
+<pre><code>RUN_USER 默认是 git ，指定 Gogs 以哪个用户运行
+ROOT 所有仓库的存储根路径
+PROTOCOL 如果你使用 nginx 反代的话请使用 http ，如果直接裸跑对外服务的话随意
+DOMAIN 域名。会影响 SSH clone 地址
+ROOT_URL 完整的根路径，会影响访问时页面上链接的指向，以及 HTTP clone 的地址
+HTTP_ADDR 监听地址，使用 nginx 的话建议 127.0.0.1 ，否则 0.0.0.0 也可以
+HTTP_PORT 监听端口，默认 3000
+INSTALL_LOCK 锁定安装页面
+Mailer 相关的选项
+</code></pre><p>其中，Mailer 可以使用 Mailgun 的免费邮件发送服务，将 Mailgun 的 SMTP 配置填入到配置中就好。</p>
+<p>2.附app.ini(192.168.120.132为我使用的虚拟机ip)</p>
+<pre><code>APP_NAME = Gogs
+RUN_USER = git
+RUN_MODE = prod
+
+[database]
+DB_TYPE  = mysql
+HOST     = 127.0.0.1:3306
+NAME     = gogs
+USER     = gogs
+PASSWD   = gogs
+SSL_MODE = disable
+PATH     = data/gogs.db
+
+[repository]
+ROOT = /home/git/gogs-repositories
+
+[server]
+DOMAIN           = 192.168.120.132
+HTTP_PORT        = 3000
+ROOT_URL         = http://192.168.120.132:3000/
+DISABLE_SSH      = false
+SSH_PORT         = 1111
+START_SSH_SERVER = true
+OFFLINE_MODE     = false
+
+[mailer]
+ENABLED = false
+
+[service]
+REGISTER_EMAIL_CONFIRM = false
+ENABLE_NOTIFY_MAIL     = false
+DISABLE_REGISTRATION   = false
+ENABLE_CAPTCHA         = true
+REQUIRE_SIGNIN_VIEW    = false
+
+[picture]
+DISABLE_GRAVATAR        = false
+ENABLE_FEDERATED_AVATAR = true
+
+[session]
+PROVIDER = file
+
+[log]
+MODE      = file
+LEVEL     = Info
+ROOT_PATH = /home/git/gogs/gogs/log
+
+[security]
+INSTALL_LOCK = true
+SECRET_KEY   = YfaCLhKinQVLlb7
+</code></pre><h2 id="5-nginx-反向代理"><a href="#5-nginx-反向代理" class="headerlink" title="5.nginx 反向代理"></a>5.nginx 反向代理</h2><p>在 /etc/nginx/sites-available 中新建一个文件，把以下内容写入文件中。</p>
+<pre><code>server {
+server_name 域名或IP;
+listen 80; # 或者 443，如果你使用 HTTPS 的话
+# ssl on; 是否启用加密连接
+# 如果你使用 HTTPS，还需要填写 ssl_certificate 和 ssl_certificate_key
+location / { # 如果你希望通过子路径访问，此处修改为子路径，注意以 / 开头并以 / 结束
+    proxy_pass http://127.0.0.1:3000/;
+}
+}
+</code></pre><p>然后进入 /etc/nginx/sites-enabled 中，执行 </p>
+<pre><code>ln -s ../sites-available/配置文件名   #启用这个配置文件。
+</code></pre><p>最后重启 nginx 就好了，Centos下是</p>
+<pre><code>service nginx restart   #重启
+/etc/init.d/nginx stop  #停止
+/etc/init.d/nginx start #开始
+</code></pre><p>Ubuntu 下是 </p>
+<pre><code>sudo service nginx restart 。
+</code></pre><h2 id="6-开机自动重启等脚本"><a href="#6-开机自动重启等脚本" class="headerlink" title="6.开机自动重启等脚本"></a>6.开机自动重启等脚本</h2><p>在scripts/文件夹下有关于多个系统的服务脚本：</p>
+<pre><code>autoboot.sh  build_freebsd.sh  build_linux64.sh  build.sh  init 
+launchd  mysql.sql  README  supervisor  systemd  windows
+</code></pre><p>其中init,systemd以及windows目录分别为linux、Windows下服务脚本。<br>在此仅以CentOS为例:</p>
+<p>复制scripts/init/centos/gogs到/etc/init.d/目录下:</p>
+<pre><code>sudo cp scripts/init/centos/gogs /etc/init.d/
+</code></pre><p>切换到/etc/init.d/目录为脚本赋予可执行权限</p>
+<pre><code>sudo chmod +x gogs
+</code></pre><p>更改gogs脚本内关于GOGS_HOME目录位置的设置(这儿使用vim编辑)</p>
+<pre><code>GOGS_HOME=/data/gogs/gogs
+</code></pre><p>使用服务管理命令管理服务</p>
+<pre><code>sudo service gogs start/stop/restart/status
+</code></pre><p>配置Gogs开机自启动</p>
+<pre><code>sudo chkconfig --add gogs
 </code></pre>
           
         
@@ -2568,7 +2687,7 @@ model.addAttribute(&quot;numbers&quot;,numbers);
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

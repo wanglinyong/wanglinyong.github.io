@@ -79,24 +79,17 @@
 
 
 
-<meta name="description" content="一、添加右击菜单1、打开工具箱，选择ContextMenuStrip如下图  2、可输入右键菜单名称及添加图标，如下图  3、如果想在哪个窗口右击显示就在哪个窗口ALT+ENTER打开属性窗口，将ContextMenuStrip选项的值设为刚才添加的名字，如下图  4、双击右键添加的菜单即可添加单击事件 二、添加回车Enter事件1、在要添加回车事件的文本框ALT+ENTER打开属性窗口，如下：">
+<meta name="description" content="一、安装Gogs服务1.新建用户Gogs默认以 git 用户运行（你不会想用一个能修改 ssh 配置的程序以 root 用户运行吧）。  sudo adduser git  # 新建git用户。   以 git 用户登录，到 git 用户的主目录中新建好 .ssh 文件夹。(新建git用户后我的出现在/home目录下) su git  cd /home/git  mkdir .ssh 2.下载安装">
 <meta property="og:type" content="article">
-<meta property="og:title" content="c#GridView获取选中当前行">
-<meta property="og:url" content="https://wanglinyong.github.io/2018/01/02/csharp获取选中当前行/index.html">
+<meta property="og:title" content="linux系统使用Gogs搭建自己的git服务">
+<meta property="og:url" content="https://wanglinyong.github.io/2017/12/10/linux系统使用Gogs搭建自己的git服务/index.html">
 <meta property="og:site_name" content="Wang&#39;s Blog">
-<meta property="og:description" content="一、添加右击菜单1、打开工具箱，选择ContextMenuStrip如下图  2、可输入右键菜单名称及添加图标，如下图  3、如果想在哪个窗口右击显示就在哪个窗口ALT+ENTER打开属性窗口，将ContextMenuStrip选项的值设为刚才添加的名字，如下图  4、双击右键添加的菜单即可添加单击事件 二、添加回车Enter事件1、在要添加回车事件的文本框ALT+ENTER打开属性窗口，如下：">
+<meta property="og:description" content="一、安装Gogs服务1.新建用户Gogs默认以 git 用户运行（你不会想用一个能修改 ssh 配置的程序以 root 用户运行吧）。  sudo adduser git  # 新建git用户。   以 git 用户登录，到 git 用户的主目录中新建好 .ssh 文件夹。(新建git用户后我的出现在/home目录下) su git  cd /home/git  mkdir .ssh 2.下载安装">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool1.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool2.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool3.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter1.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter2.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/s1.png">
-<meta property="og:updated_time" content="2018-01-02T08:56:08.072Z">
+<meta property="og:updated_time" content="2018-03-23T10:44:29.730Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="c#GridView获取选中当前行">
-<meta name="twitter:description" content="一、添加右击菜单1、打开工具箱，选择ContextMenuStrip如下图  2、可输入右键菜单名称及添加图标，如下图  3、如果想在哪个窗口右击显示就在哪个窗口ALT+ENTER打开属性窗口，将ContextMenuStrip选项的值设为刚才添加的名字，如下图  4、双击右键添加的菜单即可添加单击事件 二、添加回车Enter事件1、在要添加回车事件的文本框ALT+ENTER打开属性窗口，如下：">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool1.png">
+<meta name="twitter:title" content="linux系统使用Gogs搭建自己的git服务">
+<meta name="twitter:description" content="一、安装Gogs服务1.新建用户Gogs默认以 git 用户运行（你不会想用一个能修改 ssh 配置的程序以 root 用户运行吧）。  sudo adduser git  # 新建git用户。   以 git 用户登录，到 git 用户的主目录中新建好 .ssh 文件夹。(新建git用户后我的出现在/home目录下) su git  cd /home/git  mkdir .ssh 2.下载安装">
 
 
 
@@ -126,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://wanglinyong.github.io/2018/01/02/csharp获取选中当前行/"/>
+  <link rel="canonical" href="https://wanglinyong.github.io/2017/12/10/linux系统使用Gogs搭建自己的git服务/"/>
 
 
 
 
 
-  <title>c#GridView获取选中当前行 | Wang's Blog</title>
+  <title>linux系统使用Gogs搭建自己的git服务 | Wang's Blog</title>
   
 
 
@@ -269,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/02/csharp获取选中当前行/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/12/10/linux系统使用Gogs搭建自己的git服务/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -286,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">c#GridView获取选中当前行</h1>
+          <h1 class="post-title" itemprop="name headline">linux系统使用Gogs搭建自己的git服务</h1>
         
 
         <div class="post-meta">
@@ -298,8 +291,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-02T16:23:05+08:00">
-                2018-01-02
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-10T20:28:25+08:00">
+                2017-12-10
               </time>
             
 
@@ -317,8 +310,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2018/01/02/csharp获取选中当前行/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/02/csharp获取选中当前行/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2017/12/10/linux系统使用Gogs搭建自己的git服务/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/12/10/linux系统使用Gogs搭建自己的git服务/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -346,91 +339,146 @@
       
 
       
-        <h1 id="一、添加右击菜单"><a href="#一、添加右击菜单" class="headerlink" title="一、添加右击菜单"></a>一、添加右击菜单</h1><p>1、打开工具箱，选择ContextMenuStrip如下图</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool1.png" alt=""></p>
-<p>2、可输入右键菜单名称及添加图标，如下图</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool2.png" alt=""></p>
-<p>3、如果想在哪个窗口右击显示就在哪个窗口ALT+ENTER打开属性窗口，将<br>ContextMenuStrip选项的值设为刚才添加的名字，如下图</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool3.png" alt=""></p>
-<p>4、双击右键添加的菜单即可添加单击事件</p>
-<h1 id="二、添加回车Enter事件"><a href="#二、添加回车Enter事件" class="headerlink" title="二、添加回车Enter事件"></a>二、添加回车Enter事件</h1><p>1、在要添加回车事件的文本框ALT+ENTER打开属性窗口，如下：</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter1.png" alt=""></p>
-<p>2、将KeyDown选项的值填上触发回车事件的方法名，如下</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter2.png" alt=""></p>
-<p>3、写入触发事件方法，如：</p>
-<pre><code>private void txtPwd_KeyDown(object sender, KeyEventArgs e)
-  {
-      if (e.KeyCode == Keys.Enter)
-      {
-          this.btnSearch_Click(sender, e);//触发与点击按钮一样的效果
-      }
-  }
-</code></pre><h1 id="三、获取选中行数据"><a href="#三、获取选中行数据" class="headerlink" title="三、获取选中行数据"></a>三、获取选中行数据</h1><p>1、右击AddToBlack后触发点击事件，代码如下</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/s1.png" alt=""></p>
-<pre><code>private void addToBlackToolStripMenuItem_Click_1(object sender, EventArgs e)
- {
-     int[] rows = gridView1.GetSelectedRows();
-     rdms_ueidinfo info = null;
-     if (rows.Length &gt; 0)
-     {
-         if (list != null &amp;&amp; list.Count &gt; 0)
-         {
-             info = list[rows[0]];
-         }
-         else
-         {
-             info = xxData.Ueidinfos[rows[0]];
-         }
-         Contact contact = new Contact();
-         contact.IMSI = info.imsi;
-         contact.IMEI = info.imei;
-         DialogResult ret = DialogResult.Cancel;
-         Cursor.Current = Cursors.WaitCursor;
-         using (frmEditContact frm = new frmEditContact(contact, OwnerForm.Ribbon))
-         {
-             ret = frm.ShowDialog(OwnerForm);
-         }
-         Cursor.Current = Cursors.Default;
-     }
- }
-</code></pre><p>2、双击行获取选中行数据，代码如下</p>
-<pre><code>    private void addToBlackListByDouble(object sender, EventArgs e)
-{
-    int[] rows = gridView1.GetSelectedRows();
-    rdms_ueidinfo info = null;
-    if (rows.Length &gt; 0)
-    {
-        if (list != null &amp;&amp; list.Count &gt; 0)
-        {
-             info = list[rows[0]];
-        }
-        else {
-             info = xxData.Ueidinfos[rows[0]];
-        }
-        Contact contact = new Contact();
-        contact.IMSI = info.imsi;
-        contact.IMEI = info.imei;
-        DialogResult ret = DialogResult.Cancel;
-        Cursor.Current = Cursors.WaitCursor;
-        using (frmEditContact frm = new frmEditContact(contact, OwnerForm.Ribbon))
-        {
-            ret = frm.ShowDialog(OwnerForm);
-        }
-        Cursor.Current = Cursors.Default;
-    }
+        <h1 id="一、安装Gogs服务"><a href="#一、安装Gogs服务" class="headerlink" title="一、安装Gogs服务"></a>一、安装Gogs服务</h1><h2 id="1-新建用户"><a href="#1-新建用户" class="headerlink" title="1.新建用户"></a>1.新建用户</h2><p>Gogs默认以 git 用户运行（你不会想用一个能修改 ssh 配置的程序以 root 用户运行吧）。 </p>
+<pre><code>sudo adduser git  # 新建git用户。 
+</code></pre><p> 以 git 用户登录，到 git 用户的主目录中新建好 .ssh 文件夹。(新建git用户后我的出现在/home目录下)</p>
+<pre><code>su git
 
+cd /home/git
+
+mkdir .ssh
+</code></pre><h2 id="2-下载安装包并解压"><a href="#2-下载安装包并解压" class="headerlink" title="2.下载安装包并解压"></a>2.下载安装包并解压</h2><p>我使用的是预编译的二进制包。下载链接</p>
+<pre><code>https://gogs.io/docs/installation/install_from_binary
+</code></pre><p>查看linux系统是32位还是64位系统命令，32位选择386，64位选择amd64</p>
+<pre><code>getconf LONG_BIT
+</code></pre><p>需要从源码编译的话，请参考一般 Go 语言项目的编译。下载后解包到你喜欢的地方，例如 /usr/share/gogs/ 或者 /home/git/gogs/ 。文件夹的内容如下。</p>
+<pre><code>gogs  LICENSE  public  README.md  README_ZH.md  scripts  templates
+</code></pre><h2 id="3-创建数据库"><a href="#3-创建数据库" class="headerlink" title="3.创建数据库"></a>3.创建数据库</h2><p>创建database,名称为gogs</p>
+<pre><code>CREATE DATABASE gogs CHARACTER SET utf8 COLLATE utf8_bin;
+
+GRANT ALL PRIVILEGES ON gogs.* TO &apos;root&apos;@&apos;localhost&apos; identified by &apos;root&apos;;
+
+FLUSH PRIVILEGES;
+</code></pre><p>在 Gogs 目录的 scripts/mysql.sql 文件是数据库初始化文件。执行</p>
+<pre><code>mysql -u root -p &lt; scripts/mysql.sql （需要输入密码）即可初始化好数据库。
+</code></pre><p>然后登录 MySQL 创建一个新用户 gogs，并将数据库 gogs 的所有权限都赋予该用户。</p>
+<pre><code>$ mysql -u root -p
+
+&gt; # （输入密码）
+
+&gt; create user &apos;gogs&apos;@&apos;localhost&apos; identified by &apos;密码&apos;;
+
+&gt; grant all privileges on gogs.* to &apos;gogs&apos;@&apos;localhost&apos;;
+
+&gt; flush privileges;
+
+&gt; exit;
+</code></pre><h2 id="3-运行-gogs-web"><a href="#3-运行-gogs-web" class="headerlink" title="3.运行 gogs web"></a>3.运行 gogs web</h2><p>进入gogs目录下，并运行gogs</p>
+<pre><code>cd /home/git/gogs/gogs
+
+nohup ./gogs web &amp; tail -f nohup.out #并打印日志
+
+nohup ./gogs web &amp; #仅后台运行
+
+ ./gogs web  #前台运行
+</code></pre><p>然后访问 <a href="http://服务器IP:3000/" target="_blank" rel="external">http://服务器IP:3000/</a> 来进行安装，填写好表单之后提交就可以了。</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>1.如果访问网页失败，可能防火墙没有打开3000的端口，防火墙相关配置请查看linux系统相关服务这篇博客。</p>
+<p>2.还有0.6.9.0903 Beta 版本有个 bug，允许在关闭注册的情况下不添加管理员，这样安装完成之后将没有任何用户可以登录。所以请务必在安装界面指定一个管理员帐号。</p>
+<h2 id="4-相关配置"><a href="#4-相关配置" class="headerlink" title="4.相关配置"></a>4.相关配置</h2><p>1.配置文件位于 Gogs 目录的 custom/conf/app.ini ，是 INI 格式的文本文件。详细的配置解释和默认值请参考官方文档 ，其中关键的配置大概是下面这些。</p>
+<pre><code>RUN_USER 默认是 git ，指定 Gogs 以哪个用户运行
+ROOT 所有仓库的存储根路径
+PROTOCOL 如果你使用 nginx 反代的话请使用 http ，如果直接裸跑对外服务的话随意
+DOMAIN 域名。会影响 SSH clone 地址
+ROOT_URL 完整的根路径，会影响访问时页面上链接的指向，以及 HTTP clone 的地址
+HTTP_ADDR 监听地址，使用 nginx 的话建议 127.0.0.1 ，否则 0.0.0.0 也可以
+HTTP_PORT 监听端口，默认 3000
+INSTALL_LOCK 锁定安装页面
+Mailer 相关的选项
+</code></pre><p>其中，Mailer 可以使用 Mailgun 的免费邮件发送服务，将 Mailgun 的 SMTP 配置填入到配置中就好。</p>
+<p>2.附app.ini(192.168.120.132为我使用的虚拟机ip)</p>
+<pre><code>APP_NAME = Gogs
+RUN_USER = git
+RUN_MODE = prod
+
+[database]
+DB_TYPE  = mysql
+HOST     = 127.0.0.1:3306
+NAME     = gogs
+USER     = gogs
+PASSWD   = gogs
+SSL_MODE = disable
+PATH     = data/gogs.db
+
+[repository]
+ROOT = /home/git/gogs-repositories
+
+[server]
+DOMAIN           = 192.168.120.132
+HTTP_PORT        = 3000
+ROOT_URL         = http://192.168.120.132:3000/
+DISABLE_SSH      = false
+SSH_PORT         = 1111
+START_SSH_SERVER = true
+OFFLINE_MODE     = false
+
+[mailer]
+ENABLED = false
+
+[service]
+REGISTER_EMAIL_CONFIRM = false
+ENABLE_NOTIFY_MAIL     = false
+DISABLE_REGISTRATION   = false
+ENABLE_CAPTCHA         = true
+REQUIRE_SIGNIN_VIEW    = false
+
+[picture]
+DISABLE_GRAVATAR        = false
+ENABLE_FEDERATED_AVATAR = true
+
+[session]
+PROVIDER = file
+
+[log]
+MODE      = file
+LEVEL     = Info
+ROOT_PATH = /home/git/gogs/gogs/log
+
+[security]
+INSTALL_LOCK = true
+SECRET_KEY   = YfaCLhKinQVLlb7
+</code></pre><h2 id="5-nginx-反向代理"><a href="#5-nginx-反向代理" class="headerlink" title="5.nginx 反向代理"></a>5.nginx 反向代理</h2><p>在 /etc/nginx/sites-available 中新建一个文件，把以下内容写入文件中。</p>
+<pre><code>server {
+server_name 域名或IP;
+listen 80; # 或者 443，如果你使用 HTTPS 的话
+# ssl on; 是否启用加密连接
+# 如果你使用 HTTPS，还需要填写 ssl_certificate 和 ssl_certificate_key
+location / { # 如果你希望通过子路径访问，此处修改为子路径，注意以 / 开头并以 / 结束
+    proxy_pass http://127.0.0.1:3000/;
 }
-</code></pre><p>3、代码解释：</p>
-<pre><code>rdms_ueidinfo info = null;
-if (list != null &amp;&amp; list.Count &gt; 0)
-           {
-                info = list[rows[0]];
-           }
-           else {
-                info = xxData.Ueidinfos[rows[0]];
-           }
-</code></pre><p>点击查询后，将根据查询条件查询的结果list再次显示到该列表，此时要获取选中行，就需要判断，如果list不为null表示当前列表是根据查询后显示的结果，否则就是初始列表，要做不同的判断才能选中想要的结果，之前一直选不中，甚是烦恼，真的是难者不会，会者不难，经过多次摸索才明白。</p>
-
+}
+</code></pre><p>然后进入 /etc/nginx/sites-enabled 中，执行 </p>
+<pre><code>ln -s ../sites-available/配置文件名   #启用这个配置文件。
+</code></pre><p>最后重启 nginx 就好了，Centos下是</p>
+<pre><code>service nginx restart   #重启
+/etc/init.d/nginx stop  #停止
+/etc/init.d/nginx start #开始
+</code></pre><p>Ubuntu 下是 </p>
+<pre><code>sudo service nginx restart 。
+</code></pre><h2 id="6-开机自动重启等脚本"><a href="#6-开机自动重启等脚本" class="headerlink" title="6.开机自动重启等脚本"></a>6.开机自动重启等脚本</h2><p>在scripts/文件夹下有关于多个系统的服务脚本：</p>
+<pre><code>autoboot.sh  build_freebsd.sh  build_linux64.sh  build.sh  init 
+launchd  mysql.sql  README  supervisor  systemd  windows
+</code></pre><p>其中init,systemd以及windows目录分别为linux、Windows下服务脚本。<br>在此仅以CentOS为例:</p>
+<p>复制scripts/init/centos/gogs到/etc/init.d/目录下:</p>
+<pre><code>sudo cp scripts/init/centos/gogs /etc/init.d/
+</code></pre><p>切换到/etc/init.d/目录为脚本赋予可执行权限</p>
+<pre><code>sudo chmod +x gogs
+</code></pre><p>更改gogs脚本内关于GOGS_HOME目录位置的设置(这儿使用vim编辑)</p>
+<pre><code>GOGS_HOME=/data/gogs/gogs
+</code></pre><p>使用服务管理命令管理服务</p>
+<pre><code>sudo service gogs start/stop/restart/status
+</code></pre><p>配置Gogs开机自启动</p>
+<pre><code>sudo chkconfig --add gogs
+</code></pre>
       
     </div>
     
@@ -454,8 +502,8 @@ if (list != null &amp;&amp; list.Count &gt; 0)
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/wanglinyong.github.io/2017/12/10/csharp进度条/" rel="next" title="C#通过Devexpress控件实现进度条功能">
-                <i class="fa fa-chevron-left"></i> C#通过Devexpress控件实现进度条功能
+              <a href="/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/" rel="next" title="JSP遍历两个集合的情况">
+                <i class="fa fa-chevron-left"></i> JSP遍历两个集合的情况
               </a>
             
           </div>
@@ -464,8 +512,8 @@ if (list != null &amp;&amp; list.Count &gt; 0)
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/" rel="prev" title="Sqlite 获取一小时内数据sql">
-                Sqlite 获取一小时内数据sql <i class="fa fa-chevron-right"></i>
+              <a href="/wanglinyong.github.io/2017/12/10/csharp进度条/" rel="prev" title="C#通过Devexpress控件实现进度条功能">
+                C#通过Devexpress控件实现进度条功能 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -497,8 +545,8 @@ if (list != null &amp;&amp; list.Count &gt; 0)
 
   
     <div class="comments" id="comments">
-      <div class="ds-thread" data-thread-key="2018/01/02/csharp获取选中当前行/"
-           data-title="c#GridView获取选中当前行" data-url="https://wanglinyong.github.io/2018/01/02/csharp获取选中当前行/">
+      <div class="ds-thread" data-thread-key="2017/12/10/linux系统使用Gogs搭建自己的git服务/"
+           data-title="linux系统使用Gogs搭建自己的git服务" data-url="https://wanglinyong.github.io/2017/12/10/linux系统使用Gogs搭建自己的git服务/">
       </div>
     </div>
 
@@ -589,7 +637,7 @@ if (list != null &amp;&amp; list.Count &gt; 0)
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、添加右击菜单"><span class="nav-number">1.</span> <span class="nav-text">一、添加右击菜单</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、添加回车Enter事件"><span class="nav-number">2.</span> <span class="nav-text">二、添加回车Enter事件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、获取选中行数据"><span class="nav-number">3.</span> <span class="nav-text">三、获取选中行数据</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、安装Gogs服务"><span class="nav-number">1.</span> <span class="nav-text">一、安装Gogs服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-新建用户"><span class="nav-number">1.1.</span> <span class="nav-text">1.新建用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-下载安装包并解压"><span class="nav-number">1.2.</span> <span class="nav-text">2.下载安装包并解压</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-创建数据库"><span class="nav-number">1.3.</span> <span class="nav-text">3.创建数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-运行-gogs-web"><span class="nav-number">1.4.</span> <span class="nav-text">3.运行 gogs web</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">1.5.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-相关配置"><span class="nav-number">1.6.</span> <span class="nav-text">4.相关配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-nginx-反向代理"><span class="nav-number">1.7.</span> <span class="nav-text">5.nginx 反向代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-开机自动重启等脚本"><span class="nav-number">1.8.</span> <span class="nav-text">6.开机自动重启等脚本</span></a></li></ol></li></ol></div>
             
 
           </div>
