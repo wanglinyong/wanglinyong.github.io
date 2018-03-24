@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/wanglinyong.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/wanglinyong.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/wanglinyong.github.io/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/wanglinyong.github.io/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/wanglinyong.github.io/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/wanglinyong.github.io/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/wanglinyong.github.io/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="概述由于项目中需要将数据库嵌入到程序中，一起打包发给客户使用，所以需要使用嵌入式数据库，目前常用的嵌入式数据库有：Berkeley DB、Couchbase Lite、LevelDB、SQLite、UnQLite、H2等，由于H2具有以下特点，所以最终选择了H2作为存储数据库。 1、纯Java编写，不受平台的限制； 2、只有一个jar文件，适合作为嵌入式数据库使用； 3、h2提供了一个十分方便的w">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嵌入式数据库H2">
+<meta property="og:url" content="https://wanglinyong.github.io/2018/03/15/嵌入式数据库H2/index.html">
+<meta property="og:site_name" content="Wang&#39;s Blog">
+<meta property="og:description" content="概述由于项目中需要将数据库嵌入到程序中，一起打包发给客户使用，所以需要使用嵌入式数据库，目前常用的嵌入式数据库有：Berkeley DB、Couchbase Lite、LevelDB、SQLite、UnQLite、H2等，由于H2具有以下特点，所以最终选择了H2作为存储数据库。 1、纯Java编写，不受平台的限制； 2、只有一个jar文件，适合作为嵌入式数据库使用； 3、h2提供了一个十分方便的w">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-6.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-8.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-10.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-11.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-12.png">
+<meta property="og:updated_time" content="2018-03-24T13:47:10.300Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="嵌入式数据库H2">
+<meta name="twitter:description" content="概述由于项目中需要将数据库嵌入到程序中，一起打包发给客户使用，所以需要使用嵌入式数据库，目前常用的嵌入式数据库有：Berkeley DB、Couchbase Lite、LevelDB、SQLite、UnQLite、H2等，由于H2具有以下特点，所以最终选择了H2作为存储数据库。 1、纯Java编写，不受平台的限制； 2、只有一个jar文件，适合作为嵌入式数据库使用； 3、h2提供了一个十分方便的w">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/wanglinyong.github.io/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wanglinyong.github.io/2018/03/15/嵌入式数据库H2/"/>
+
+
+
+
+
+  <title>嵌入式数据库H2 | Wang's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?your_id";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/wanglinyong/wanglinyong.github.io/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/wanglinyong.github.io/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/wanglinyong.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/wanglinyong.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/wanglinyong.github.io/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/wanglinyong.github.io/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/15/嵌入式数据库H2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">嵌入式数据库H2</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-15T20:23:18+08:00">
+                2018-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/03/15/嵌入式数据库H2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/15/嵌入式数据库H2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>由于项目中需要将数据库嵌入到程序中，一起打包发给客户使用，所以需要使用嵌入式数据库，目前常用的嵌入式数据库有：Berkeley DB、Couchbase Lite、LevelDB、SQLite、UnQLite、H2等，由于H2具有以下特点，所以最终选择了H2作为存储数据库。</p>
+<p>1、纯Java编写，不受平台的限制；</p>
+<p>2、只有一个jar文件，适合作为嵌入式数据库使用；</p>
+<p>3、h2提供了一个十分方便的web控制台用于操作和管理数据库内容；</p>
+<p>4、功能完整，支持标准SQL和JDBC。麻雀虽小五脏俱全；</p>
+<p>5、支持内嵌模式、服务器模式和集群</p>
+<h1 id="一、H2简介"><a href="#一、H2简介" class="headerlink" title="一、H2简介"></a>一、H2简介</h1><p>H2是一个用Java开发的嵌入式数据库，它本身只是一个类库，可以直接嵌入到应用项目中。</p>
+<p>Ｈ2最大的用途在于可以同应用程序打包在一起发布，这样可以非常方便地存储少量结构化数据。它的另一个用途是用于单元测试。启动速度快，而且可以关闭持久化功能，每一个用例执行完随即还原到初始状态。</p>
+<p>Ｈ2的第三个用处是作为缓存，作为NoSQL的一个补充。当某些场景下数据模型必须为关系型，可以拿它当Memcached使，作为后端MySQL/Oracle的一个缓冲层，缓存一些不经常变化但需要频繁访问的数据，比如字典表、权限表。不过这样系统架构就会比较复杂了。</p>
+<h1 id="二、下载和安装"><a href="#二、下载和安装" class="headerlink" title="二、下载和安装"></a>二、下载和安装</h1><h2 id="1、下载"><a href="#1、下载" class="headerlink" title="1、下载"></a>1、下载</h2><p>H2数据库下载地址：<a href="http://www.h2database.com/html/download.html" target="_blank" rel="external">http://www.h2database.com/html/download.html</a></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-1.png" alt=""></p>
+<p>Windows、Linux下都可以直接解压缩就用。</p>
+<h2 id="2、安装"><a href="#2、安装" class="headerlink" title="2、安装"></a>2、安装</h2><p>解压缩后的目录结构：</p>
+<p>　　h2</p>
+<p>　　|—bin</p>
+<p>　　| |—h2-1.1.116.jar 　　//H2数据库的jar包（驱动也在里面）</p>
+<p>　　| |—h2.bat 　　 //Windows控制台启动脚本</p>
+<p>　　| |—h2.sh //Linux控制台启动脚本</p>
+<p>　　| |—h2w.bat //Windows控制台启动脚本（不带黑屏窗口）</p>
+<p>　　|—docs //H2数据库的帮助文档（内有H2数据库的使用手册）</p>
+<p>　　|—service //通过wrapper包装成服务。</p>
+<p>　　|—src //H2数据库的源代码</p>
+<p>　　|—build.bat //windows构建脚本</p>
+<p>　　|—build.sh //linux构建脚本</p>
+<p>　　此时就算“安装”完成了。</p>
+<h1 id="三、运行模式与运行方式"><a href="#三、运行模式与运行方式" class="headerlink" title="三、运行模式与运行方式"></a>三、运行模式与运行方式</h1><h2 id="1、运行模式"><a href="#1、运行模式" class="headerlink" title="1、运行模式"></a>1、运行模式</h2><p>Ｈ2有三种运行模式。</p>
+<p>（1）内嵌模式（Embedded Mode）</p>
+<p>内嵌模式下，应用和数据库同在一个JVM中，通过JDBC进行连接。 可持久化，但同时只能一个客户端连接。内嵌模式性能会比较好。</p>
+<p>（2）服务器模式（Server Mode）</p>
+<p>使用服务器模式和内嵌模式一样，只不过它可以跑在另一个进程里。</p>
+<p>（3）混合模式</p>
+<p>第一个应用以内嵌模式启动它，对于后面的应用来说它是服务器模式跑着的。混合模式是内嵌模式和服务器模式的组合。第一个应用通过内嵌模式与数据库建立连接，同时也作为一个服务器启动，于是另外的应用（运行在不同的进程或是虚拟机上）可以同时访问同样的数据。第一个应用的本地连接与嵌入式模式的连接性能一样的快，而其它连接理论上会略慢。 </p>
+<h2 id="2、运行方式"><a href="#2、运行方式" class="headerlink" title="2、运行方式"></a>2、运行方式</h2><p>开发中肯定是Server Mode方便，因为需要用工具管理数据。所以进入Ｈ2的bin目录。如下图：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-2.png" alt=""></p>
+<p>如果你在Win环境可以运行h2.bat或h2w.bat。区别只是后者是后台静默运行</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-3.png" alt=""></p>
+<h1 id="四、应用程序开发"><a href="#四、应用程序开发" class="headerlink" title="四、应用程序开发"></a>四、应用程序开发</h1><h2 id="1、通过远程浏览器来访问h2"><a href="#1、通过远程浏览器来访问h2" class="headerlink" title="1、通过远程浏览器来访问h2"></a>1、通过远程浏览器来访问h2</h2><p>访问地址：<a href="http://服务器ip:8082/" target="_blank" rel="external">http://服务器ip:8082/</a> ，出现如下页面：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-5.png" alt=""></p>
+<h2 id="２、路径的配置"><a href="#２、路径的配置" class="headerlink" title="２、路径的配置"></a>２、路径的配置</h2><p>jdbc:h2:~/test是H2的路径。</p>
+<p>User name : sa是h2默认的用户，密码可空。最好设置下密码，尤其当你的Ｈ2部署在公网时。不然会被无聊人把数据删掉。</p>
+<h2 id="3、连接"><a href="#3、连接" class="headerlink" title="3、连接"></a>3、连接</h2><p>点击如图Test connect按钮测试连接。此时如果数据库文件本身不存在则会自动创建。点击Connect，进入管理终端。</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-6.png" alt=""></p>
+<p>Ｈ２的管理终端做得很不错的。按Ctrl+Enter执行输入区的SQL，按Shift+Enter执行当前选中的SQL。</p>
+<h1 id="五、应用程序开发"><a href="#五、应用程序开发" class="headerlink" title="五、应用程序开发"></a>五、应用程序开发</h1><h2 id="1、加入Maven依赖"><a href="#1、加入Maven依赖" class="headerlink" title="1、加入Maven依赖"></a>1、加入Maven依赖</h2><pre><code>&lt;dependency&gt;
+&lt;groupId&gt;com.h2database&lt;/groupId&gt;
+&lt;artifactId&gt;h2&lt;/artifactId&gt;
+&lt;version&gt;1.4.195&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><h2 id="2、创建db-properties"><a href="#2、创建db-properties" class="headerlink" title="2、创建db.properties"></a>2、创建db.properties</h2><pre><code>driverClassName=org.h2.Driver
+</code></pre><p>此处的写法是使用嵌入模式链接H2库，紧接着那行是使用Server Mode用tcp连接。区别一个是前者性能更好，后者可同时多个客户端连接</p>
+<pre><code>url=jdbc:h2:D:/test
+#url=jdbc:h2:tcp://1localhost//usr/h2/data/rlib
+username=sa
+password=
+</code></pre><p>PS：在使用嵌入模式链接H2库时，使用管理页面连接会报错如下：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-4.png" alt=""></p>
+<h1 id="六、H2管理工具-DBeaver"><a href="#六、H2管理工具-DBeaver" class="headerlink" title="六、H2管理工具-DBeaver"></a>六、H2管理工具-DBeaver</h1><p>可通过数据库管理工具DBeaver来有效管理H2，直接从网上下载即可，这里不提供下载和安装过程</p>
+<p>打开DBeaver.exe,操作如下图：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-7.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-8.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-9.png" alt=""></p>
+<p>输入用户名sa </p>
+<p>密码自己设置一个 也可以不设，点击下一步</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-10.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-11.png" alt=""></p>
+<p>打开test数据库，即可对表进行增删改查操作了</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-12.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/" rel="next" title="JAVA-UDP接收和发送json数据">
+                <i class="fa fa-chevron-left"></i> JAVA-UDP接收和发送json数据
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/wanglinyong.github.io/2018/03/24/DES加密解密/" rel="prev" title="DES加密解密">
+                DES加密解密 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/03/15/嵌入式数据库H2/"
+           data-title="嵌入式数据库H2" data-url="https://wanglinyong.github.io/2018/03/15/嵌入式数据库H2/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WangLinYong</p>
+              <p class="site-description motion-element" itemprop="description">JAVA，Python，C#，Node.js，个人博客，Github，hexo</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/wanglinyong.github.io/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一、H2简介"><span class="nav-number">2.</span> <span class="nav-text">一、H2简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、下载和安装"><span class="nav-number">3.</span> <span class="nav-text">二、下载和安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、下载"><span class="nav-number">3.1.</span> <span class="nav-text">1、下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、安装"><span class="nav-number">3.2.</span> <span class="nav-text">2、安装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、运行模式与运行方式"><span class="nav-number">4.</span> <span class="nav-text">三、运行模式与运行方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、运行模式"><span class="nav-number">4.1.</span> <span class="nav-text">1、运行模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、运行方式"><span class="nav-number">4.2.</span> <span class="nav-text">2、运行方式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、应用程序开发"><span class="nav-number">5.</span> <span class="nav-text">四、应用程序开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、通过远程浏览器来访问h2"><span class="nav-number">5.1.</span> <span class="nav-text">1、通过远程浏览器来访问h2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#２、路径的配置"><span class="nav-number">5.2.</span> <span class="nav-text">２、路径的配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、连接"><span class="nav-number">5.3.</span> <span class="nav-text">3、连接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、应用程序开发"><span class="nav-number">6.</span> <span class="nav-text">五、应用程序开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、加入Maven依赖"><span class="nav-number">6.1.</span> <span class="nav-text">1、加入Maven依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、创建db-properties"><span class="nav-number">6.2.</span> <span class="nav-text">2、创建db.properties</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、H2管理工具-DBeaver"><span class="nav-number">7.</span> <span class="nav-text">六、H2管理工具-DBeaver</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WangLinYong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/wanglinyong.github.io/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"your_username"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/wanglinyong.github.io/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/wanglinyong.github.io/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
