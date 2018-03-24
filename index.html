@@ -460,7 +460,7 @@ public static void main(String[] args) throws Exception {
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/24/csharp计时器/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/26/mysql定时清空表/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -479,7 +479,7 @@ public static void main(String[] args) throws Exception {
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/03/24/csharp计时器/" itemprop="url">c#结合DevExpress控件制作计时器</a></h1>
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/26/mysql定时清空表/" itemprop="url">Mysql每天定时清空表</a></h1>
         
 
         <div class="post-meta">
@@ -491,8 +491,8 @@ public static void main(String[] args) throws Exception {
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-24T13:23:01+08:00">
-                2018-03-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-26T19:16:36+08:00">
+                2018-01-26
               </time>
             
 
@@ -510,8 +510,8 @@ public static void main(String[] args) throws Exception {
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2018/03/24/csharp计时器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/24/csharp计时器/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2018/01/26/mysql定时清空表/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/26/mysql定时清空表/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -541,38 +541,32 @@ public static void main(String[] args) throws Exception {
       
         
           
-            <p>这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。</p>
-<h2 id="DevExpress控件"><a href="#DevExpress控件" class="headerlink" title="DevExpress控件"></a>DevExpress控件</h2><h3 id="GaugeControl"><a href="#GaugeControl" class="headerlink" title="GaugeControl"></a>GaugeControl</h3><p>1.从工具箱中查找定时任务timer</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/2.png" alt=""></p>
-<p>2.从工具箱中查找GaugeControl，选择合适的界面</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/3.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/4.png" alt=""></p>
-<p>3.控件界面效果如下</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png" alt=""></p>
-<p>利用工具箱中的GaugeControl控件制作计时器显示界面.<br>首先要添加一个定时任务：timer,给timer一个timer1_Tick事件<br>主要代码如下：<br>   public int currentCount = 0;<br>        private void timer1_Tick(object sender, EventArgs e)<br>        {<br>            //string[] arr = digitalGauge1.Text.Split(“:”);<br>            //设置定时间隔(毫秒为单位)<br>            System.Timers.Timer timer = new System.Timers.Timer(1000);<br>            //设置执行一次（false）还是一直执行(true)<br>            timer.AutoReset = true;<br>            //设置是否执行System.Timers.Timer.Elapsed事件<br>            timer.Enabled = true;<br>            currentCount += 1;</p>
-<pre><code>    string second = (currentCount % 60)+&quot;&quot;;
-    string minute = (currentCount / 60 % 60)+&quot;&quot;;
-    string hour = (currentCount / 3600)+&quot;&quot;;
-    if (int.Parse(second) &lt; 10)
-    {
-        second = &quot;0&quot; + second;
-    }
-    else {
+            <h1 id="Mysql每天定时清空表"><a href="#Mysql每天定时清空表" class="headerlink" title="Mysql每天定时清空表"></a>Mysql每天定时清空表</h1><p>1.设置开启event scheduler</p>
+<pre><code>SET GLOBAL event_scheduler=1;
+</code></pre><p>2.验证event_scheduler是否已经开启</p>
+<pre><code>show variables like &apos;%event%&apos;;  #值为 ON 表明已开启
+SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
+</code></pre><p>3.创建event</p>
+<pre><code>DROP EVENT IF EXISTS e_delete_upvote;
+ CREATE  EVENT e_delete_upvote   
+ ON SCHEDULE EVERY 1 day STARTS date_add(concat(current_date(), &apos; 00:00:00&apos;), interval 0 second)
+ ON COMPLETION PRESERVE ENABLE
+ DO
+ TRUNCATE TABLE dreamland.upvote;
 
-    }
-    if (int.Parse(minute) &lt; 10)
-    {
-        minute = &quot;0&quot; + minute;
-    }
-    if (int.Parse(hour) &lt; 10)
-    {
-        hour = &quot;0&quot; + hour;
-    }
-
-    digitalGauge1.Text = hour + &quot;:&quot; + minute + &quot;:&quot; + second;
-}
-</code></pre><p>My Blog: <a href="https://wanglinyong.github.io/wanglinyong.github.io">Deployment</a></p>
-
+#说明：
+ ON SCHEDULE EVERY 1 day 指定循环间隔为每天执行
+ STARTS date_add(concat(current_date(), &apos; 23:59:00&apos;), interval 0 second) 指定运行时间为23:59:00
+ ON COMPLETION PRESERVE ENABLE 指定创建完成后即启用，否则需手动启动
+</code></pre><p>4.手动关闭事件</p>
+<pre><code>ALTER EVENT e_delete_upvote DISABLE;
+</code></pre><p>5.手动该事件为可用</p>
+<pre><code>ALTER EVENT e_delete_upvote ENABLE;
+</code></pre><p>6.查看已有的定时事件任务</p>
+<pre><code>SHOW EVENTS;
+</code></pre><p>7.删除事件</p>
+<pre><code>DROP EVENT e_delete_upvote;
+</code></pre>
           
         
       
@@ -620,7 +614,7 @@ public static void main(String[] args) throws Exception {
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/24/csharp改变行字体颜色或背景色/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/23/csharp打开Excel文件/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -639,7 +633,7 @@ public static void main(String[] args) throws Exception {
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/03/24/csharp改变行字体颜色或背景色/" itemprop="url">C# Gridview 改变行字体颜色或背景色</a></h1>
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/23/csharp打开Excel文件/" itemprop="url">C# 打开Excel文件方法</a></h1>
         
 
         <div class="post-meta">
@@ -651,8 +645,8 @@ public static void main(String[] args) throws Exception {
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-24T13:23:01+08:00">
-                2018-03-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T19:43:06+08:00">
+                2018-01-23
               </time>
             
 
@@ -670,235 +664,8 @@ public static void main(String[] args) throws Exception {
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2018/03/24/csharp改变行字体颜色或背景色/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/24/csharp改变行字体颜色或背景色/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、根据列表数据改变行字体颜色或者背景色"><a href="#一、根据列表数据改变行字体颜色或者背景色" class="headerlink" title="一、根据列表数据改变行字体颜色或者背景色"></a>一、根据列表数据改变行字体颜色或者背景色</h1><p>1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color.png" alt=""></p>
-<pre><code>string color =  tePhone1.Color.Name;
-</code></pre><p>2.将颜色字符串存入数据库，附上数据库Dao代码</p>
-<pre><code>    namespace rdms.DB
-   {
-public class StudentDao
-{
-    private static ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-    public static List&lt;Student&gt; GetAll()
-    {
-        return DBContext.ScodeSession.From&lt;Student&gt;().Select().ToList();
-    }
-
-    public static int Update(Student s)
-    {        
-        // DBContext.ScodeSession.FromSql(&quot;UPDATE  Student  SET  color = &apos;&quot;+s.color+ &quot;&apos; where s_id = &quot; + s.s_id);
-        return DBContext.ScodeSession.Update(s);
-
-    }
-
-    public static Student getStudent(int id)
-    {
-        List&lt;Student&gt; list = DBContext.ScodeSession.FromSql(&quot;SELECT *  FROM Student  where s_id = &quot; + id).ToList&lt;Student&gt;();
-        if (list != null &amp;&amp; list.Count &gt; 0)
-        {
-            return list[0];
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public static int Add(Student s)
-    {
-        return DBContext.ScodeSession.Insert(s);
-    }
-
-    public static void Delete(Student s)
-    {
-        DBContext.ScodeSession.Delete&lt;Student&gt;(s);
-    }
-
-}
-</code></pre><p>}</p>
-<p>3.在显示列表点击Run Designer，在事件列表中找到RowStyle,给一个事件名称</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color3.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color4.png" alt=""></p>
-<p>4.具体实现代码如下</p>
-<pre><code>//颜色字符串转颜色对象
-public static Color GetColor(string ColorStr)
-  {
-      int ARGBvalue = 0;
-      Color newColor = Color.FromName(ColorStr);
-      if ((newColor.A + newColor.R + newColor.G + newColor.B) == 0)
-      {
-          int.TryParse(ColorStr, System.Globalization.NumberStyles.HexNumber, null, out ARGBvalue);
-          newColor = Color.FromArgb(ARGBvalue);
-      }
-      return newColor;
-  }
-
-private void gridView2_RowStyle_2(object sender, RowStyleEventArgs e)
-  {
-      List&lt;Student&gt; list = StudentDao.GetAll();
-      string name = &quot;&quot;;                    
-      while(e.RowHandle &gt;= 0) {
-          if (gridView2.GetRowCellValue(e.RowHandle, &quot;NAME&quot;)!=null) { //NAME为列的字段名fildName
-             name = gridView2.GetRowCellValue(e.RowHandle, &quot;NAME&quot;).ToString();
-          }
-
-          if (list != null &amp;&amp; list.Count &gt; 0)
-          {
-              for (int i = 0; i &lt; list.Count; i++)
-              {
-                  Student s = list[i];                       
-                  if (name != &quot;&quot; )
-                  {
-                      if (name.Equals(s.name))
-                      {
-
-                          Color color = GetColor(s.color);
-                          e.Appearance.ForeColor = color;//改变字体颜色
-                          //e.Appearance.BackColor = Color.Red;//改变背景色
-                      }
-                  }
-
-              }
-          }
-                  break;
-      }
-  }
-</code></pre><p>5.效果预览如下:</p>
-<p>点击添加名单–选择颜色等</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color1.png" alt=""></p>
-<p>显示列表如下，根据条件显示字体颜色</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color2.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/24/csharp打开Excel文件/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/03/24/csharp打开Excel文件/" itemprop="url">C# 打开Excel文件方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-24T13:23:01+08:00">
-                2018-03-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/03/24/csharp打开Excel文件/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/24/csharp打开Excel文件/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2018/01/23/csharp打开Excel文件/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/23/csharp打开Excel文件/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1072,7 +839,7 @@ public partial class frmARFCN : Form
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/26/mysql定时清空表/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/19/csharp改变行字体颜色或背景色/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -1091,7 +858,7 @@ public partial class frmARFCN : Form
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/26/mysql定时清空表/" itemprop="url">Mysql每天定时清空表</a></h1>
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/19/csharp改变行字体颜色或背景色/" itemprop="url">C# Gridview 改变行字体颜色或背景色</a></h1>
         
 
         <div class="post-meta">
@@ -1103,8 +870,8 @@ public partial class frmARFCN : Form
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-26T19:16:36+08:00">
-                2018-01-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-19T19:43:06+08:00">
+                2018-01-19
               </time>
             
 
@@ -1122,8 +889,8 @@ public partial class frmARFCN : Form
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2018/01/26/mysql定时清空表/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/26/mysql定时清空表/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2018/01/19/csharp改变行字体颜色或背景色/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/19/csharp改变行字体颜色或背景色/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1153,32 +920,105 @@ public partial class frmARFCN : Form
       
         
           
-            <h1 id="Mysql每天定时清空表"><a href="#Mysql每天定时清空表" class="headerlink" title="Mysql每天定时清空表"></a>Mysql每天定时清空表</h1><p>1.设置开启event scheduler</p>
-<pre><code>SET GLOBAL event_scheduler=1;
-</code></pre><p>2.验证event_scheduler是否已经开启</p>
-<pre><code>show variables like &apos;%event%&apos;;  #值为 ON 表明已开启
-SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
-</code></pre><p>3.创建event</p>
-<pre><code>DROP EVENT IF EXISTS e_delete_upvote;
- CREATE  EVENT e_delete_upvote   
- ON SCHEDULE EVERY 1 day STARTS date_add(concat(current_date(), &apos; 00:00:00&apos;), interval 0 second)
- ON COMPLETION PRESERVE ENABLE
- DO
- TRUNCATE TABLE dreamland.upvote;
+            <h1 id="一、根据列表数据改变行字体颜色或者背景色"><a href="#一、根据列表数据改变行字体颜色或者背景色" class="headerlink" title="一、根据列表数据改变行字体颜色或者背景色"></a>一、根据列表数据改变行字体颜色或者背景色</h1><p>1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color.png" alt=""></p>
+<pre><code>string color =  tePhone1.Color.Name;
+</code></pre><p>2.将颜色字符串存入数据库，附上数据库Dao代码</p>
+<pre><code>    namespace rdms.DB
+   {
+public class StudentDao
+{
+    private static ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    public static List&lt;Student&gt; GetAll()
+    {
+        return DBContext.ScodeSession.From&lt;Student&gt;().Select().ToList();
+    }
 
-#说明：
- ON SCHEDULE EVERY 1 day 指定循环间隔为每天执行
- STARTS date_add(concat(current_date(), &apos; 23:59:00&apos;), interval 0 second) 指定运行时间为23:59:00
- ON COMPLETION PRESERVE ENABLE 指定创建完成后即启用，否则需手动启动
-</code></pre><p>4.手动关闭事件</p>
-<pre><code>ALTER EVENT e_delete_upvote DISABLE;
-</code></pre><p>5.手动该事件为可用</p>
-<pre><code>ALTER EVENT e_delete_upvote ENABLE;
-</code></pre><p>6.查看已有的定时事件任务</p>
-<pre><code>SHOW EVENTS;
-</code></pre><p>7.删除事件</p>
-<pre><code>DROP EVENT e_delete_upvote;
-</code></pre>
+    public static int Update(Student s)
+    {        
+        // DBContext.ScodeSession.FromSql(&quot;UPDATE  Student  SET  color = &apos;&quot;+s.color+ &quot;&apos; where s_id = &quot; + s.s_id);
+        return DBContext.ScodeSession.Update(s);
+
+    }
+
+    public static Student getStudent(int id)
+    {
+        List&lt;Student&gt; list = DBContext.ScodeSession.FromSql(&quot;SELECT *  FROM Student  where s_id = &quot; + id).ToList&lt;Student&gt;();
+        if (list != null &amp;&amp; list.Count &gt; 0)
+        {
+            return list[0];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static int Add(Student s)
+    {
+        return DBContext.ScodeSession.Insert(s);
+    }
+
+    public static void Delete(Student s)
+    {
+        DBContext.ScodeSession.Delete&lt;Student&gt;(s);
+    }
+
+}
+</code></pre><p>}</p>
+<p>3.在显示列表点击Run Designer，在事件列表中找到RowStyle,给一个事件名称</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color3.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color4.png" alt=""></p>
+<p>4.具体实现代码如下</p>
+<pre><code>//颜色字符串转颜色对象
+public static Color GetColor(string ColorStr)
+  {
+      int ARGBvalue = 0;
+      Color newColor = Color.FromName(ColorStr);
+      if ((newColor.A + newColor.R + newColor.G + newColor.B) == 0)
+      {
+          int.TryParse(ColorStr, System.Globalization.NumberStyles.HexNumber, null, out ARGBvalue);
+          newColor = Color.FromArgb(ARGBvalue);
+      }
+      return newColor;
+  }
+
+private void gridView2_RowStyle_2(object sender, RowStyleEventArgs e)
+  {
+      List&lt;Student&gt; list = StudentDao.GetAll();
+      string name = &quot;&quot;;                    
+      while(e.RowHandle &gt;= 0) {
+          if (gridView2.GetRowCellValue(e.RowHandle, &quot;NAME&quot;)!=null) { //NAME为列的字段名fildName
+             name = gridView2.GetRowCellValue(e.RowHandle, &quot;NAME&quot;).ToString();
+          }
+
+          if (list != null &amp;&amp; list.Count &gt; 0)
+          {
+              for (int i = 0; i &lt; list.Count; i++)
+              {
+                  Student s = list[i];                       
+                  if (name != &quot;&quot; )
+                  {
+                      if (name.Equals(s.name))
+                      {
+
+                          Color color = GetColor(s.color);
+                          e.Appearance.ForeColor = color;//改变字体颜色
+                          //e.Appearance.BackColor = Color.Red;//改变背景色
+                      }
+                  }
+
+              }
+          }
+                  break;
+      }
+  }
+</code></pre><p>5.效果预览如下:</p>
+<p>点击添加名单–选择颜色等</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color1.png" alt=""></p>
+<p>显示列表如下，根据条件显示字体颜色</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color2.png" alt=""></p>
+
           
         
       
@@ -2414,6 +2254,441 @@ model.addAttribute(&quot;numbers&quot;,numbers);
 其中name是numbers集合存储的对象类型的属性，如果numbers集合存储的是String，可以直接使用
 &lt;td&gt;${numbers[s.count-1]}&lt;/td&gt;
 </code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/" itemprop="url">linux下安装nginx及开机自启动</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-26T20:36:06+08:00">
+                2017-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/26/linux下安装nginx及开机自启动/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、安装nginx"><a href="#一、安装nginx" class="headerlink" title="一、安装nginx"></a>一、安装nginx</h1><p>1.从<a href="http://nginx.org/download/上下载相应的版本(或者wget" target="_blank" rel="external">http://nginx.org/download/上下载相应的版本(或者wget</a> <a href="http://nginx.org/download/nginx-1.5.9.tar.gz直接在Linux上用命令下载" target="_blank" rel="external">http://nginx.org/download/nginx-1.5.9.tar.gz直接在Linux上用命令下载</a>)</p>
+<pre><code>wget http://nginx.org/download/nginx-1.5.9.tar.gz
+</code></pre><p>2.解压 </p>
+<pre><code>tar -zxvf nginx-1.5.9.tar.gz 
+</code></pre><p>3.设置一下配置信息，或者不执行此步，直接默认配置，与后面配置有关</p>
+<pre><code>./configure --prefix=/usr/local/nginx 
+</code></pre><p>4.make 编译 （make的过程是把各种语言写的源码文件，变成可执行文件和各种库文件）</p>
+<pre><code>make
+</code></pre><p>5.make install 安装 （make install是把这些编译出来的可执行文件和库文件复制到合适的地方）</p>
+<pre><code>make install
+</code></pre><p>6.启动nginx</p>
+<pre><code>/usr/local/nginx/sbin/nginx
+</code></pre><p>7.访问nginx，nginx默认端口为80</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/nginx.png" alt=""></p>
+<p>8.安装过程中可能会遇到的错误</p>
+<p>（1）错误为：./configure: error: the HTTP rewrite module requires the PCRE library.</p>
+<p>安装pcre-devel解决问题</p>
+<pre><code>yum -y install pcre-devel
+</code></pre><p>（2）错误提示：./configure: error: the HTTP cache module requires md5 functions<br>from OpenSSL library.   You can either disable the module by using<br>–without-http-cache option, or install the OpenSSL library into the system,<br>or build the OpenSSL library statically from the source with nginx by using<br>–with-http_ssl_module –with-openssl=<path></path> options.</p>
+<p>解决办法：</p>
+<pre><code>yum -y install openssl openssl-devel
+</code></pre><h1 id="二、nginx开机自启动"><a href="#二、nginx开机自启动" class="headerlink" title="二、nginx开机自启动"></a>二、nginx开机自启动</h1><p>1.在linux系统的/etc/init.d/目录下创建nginx文件</p>
+<pre><code>vim /etc/init.d/nginx
+</code></pre><p>2.在脚本中添加如下命令：</p>
+<pre><code>#!/bin/sh
+#
+# nginx - this script starts and stops the nginx daemon
+#
+# chkconfig:   - 85 15
+# description:  NGINX is an HTTP(S) server, HTTP(S) reverse \
+#               proxy and IMAP/POP3 proxy server
+# processname: nginx
+# config:      /etc/nginx/nginx.conf
+# config:      /etc/sysconfig/nginx
+# pidfile:     /var/run/nginx.pid
+# Source function library.
+. /etc/rc.d/init.d/functions
+# Source networking configuration.
+. /etc/sysconfig/network
+# Check that networking is up.
+[ &quot;$NETWORKING&quot; = &quot;no&quot; ] &amp;&amp; exit 0
+nginx=&quot;/usr/sbin/nginx&quot;
+prog=$(basename $nginx)
+NGINX_CONF_FILE=&quot;/etc/nginx/nginx.conf&quot;
+[ -f /etc/sysconfig/nginx ] &amp;&amp; . /etc/sysconfig/nginx
+lockfile=/var/lock/subsys/nginx
+make_dirs() {
+# make required directories
+user=`$nginx -V 2&gt;&amp;1 | grep &quot;configure arguments:&quot; | sed &apos;s/[^*]*--user=\([^ ]*\).*/\1/g&apos; -`
+if [ -z &quot;`grep $user /etc/passwd`&quot; ]; then
+   useradd -M -s /bin/nologin $user
+fi
+options=`$nginx -V 2&gt;&amp;1 | grep &apos;configure arguments:&apos;`
+for opt in $options; do
+   if [ `echo $opt | grep &apos;.*-temp-path&apos;` ]; then
+       value=`echo $opt | cut -d &quot;=&quot; -f 2`
+       if [ ! -d &quot;$value&quot; ]; then
+           # echo &quot;creating&quot; $value
+           mkdir -p $value &amp;&amp; chown -R $user $value
+       fi
+   fi
+done
+}
+start() {
+[ -x $nginx ] || exit 5
+[ -f $NGINX_CONF_FILE ] || exit 6
+make_dirs
+echo -n $&quot;Starting $prog: &quot;
+daemon $nginx -c $NGINX_CONF_FILE
+retval=$?
+echo
+[ $retval -eq 0 ] &amp;&amp; touch $lockfile
+return $retval
+}
+stop() {
+echo -n $&quot;Stopping $prog: &quot;
+killproc $prog -QUIT
+retval=$?
+echo
+[ $retval -eq 0 ] &amp;&amp; rm -f $lockfile
+return $retval
+}
+restart() {
+configtest || return $?
+stop
+sleep 1
+start
+}
+reload() {
+configtest || return $?
+echo -n $&quot;Reloading $prog: &quot;
+killproc $nginx -HUP
+RETVAL=$?
+echo
+}
+force_reload() {
+restart
+}
+configtest() {
+$nginx -t -c $NGINX_CONF_FILE
+}
+rh_status() {
+status $prog
+}
+rh_status_q() {
+rh_status &gt;/dev/null 2&gt;&amp;1
+}
+case &quot;$1&quot; in
+start)
+    rh_status_q &amp;&amp; exit 0
+    $1
+    ;;
+stop)
+    rh_status_q || exit 0
+    $1
+    ;;
+restart|configtest)
+    $1
+    ;;
+reload)
+    rh_status_q || exit 7
+    $1
+    ;;
+force-reload)
+    force_reload
+    ;;
+status)
+    rh_status
+    ;;
+condrestart|try-restart)
+    rh_status_q || exit 0
+        ;;
+ *)
+    echo $&quot;Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}&quot;
+    exit 2
+esac
+</code></pre><p>3.如果你是自定义编译安装的nginx，需要根据您的安装路径修改下面这两项配置：</p>
+<pre><code>nginx=&quot;/usr/local/nginx/sbin/nginx&quot; 修改成nginx执行程序的路径。
+
+NGINX_CONF_FILE=&quot;/usr/local/nginx/conf/nginx.conf&quot; 修改成配置文件的路径。
+</code></pre><p>4.保存脚本文件后设置文件的执行权限：</p>
+<pre><code>chmod a+x /etc/init.d/nginx
+</code></pre><p>5.通过该脚本启动停止nginx服务</p>
+<pre><code>/etc/init.d/nginx start
+/etc/init.d/nginx stop
+</code></pre><p>6.使用chkconfig进行管理，将nginx服务加入chkconfig管理列表</p>
+<pre><code>chkconfig --add /etc/init.d/nginx
+</code></pre><p>7.使用service对nginx进行启动，停止。重启等操作</p>
+<pre><code>service nginx start
+service nginx stop
+</code></pre><p>8.设置终端模式开机启动</p>
+<pre><code>chkconfig nginx on
+</code></pre><h1 id="三、发布静态资源"><a href="#三、发布静态资源" class="headerlink" title="三、发布静态资源"></a>三、发布静态资源</h1><p>1.确定静态资源存放位置</p>
+<pre><code>/home/images
+</code></pre><p>2.修改nginx.conf配置文件</p>
+<pre><code>vi /usr/local/nginx/conf/nginx.conf
+</code></pre><p>3.主要修改如下：</p>
+<pre><code>#user  nobody;
+worker_processes  1;
+
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+
+#pid        logs/nginx.pid;
+
+
+events {
+worker_connections  1024;
+}
+
+
+http {
+include       mime.types;
+default_type  application/octet-stream;
+
+#log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;
+#                  &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;
+#                  &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;
+
+#access_log  logs/access.log  main;
+
+sendfile        on;
+#tcp_nopush     on;
+
+#keepalive_timeout  0;
+keepalive_timeout  65;
+
+#gzip  on;
+
+server {
+    listen       80;
+    server_name  localhost;
+
+    #charset koi8-r;
+     charset utf-8;    
+
+    #access_log  logs/host.access.log  main;
+
+     location ~ .*\.(gif|jpg|jpeg|png)$ {    
+    expires 24h;    
+        root /home/images/;#指定图片存放路径    
+        access_log /home/softs/nginx-1.5.9/logs/images.log;#日志存放路径    
+        proxy_store on;    
+        proxy_store_access user:rw group:rw all:rw;    
+        proxy_temp_path         /home/images/;#图片访问路径    
+        proxy_redirect          off;    
+        proxy_set_header        Host 127.0.0.1;    
+        client_max_body_size    10m;    
+        client_body_buffer_size 1280k;    
+        proxy_connect_timeout   900;    
+        proxy_send_timeout      900;    
+        proxy_read_timeout      900;    
+        proxy_buffer_size       40k;    
+        proxy_buffers           40 320k;    
+        proxy_busy_buffers_size 640k;    
+        proxy_temp_file_write_size 640k;    
+        if ( !-e $request_filename)    
+        {    
+             proxy_pass  http://127.0.0.1;#默认80端口    
+        }    
+}      
+
+    location / {
+        root   /home/html; #html访问路径  
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache&apos;s document root
+    # concurs with nginx&apos;s one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+
+
+# another virtual host using mix of IP-, name-, and port-based configuration
+#
+#server {
+#    listen       8000;
+#    listen       somename:8080;
+#    server_name  somename  alias  another.alias;
+
+#    location / {
+#        root   html;
+#        index  index.html index.htm;
+#    }
+#}
+
+
+# HTTPS server
+#
+#server {
+#    listen       443 ssl;
+#    server_name  localhost;
+
+#    ssl_certificate      cert.pem;
+#    ssl_certificate_key  cert.key;
+
+#    ssl_session_cache    shared:SSL:1m;
+#    ssl_session_timeout  5m;
+
+#    ssl_ciphers  HIGH:!aNULL:!MD5;
+#    ssl_prefer_server_ciphers  on;
+
+#    location / {
+#        root   html;
+#        index  index.html index.htm;
+#    }
+#}
+
+}
+</code></pre><p>4.查看编译是否出错，如果没出错则成功</p>
+<pre><code>cd /usr/local/nginx/sbin/
+./nginx -t
+</code></pre><p>5.显示如下即代表成功（如果报目录不存在错误，就创建目录即可）</p>
+<pre><code>nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful
+</code></pre><p>6.访问静态资源:192.168.120.139/1.png</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png" alt=""></p>
+
           
         
       
