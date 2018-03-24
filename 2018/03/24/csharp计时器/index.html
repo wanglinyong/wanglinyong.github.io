@@ -79,17 +79,22 @@
 
 
 
-<meta name="description" content="查看mysql情况指令 ps -ef | grep mysql 得出结果 1.root     17659     1  0  2011 ?        00:00:00 /bin/sh /usr/bin/mysqld_safe –datadir=/var/lib/mysql –socket=/var/lib/mysql/mysql.sock –log-error=/var/log/mysqld">
+<meta name="description" content="这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。 DevExpress控件GaugeControl1.从工具箱中查找定时任务timer  2.从工具箱中查找GaugeControl，选择合适的界面   3.控件界面效果如下  利用工具箱中的GaugeControl控件制作计时器显示界面.首先要添加一个定时任务：timer,给timer一个timer1_Tick事件">
 <meta property="og:type" content="article">
-<meta property="og:title" content="linux系统如何移动mysql存放文件的位置">
-<meta property="og:url" content="https://wanglinyong.github.io/2017/11/22/linux系统如何移动mysql存放文件的位置/index.html">
+<meta property="og:title" content="c#结合DevExpress控件制作计时器">
+<meta property="og:url" content="https://wanglinyong.github.io/2018/03/24/csharp计时器/index.html">
 <meta property="og:site_name" content="Wang&#39;s Blog">
-<meta property="og:description" content="查看mysql情况指令 ps -ef | grep mysql 得出结果 1.root     17659     1  0  2011 ?        00:00:00 /bin/sh /usr/bin/mysqld_safe –datadir=/var/lib/mysql –socket=/var/lib/mysql/mysql.sock –log-error=/var/log/mysqld">
+<meta property="og:description" content="这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。 DevExpress控件GaugeControl1.从工具箱中查找定时任务timer  2.从工具箱中查找GaugeControl，选择合适的界面   3.控件界面效果如下  利用工具箱中的GaugeControl控件制作计时器显示界面.首先要添加一个定时任务：timer,给timer一个timer1_Tick事件">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-22T06:33:07.883Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png">
+<meta property="og:updated_time" content="2017-11-05T09:51:06.009Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="linux系统如何移动mysql存放文件的位置">
-<meta name="twitter:description" content="查看mysql情况指令 ps -ef | grep mysql 得出结果 1.root     17659     1  0  2011 ?        00:00:00 /bin/sh /usr/bin/mysqld_safe –datadir=/var/lib/mysql –socket=/var/lib/mysql/mysql.sock –log-error=/var/log/mysqld">
+<meta name="twitter:title" content="c#结合DevExpress控件制作计时器">
+<meta name="twitter:description" content="这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。 DevExpress控件GaugeControl1.从工具箱中查找定时任务timer  2.从工具箱中查找GaugeControl，选择合适的界面   3.控件界面效果如下  利用工具箱中的GaugeControl控件制作计时器显示界面.首先要添加一个定时任务：timer,给timer一个timer1_Tick事件">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/2.png">
 
 
 
@@ -119,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="https://wanglinyong.github.io/2017/11/22/linux系统如何移动mysql存放文件的位置/"/>
+  <link rel="canonical" href="https://wanglinyong.github.io/2018/03/24/csharp计时器/"/>
 
 
 
 
 
-  <title>linux系统如何移动mysql存放文件的位置 | Wang's Blog</title>
+  <title>c#结合DevExpress控件制作计时器 | Wang's Blog</title>
   
 
 
@@ -262,7 +267,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/11/22/linux系统如何移动mysql存放文件的位置/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/24/csharp计时器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -279,7 +284,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">linux系统如何移动mysql存放文件的位置</h1>
+          <h1 class="post-title" itemprop="name headline">c#结合DevExpress控件制作计时器</h1>
         
 
         <div class="post-meta">
@@ -291,8 +296,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-22T18:58:06+08:00">
-                2017-11-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-24T13:23:01+08:00">
+                2018-03-24
               </time>
             
 
@@ -310,8 +315,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2017/11/22/linux系统如何移动mysql存放文件的位置/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/22/linux系统如何移动mysql存放文件的位置/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2018/03/24/csharp计时器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/24/csharp计时器/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -339,67 +344,38 @@
       
 
       
-        <h2 id="查看mysql情况"><a href="#查看mysql情况" class="headerlink" title="查看mysql情况"></a>查看mysql情况</h2><p>指令 ps -ef | grep mysql 得出结果</p>
-<p>1.root     17659     1  0  2011 ?        00:00:00 /bin/sh /usr/bin/mysqld_safe –datadir=/var/lib/mysql –socket=/var/lib/mysql/mysql.sock –log-error=/var/log/mysqld.log –pid-file=/var/run/mysqld/mysqld.pid   </p>
-<p>2.mysql    17719 17659  0  2011 ?        03:14:57 /usr/libexec/mysqld –basedir=/usr –datadir=/var/lib/mysql –user=mysql –pid-file=/var/run/mysqld/mysqld.pid –skip-external-locking –socket=/var/lib/mysql/mysql.sock  </p>
-<p>usr/bin/mysql 是指：mysql的运行路径 </p>
-<p>var/lib/mysql 是指：mysql数据库文件的存放路径 </p>
-<p>usr/lib/mysql 是指：mysql的安装路径</p>
-<h2 id="移动mysql存放文件位置"><a href="#移动mysql存放文件位置" class="headerlink" title="移动mysql存放文件位置"></a>移动mysql存放文件位置</h2><p>假如要把目录移到/home/data下需要进行下面几步：</p>
-<p>1、home目录下建立data目录</p>
-<pre><code>cd /home
-mkdir data
-</code></pre><p>2、把MySQL服务进程停掉：</p>
-<pre><code>mysqladmin -u root -p shutdown
-</code></pre><p>3、把/var/lib/mysql整个目录移到/home/data</p>
-<pre><code>mv /var/lib/mysql　/home/data/
-</code></pre><p>这样就把MySQL的数据文件移动到了/home/data/mysql下</p>
-<p>4、找到my.cnf配置文件<br>　　如果/etc/目录下没有my.cnf配置文件，请到/usr/share/mysql/下找到*.cnf文件，拷贝其中一个到/etc/并改名为my.cnf)中。命令如下：</p>
-<pre><code>[root@test1 mysql]# cp /usr/share/mysql/my-medium.cnf　/etc/my.cnf
-</code></pre><p>5、编辑MySQL的配置文件/etc/my.cnf<br>　　为保证MySQL能够正常工作，需要指明mysql.sock文件的产生位置。修改socket=/var/lib/mysql/mysql.sock一行中等号右边的值为：/home/mysql/mysql.sock 。操作如下：</p>
-<pre><code>vi　 my.cnf　　　 (用vi工具编辑my.cnf文件，找到下列数据修改之)
+        <p>这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。</p>
+<h2 id="DevExpress控件"><a href="#DevExpress控件" class="headerlink" title="DevExpress控件"></a>DevExpress控件</h2><h3 id="GaugeControl"><a href="#GaugeControl" class="headerlink" title="GaugeControl"></a>GaugeControl</h3><p>1.从工具箱中查找定时任务timer</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/2.png" alt=""></p>
+<p>2.从工具箱中查找GaugeControl，选择合适的界面</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/3.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/4.png" alt=""></p>
+<p>3.控件界面效果如下</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png" alt=""></p>
+<p>利用工具箱中的GaugeControl控件制作计时器显示界面.<br>首先要添加一个定时任务：timer,给timer一个timer1_Tick事件<br>主要代码如下：<br>   public int currentCount = 0;<br>        private void timer1_Tick(object sender, EventArgs e)<br>        {<br>            //string[] arr = digitalGauge1.Text.Split(“:”);<br>            //设置定时间隔(毫秒为单位)<br>            System.Timers.Timer timer = new System.Timers.Timer(1000);<br>            //设置执行一次（false）还是一直执行(true)<br>            timer.AutoReset = true;<br>            //设置是否执行System.Timers.Timer.Elapsed事件<br>            timer.Enabled = true;<br>            currentCount += 1;</p>
+<pre><code>    string second = (currentCount % 60)+&quot;&quot;;
+    string minute = (currentCount / 60 % 60)+&quot;&quot;;
+    string hour = (currentCount / 3600)+&quot;&quot;;
+    if (int.Parse(second) &lt; 10)
+    {
+        second = &quot;0&quot; + second;
+    }
+    else {
 
-[mysql]（加上此行）
-socket=/home/data/mysql/mysql.sock（加上此行）
-[mysqld]
-#datadir=/var/lib/mysql（原内容，为了更稳妥用“#”注释此行）
-#socket=/var/lib/mysql/mysql.sock（原内容，为了更稳妥用“#”注释此行）
-datadir=/home/data/mysql（加上此行）
-socket=/home/data/mysql/mysql.sock（加上此行）
-</code></pre><p>6、修改MySQL启动脚本/etc/init.d/mysql（如果init.d目录下没有mysql文件请忽略此步骤）</p>
-<p>　　最后，需要修改MySQL启动脚本/etc/init.d/mysql，把其中datadir=/var/lib/mysql一行中，等号右边的路径改成你现在的实际存放路径：home/data/mysql。</p>
-<pre><code>[root@test1 etc]# vi　/etc/init.d/mysql
-#datadir=/var/lib/mysql　　　　（注释此行）
-datadir=/home/data/mysql　　 （加上此行）
-</code></pre><p>7、重新启动MySQL服务</p>
-<pre><code>/etc/init.d/mysql　start
-</code></pre><p>或用reboot命令重启Linux<br>如果工作正常移动就成功了，否则对照前面的7步再检查一下。还要注意目录的属主和权限。</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>如果更换mysql数据目录后出现：</p>
-<p>ERROR 2002 (HY000): Can’t connect to local MySQL server through socket ‘/var/lib/mysql/mysql.sock’ (2)</p>
-<p>说明无法通过socket文件/var/lib/mysql/mysql.sock连接到mysql服务器，也就是说对于mysql程序来说，尽管把socket文件从/var/lib/mysql/mysql.sock转移到了/home/data/mysql/mysql.sock,在my.cnf里设置了，mysqld是知道了，但是对于mysql还是会从默认的安装目录/var/lib/mysql/里找这个mysql.sock文件，找不着，就不知道从哪里启动了。</p>
-<p>解决方案一：设置软连接</p>
-<pre><code>ln –s /home/data/mysql/mysql.sock /var/lib/mysql/
-</code></pre><p>做完软连接，重启mysql服务，再次通过mysql程序连接就可以连上了。</p>
-<p>解决方案二：检查my.cnf配置，是否有如下配置，如果没有，加上</p>
-<pre><code>[mysql]
-socket=/home/data/mysql/mysql.sock
-</code></pre><h2 id="帮助命令"><a href="#帮助命令" class="headerlink" title="帮助命令"></a>帮助命令</h2><p>1.查找命令</p>
-<pre><code>find / -name my.cnf　　#在根目录下查找文件my.cnf，表示在整个硬盘查找
+    }
+    if (int.Parse(minute) &lt; 10)
+    {
+        minute = &quot;0&quot; + minute;
+    }
+    if (int.Parse(hour) &lt; 10)
+    {
+        hour = &quot;0&quot; + hour;
+    }
 
-find /etc -name my.cnf　　#在/etc目录下文件my.cnf
+    digitalGauge1.Text = hour + &quot;:&quot; + minute + &quot;:&quot; + second;
+}
+</code></pre><p>My Blog: <a href="https://wanglinyong.github.io/wanglinyong.github.io">Deployment</a></p>
 
-find /etc -name &apos;*srm*&apos;　　#使用通配符*(0或者任意多个)。表示在/etc目录下查找文件名中含有字符串‘srm’的文件
-
-find . -name &apos;srm*&apos; 　　#表示当前目录下查找文件名开头是字符串‘srm’的文件
-</code></pre><p>2.查看文件占用大小</p>
-<pre><code>du -sh /*  查看根目录下所有文件的大小
-
-du -sh /home/* 查看 home目录下所有文件的大小
-
-du -sh * 查看当前目录下所有文件的大小
-</code></pre><p>3.查看硬盘使用情况</p>
-<pre><code>df -h 
-</code></pre>
       
     </div>
     
@@ -423,8 +399,8 @@ du -sh * 查看当前目录下所有文件的大小
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/wanglinyong.github.io/2017/11/17/python-十六进制数据传递与接收/" rel="next" title="Python-十六进制数据传递与接收">
-                <i class="fa fa-chevron-left"></i> Python-十六进制数据传递与接收
+              <a href="/wanglinyong.github.io/2018/03/24/csharp改变行字体颜色或背景色/" rel="next" title="C# Gridview 改变行字体颜色或背景色">
+                <i class="fa fa-chevron-left"></i> C# Gridview 改变行字体颜色或背景色
               </a>
             
           </div>
@@ -433,8 +409,8 @@ du -sh * 查看当前目录下所有文件的大小
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/" rel="prev" title="linux下安装nginx及开机自启动">
-                linux下安装nginx及开机自启动 <i class="fa fa-chevron-right"></i>
+              <a href="/wanglinyong.github.io/2018/03/24/DES加密解密/" rel="prev" title="DES加密解密">
+                DES加密解密 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -466,8 +442,8 @@ du -sh * 查看当前目录下所有文件的大小
 
   
     <div class="comments" id="comments">
-      <div class="ds-thread" data-thread-key="2017/11/22/linux系统如何移动mysql存放文件的位置/"
-           data-title="linux系统如何移动mysql存放文件的位置" data-url="https://wanglinyong.github.io/2017/11/22/linux系统如何移动mysql存放文件的位置/">
+      <div class="ds-thread" data-thread-key="2018/03/24/csharp计时器/"
+           data-title="c#结合DevExpress控件制作计时器" data-url="https://wanglinyong.github.io/2018/03/24/csharp计时器/">
       </div>
     </div>
 
@@ -558,7 +534,7 @@ du -sh * 查看当前目录下所有文件的大小
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看mysql情况"><span class="nav-number">1.</span> <span class="nav-text">查看mysql情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#移动mysql存放文件位置"><span class="nav-number">2.</span> <span class="nav-text">移动mysql存放文件位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">3.</span> <span class="nav-text">注意</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#帮助命令"><span class="nav-number">4.</span> <span class="nav-text">帮助命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DevExpress控件"><span class="nav-number">1.</span> <span class="nav-text">DevExpress控件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GaugeControl"><span class="nav-number">1.1.</span> <span class="nav-text">GaugeControl</span></a></li></ol></li></ol></div>
             
 
           </div>

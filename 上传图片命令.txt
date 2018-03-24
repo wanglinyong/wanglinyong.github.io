@@ -1,0 +1,27 @@
+﻿首先进入克隆下来的目录，G:\wly\clone，右击进入Git Bash Here
+$ cd wanglinyong.github.io.wiki && cp /g/wly/hexo/source/_posts/1.png .
+$ git add 1.png
+$ git commit -a -m "add image 1.png"
+$ git push
+https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png
+
+ cp /g/wly/hexo/source/_posts/color1.png .
+
+
+
+
+cd /d/wly/respository/wanglinyong.github.io/
+cp /d/wly/hexo/source/_posts/mysql-1.png .
+
+
+
+
+hexo: command not found
+配置环境变量
+D:\wly\hexo\node_modules\hexo\bin
+
+
+
+hexo+git搭建博客
+1.下载node.js
+https://nodejs.org/en/
