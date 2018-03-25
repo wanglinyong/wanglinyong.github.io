@@ -13,8 +13,7 @@ https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png
 cd /d/wly/respository/wanglinyong.github.io/
 cp /d/wly/hexo/source/_posts/mysql-1.png .
 
-
-
+上传图片教程https://www.jianshu.com/p/bd5c1b33d2c5
 
 hexo: command not found
 配置环境变量
@@ -25,3 +24,34 @@ D:\wly\hexo\node_modules\hexo\bin
 hexo+git搭建博客
 1.下载node.js
 https://nodejs.org/en/
+2.安装hexo
+创建hexo文件夹
+
+右键git bash here
+
+npm install -g hexo
+
+
+如果上一步长时间停留，使用淘宝镜像
+npm config set registry https://registry.npm.taobao.org 
+检查
+npm config get registry 
+
+然后再执行
+npm install -g hexo
+
+初始化
+hexo init
+
+启动服务
+npm install
+hexo server
+hexo clean
+hexo generate
+hexo deploy
+
+访问http://localhost:4000
+
+
+
+
