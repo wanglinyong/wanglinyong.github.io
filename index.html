@@ -274,7 +274,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/04/04/csharp计时器/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/24/DES加密解密/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -293,7 +293,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/04/04/csharp计时器/" itemprop="url">c#结合DevExpress控件制作计时器</a></h1>
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/03/24/DES加密解密/" itemprop="url">DES加密解密</a></h1>
         
 
         <div class="post-meta">
@@ -305,8 +305,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-04T21:38:51+08:00">
-                2018-04-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-24T19:39:28+08:00">
+                2018-03-24
               </time>
             
 
@@ -324,8 +324,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2018/04/04/csharp计时器/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/04/04/csharp计时器/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2018/03/24/DES加密解密/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/24/DES加密解密/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -355,496 +355,76 @@
       
         
           
-            <p>这是我写的第一篇博客，主要将工作中遇到的问题以及技术或工具的使用做一个介绍和记录。</p>
-<h2 id="DevExpress控件"><a href="#DevExpress控件" class="headerlink" title="DevExpress控件"></a>DevExpress控件</h2><h3 id="GaugeControl"><a href="#GaugeControl" class="headerlink" title="GaugeControl"></a>GaugeControl</h3><p>1.从工具箱中查找定时任务timer</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/2.png" alt=""></p>
-<p>2.从工具箱中查找GaugeControl，选择合适的界面</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/3.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/4.png" alt=""></p>
-<p>3.控件界面效果如下</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png" alt=""></p>
-<p>利用工具箱中的GaugeControl控件制作计时器显示界面.<br>首先要添加一个定时任务：timer,给timer一个timer1_Tick事件<br>主要代码如下：<br>   public int currentCount = 0;<br>        private void timer1_Tick(object sender, EventArgs e)<br>        {<br>            //string[] arr = digitalGauge1.Text.Split(“:”);<br>            //设置定时间隔(毫秒为单位)<br>            System.Timers.Timer timer = new System.Timers.Timer(1000);<br>            //设置执行一次（false）还是一直执行(true)<br>            timer.AutoReset = true;<br>            //设置是否执行System.Timers.Timer.Elapsed事件<br>            timer.Enabled = true;<br>            currentCount += 1;</p>
-<pre><code>    string second = (currentCount % 60)+&quot;&quot;;
-    string minute = (currentCount / 60 % 60)+&quot;&quot;;
-    string hour = (currentCount / 3600)+&quot;&quot;;
-    if (int.Parse(second) &lt; 10)
-    {
-        second = &quot;0&quot; + second;
-    }
-    else {
+            <h1 id="一、场景"><a href="#一、场景" class="headerlink" title="一、场景"></a>一、场景</h1><p>我将打包好的war包放到linux系统运行时，其他一切正常，唯有登陆的时候怎么都登不上，提示密码错误！</p>
+<p>查看日志后发现每次加密的结果都不同，后来百度得知是DES在linux和windows系统的加密算法不一致导致的。主要是DES补位导致，把补位规则改成”DES/ECB/PKCS5Padding”即可。</p>
+<h1 id="二、DES加密解密代码"><a href="#二、DES加密解密代码" class="headerlink" title="二、DES加密解密代码"></a>二、DES加密解密代码</h1><pre><code>package wang.dreamland.www.common;
+import java.security.Key;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import org.apache.commons.codec.binary.Base64;
 
-    }
-    if (int.Parse(minute) &lt; 10)
-    {
-        minute = &quot;0&quot; + minute;
-    }
-    if (int.Parse(hour) &lt; 10)
-    {
-        hour = &quot;0&quot; + hour;
-    }
+public class MyDes {
+/**
+ * 加密数据
+ * @param encryptString
+ * @param encryptKey
+ * @return
+ * @throws Exception
+ */
+public static String encryptDES(String encryptString, String encryptKey) throws Exception {
 
-    digitalGauge1.Text = hour + &quot;:&quot; + minute + &quot;:&quot; + second;
+    Cipher cipher = Cipher.getInstance(&quot;DES/ECB/PKCS5Padding&quot;);
+    cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(getKey(encryptKey), &quot;DES&quot;));
+    byte[] encryptedData = cipher.doFinal(encryptString.getBytes(&quot;UTF-8&quot;));
+    return Base64.encodeBase64String(encryptedData);
 }
-</code></pre><p>My Blog: <a href="https://wanglinyong.github.io/wanglinyong.github.io">Deployment</a></p>
 
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/04/04/csharp改变行字体颜色或背景色/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/04/04/csharp改变行字体颜色或背景色/" itemprop="url">C# Gridview 改变行字体颜色或背景色</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-04T21:38:51+08:00">
-                2018-04-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/04/04/csharp改变行字体颜色或背景色/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/04/04/csharp改变行字体颜色或背景色/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、根据列表数据改变行字体颜色或者背景色"><a href="#一、根据列表数据改变行字体颜色或者背景色" class="headerlink" title="一、根据列表数据改变行字体颜色或者背景色"></a>一、根据列表数据改变行字体颜色或者背景色</h1><p>1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color.png" alt=""></p>
-<pre><code>string color =  tePhone1.Color.Name;
-</code></pre><p>2.将颜色字符串存入数据库，附上数据库Dao代码</p>
-<pre><code>    namespace rdms.DB
-   {
-public class StudentDao
-{
-    private static ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-    public static List&lt;Student&gt; GetAll()
-    {
-        return DBContext.ScodeSession.From&lt;Student&gt;().Select().ToList();
+/**
+ * key  不足8位补位
+ * @param
+ */
+public static byte[] getKey(String keyRule) {
+    Key key = null;
+    byte[] keyByte = keyRule.getBytes();
+    // 创建一个空的八位数组,默认情况下为0
+    byte[] byteTemp = new byte[8];
+    // 将用户指定的规则转换成八位数组
+    for (int i = 0; i &lt; byteTemp.length &amp;&amp; i &lt; keyByte.length; i++) {
+        byteTemp[i] = keyByte[i];
     }
+    key = new SecretKeySpec(byteTemp, &quot;DES&quot;);
+    return key.getEncoded();
+}
 
-    public static int Update(Student s)
-    {        
-        // DBContext.ScodeSession.FromSql(&quot;UPDATE  Student  SET  color = &apos;&quot;+s.color+ &quot;&apos; where s_id = &quot; + s.s_id);
-        return DBContext.ScodeSession.Update(s);
+/***
+ * 解密数据
+ * @param decryptString
+ * @param decryptKey
+ * @return
+ * @throws Exception
+ */
 
-    }
+public static String decryptDES(String decryptString, String decryptKey) throws Exception {
 
-    public static Student getStudent(int id)
-    {
-        List&lt;Student&gt; list = DBContext.ScodeSession.FromSql(&quot;SELECT *  FROM Student  where s_id = &quot; + id).ToList&lt;Student&gt;();
-        if (list != null &amp;&amp; list.Count &gt; 0)
-        {
-            return list[0];
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    public static int Add(Student s)
-    {
-        return DBContext.ScodeSession.Insert(s);
-    }
-
-    public static void Delete(Student s)
-    {
-        DBContext.ScodeSession.Delete&lt;Student&gt;(s);
-    }
+    byte[] sourceBytes = Base64.decodeBase64(decryptString);
+    Cipher cipher = Cipher.getInstance(&quot;DES/ECB/PKCS5Padding&quot;);
+    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKey(decryptKey), &quot;DES&quot;));
+    byte[] decoded = cipher.doFinal(sourceBytes);
+    return new String(decoded, &quot;UTF-8&quot;);
 
 }
-</code></pre><p>}</p>
-<p>3.在显示列表点击Run Designer，在事件列表中找到RowStyle,给一个事件名称</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color3.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color4.png" alt=""></p>
-<p>4.具体实现代码如下</p>
-<pre><code>//颜色字符串转颜色对象
-public static Color GetColor(string ColorStr)
-  {
-      int ARGBvalue = 0;
-      Color newColor = Color.FromName(ColorStr);
-      if ((newColor.A + newColor.R + newColor.G + newColor.B) == 0)
-      {
-          int.TryParse(ColorStr, System.Globalization.NumberStyles.HexNumber, null, out ARGBvalue);
-          newColor = Color.FromArgb(ARGBvalue);
-      }
-      return newColor;
-  }
 
-private void gridView2_RowStyle_2(object sender, RowStyleEventArgs e)
-  {
-      List&lt;Student&gt; list = StudentDao.GetAll();
-      string name = &quot;&quot;;                    
-      while(e.RowHandle &gt;= 0) {
-          if (gridView2.GetRowCellValue(e.RowHandle, &quot;NAME&quot;)!=null) { //NAME为列的字段名fildName
-             name = gridView2.GetRowCellValue(e.RowHandle, &quot;NAME&quot;).ToString();
-          }
-
-          if (list != null &amp;&amp; list.Count &gt; 0)
-          {
-              for (int i = 0; i &lt; list.Count; i++)
-              {
-                  Student s = list[i];                       
-                  if (name != &quot;&quot; )
-                  {
-                      if (name.Equals(s.name))
-                      {
-
-                          Color color = GetColor(s.color);
-                          e.Appearance.ForeColor = color;//改变字体颜色
-                          //e.Appearance.BackColor = Color.Red;//改变背景色
-                      }
-                  }
-
-              }
-          }
-                  break;
-      }
-  }
-</code></pre><p>5.效果预览如下:</p>
-<p>点击添加名单–选择颜色等</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color1.png" alt=""></p>
-<p>显示列表如下，根据条件显示字体颜色</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color2.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/04/04/csharp打开Excel文件/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/04/04/csharp打开Excel文件/" itemprop="url">C# 打开Excel文件方法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-04T21:38:51+08:00">
-                2018-04-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/04/04/csharp打开Excel文件/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/04/04/csharp打开Excel文件/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、C-怎样打开Excel文件"><a href="#一、C-怎样打开Excel文件" class="headerlink" title="一、C#怎样打开Excel文件"></a>一、C#怎样打开Excel文件</h1><p>1.右键–Add DevExpress Item – New Item，新建一个Form窗体</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e1.png" alt=""></p>
-<p>2.打开工具箱，搜索spreadsheetControl</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e2.png" alt=""></p>
-<p>3.将工具spreadsheetControl拖入新建的窗体中</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e3.png" alt=""></p>
-<p>4.可添加打开，保存，打印等按钮，我是随窗体打开一起打开excel，所以没有添加按钮，主要代码如下：</p>
-<pre><code>using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DevExpress.XtraEditors;
-using System.IO;
-using DevExpress.Spreadsheet;
-
-namespace rdms.Forms
-{
-public partial class frmARFCN : Form
-{
-    private static log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-    //记录窗体的名称
-    readonly string mainFormText;
-
-    public frmARFCN()
-    {
-        InitializeComponent();
-
-        //记录窗体的名称，并实现文档变化事件的处理，方便显示新的文件名称
-        mainFormText = this.Text;
-        this.spreadsheetControl1.DocumentLoaded += new EventHandler(spreadsheetControl1_DocumentLoaded);
-        openFile();
-    }
-
-    /// &lt;summary&gt;
-    /// 文档变化后，实现对新文件名称的显示
-    /// &lt;/summary&gt;
-    void spreadsheetControl1_DocumentLoaded(object sender, EventArgs e)
-    {
-        string fileName = Path.GetFileName(this.spreadsheetControl1.Document.Path);
-        if (String.IsNullOrEmpty(fileName))
-        {
-            Text = mainFormText;
-        }
-        else
-        {
-            Text = fileName + &quot; - &quot; + mainFormText;
-        }
-    }
-
-    /// &lt;summary&gt;
-    /// 打开Excel文件
-    /// &lt;/summary&gt;
-    private void openFile()
-    {
-        string path = Application.StartupPath;
-        LOG.Info(&quot;path===&quot;+path);
-        string filePath = path + &quot;\\Data\\about.xls&quot;;
-        if (!string.IsNullOrEmpty(filePath))
-        {
-            IWorkbook workbook = spreadsheetControl1.Document;
-            workbook.LoadDocument(filePath);
-        }
-    }
-
-    /// &lt;summary&gt;
-    /// 保存Excel文件
-    /// &lt;/summary&gt;
-    private void btnSaveFile_Click(object sender, EventArgs e)
-    {
-        spreadsheetControl1.SaveDocument();
-    }
-
-    /// &lt;summary&gt;
-    /// Excel文件打印
-    /// &lt;/summary&gt;
-    private void btnPreview_Click(object sender, EventArgs e)
-    {
-        this.spreadsheetControl1.ShowPrintPreview();
-    }
+public static void main(String[] args) throws Exception {
+    String clearText = &quot;wanglinyong@163.com&quot;;
+    String key = &quot;123456&quot;;//密钥
+    System.out.println(&quot;明文：&quot;+clearText+&quot;\n密钥：&quot;+key);
+    String encryptText = encryptDES(clearText, key);
+    System.out.println(&quot;加密后：&quot;+encryptText);
+    String decryptText = decryptDES(encryptText, key);
+    System.out.println(&quot;解密后：&quot;+decryptText);
 }
 }
-</code></pre><p>5.点击某个按钮弹出frmARFCN的form窗体</p>
-<pre><code> private void btn_Click(object sender, EventArgs e)
-{        
-    using (frmARFCN frm = new frmARFCN())
-    {
-        DialogResult ret = frm.ShowDialog(this);
-    }       
-}
-</code></pre><p>6.显示效果如下</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e4.png" alt=""></p>
-
+</code></pre>
           
         
       
@@ -1032,7 +612,7 @@ FLUSH PRIVILEGES;
 &gt; flush privileges;
 
 &gt; exit;
-</code></pre><h2 id="3-运行-gogs-web"><a href="#3-运行-gogs-web" class="headerlink" title="3.运行 gogs web"></a>3.运行 gogs web</h2><p>进入gogs目录下，并运行gogs</p>
+</code></pre><h2 id="4-运行-gogs-web"><a href="#4-运行-gogs-web" class="headerlink" title="4.运行 gogs web"></a>4.运行 gogs web</h2><p>进入gogs目录下，并运行gogs</p>
 <pre><code>cd /home/git/gogs/gogs
 
 nohup ./gogs web &amp; tail -f nohup.out #并打印日志
@@ -1043,7 +623,7 @@ nohup ./gogs web &amp; #仅后台运行
 </code></pre><p>然后访问 <a href="http://服务器IP:3000/" target="_blank" rel="external">http://服务器IP:3000/</a> 来进行安装，填写好表单之后提交就可以了。</p>
 <h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>1.如果访问网页失败，可能防火墙没有打开3000的端口，防火墙相关配置请查看linux系统相关服务这篇博客。</p>
 <p>2.还有0.6.9.0903 Beta 版本有个 bug，允许在关闭注册的情况下不添加管理员，这样安装完成之后将没有任何用户可以登录。所以请务必在安装界面指定一个管理员帐号。</p>
-<h2 id="4-相关配置"><a href="#4-相关配置" class="headerlink" title="4.相关配置"></a>4.相关配置</h2><p>1.配置文件位于 Gogs 目录的 custom/conf/app.ini ，是 INI 格式的文本文件。详细的配置解释和默认值请参考官方文档 ，其中关键的配置大概是下面这些。</p>
+<h2 id="5-相关配置"><a href="#5-相关配置" class="headerlink" title="5.相关配置"></a>5.相关配置</h2><p>1.配置文件位于 Gogs 目录的 custom/conf/app.ini ，是 INI 格式的文本文件。详细的配置解释和默认值请参考官方文档 ，其中关键的配置大概是下面这些。</p>
 <pre><code>RUN_USER 默认是 git ，指定 Gogs 以哪个用户运行
 ROOT 所有仓库的存储根路径
 PROTOCOL 如果你使用 nginx 反代的话请使用 http ，如果直接裸跑对外服务的话随意
@@ -1105,7 +685,7 @@ ROOT_PATH = /home/git/gogs/gogs/log
 [security]
 INSTALL_LOCK = true
 SECRET_KEY   = YfaCLhKinQVLlb7
-</code></pre><h2 id="5-nginx-反向代理"><a href="#5-nginx-反向代理" class="headerlink" title="5.nginx 反向代理"></a>5.nginx 反向代理</h2><p>在 /etc/nginx/sites-available 中新建一个文件，把以下内容写入文件中。</p>
+</code></pre><h2 id="6-nginx-反向代理"><a href="#6-nginx-反向代理" class="headerlink" title="6.nginx 反向代理"></a>6.nginx 反向代理</h2><p>在 /etc/nginx/sites-available 中新建一个文件，把以下内容写入文件中。</p>
 <pre><code>server {
 server_name 域名或IP;
 listen 80; # 或者 443，如果你使用 HTTPS 的话
@@ -1123,7 +703,7 @@ location / { # 如果你希望通过子路径访问，此处修改为子路径�
 /etc/init.d/nginx start #开始
 </code></pre><p>Ubuntu 下是 </p>
 <pre><code>sudo service nginx restart 。
-</code></pre><h2 id="6-开机自动重启等脚本"><a href="#6-开机自动重启等脚本" class="headerlink" title="6.开机自动重启等脚本"></a>6.开机自动重启等脚本</h2><p>在scripts/文件夹下有关于多个系统的服务脚本：</p>
+</code></pre><h2 id="7-开机自动重启等脚本"><a href="#7-开机自动重启等脚本" class="headerlink" title="7.开机自动重启等脚本"></a>7.开机自动重启等脚本</h2><p>在scripts/文件夹下有关于多个系统的服务脚本：</p>
 <pre><code>autoboot.sh  build_freebsd.sh  build_linux64.sh  build.sh  init 
 launchd  mysql.sql  README  supervisor  systemd  windows
 </code></pre><p>其中init,systemd以及windows目录分别为linux、Windows下服务脚本。<br>在此仅以CentOS为例:</p>
@@ -1779,6 +1359,464 @@ SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/23/csharp打开Excel文件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/23/csharp打开Excel文件/" itemprop="url">C# 打开Excel文件方法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T19:43:06+08:00">
+                2018-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/01/23/csharp打开Excel文件/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/23/csharp打开Excel文件/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、C-怎样打开Excel文件"><a href="#一、C-怎样打开Excel文件" class="headerlink" title="一、C#怎样打开Excel文件"></a>一、C#怎样打开Excel文件</h1><p>1.右键–Add DevExpress Item – New Item，新建一个Form窗体</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e1.png" alt=""></p>
+<p>2.打开工具箱，搜索spreadsheetControl</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e2.png" alt=""></p>
+<p>3.将工具spreadsheetControl拖入新建的窗体中</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e3.png" alt=""></p>
+<p>4.可添加打开，保存，打印等按钮，我是随窗体打开一起打开excel，所以没有添加按钮，主要代码如下：</p>
+<pre><code>using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using DevExpress.XtraEditors;
+using System.IO;
+using DevExpress.Spreadsheet;
+
+namespace rdms.Forms
+{
+public partial class frmARFCN : Form
+{
+    private static log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    //记录窗体的名称
+    readonly string mainFormText;
+
+    public frmARFCN()
+    {
+        InitializeComponent();
+
+        //记录窗体的名称，并实现文档变化事件的处理，方便显示新的文件名称
+        mainFormText = this.Text;
+        this.spreadsheetControl1.DocumentLoaded += new EventHandler(spreadsheetControl1_DocumentLoaded);
+        openFile();
+    }
+
+    /// &lt;summary&gt;
+    /// 文档变化后，实现对新文件名称的显示
+    /// &lt;/summary&gt;
+    void spreadsheetControl1_DocumentLoaded(object sender, EventArgs e)
+    {
+        string fileName = Path.GetFileName(this.spreadsheetControl1.Document.Path);
+        if (String.IsNullOrEmpty(fileName))
+        {
+            Text = mainFormText;
+        }
+        else
+        {
+            Text = fileName + &quot; - &quot; + mainFormText;
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// 打开Excel文件
+    /// &lt;/summary&gt;
+    private void openFile()
+    {
+        string path = Application.StartupPath;
+        LOG.Info(&quot;path===&quot;+path);
+        string filePath = path + &quot;\\Data\\about.xls&quot;;
+        if (!string.IsNullOrEmpty(filePath))
+        {
+            IWorkbook workbook = spreadsheetControl1.Document;
+            workbook.LoadDocument(filePath);
+        }
+    }
+
+    /// &lt;summary&gt;
+    /// 保存Excel文件
+    /// &lt;/summary&gt;
+    private void btnSaveFile_Click(object sender, EventArgs e)
+    {
+        spreadsheetControl1.SaveDocument();
+    }
+
+    /// &lt;summary&gt;
+    /// Excel文件打印
+    /// &lt;/summary&gt;
+    private void btnPreview_Click(object sender, EventArgs e)
+    {
+        this.spreadsheetControl1.ShowPrintPreview();
+    }
+}
+}
+</code></pre><p>5.点击某个按钮弹出frmARFCN的form窗体</p>
+<pre><code> private void btn_Click(object sender, EventArgs e)
+{        
+    using (frmARFCN frm = new frmARFCN())
+    {
+        DialogResult ret = frm.ShowDialog(this);
+    }       
+}
+</code></pre><p>6.显示效果如下</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e4.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/19/csharp改变行字体颜色或背景色/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/19/csharp改变行字体颜色或背景色/" itemprop="url">C# Gridview 改变行字体颜色或背景色</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-19T19:43:06+08:00">
+                2018-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/01/19/csharp改变行字体颜色或背景色/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/19/csharp改变行字体颜色或背景色/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、根据列表数据改变行字体颜色或者背景色"><a href="#一、根据列表数据改变行字体颜色或者背景色" class="headerlink" title="一、根据列表数据改变行字体颜色或者背景色"></a>一、根据列表数据改变行字体颜色或者背景色</h1><p>1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color.png" alt=""></p>
+<pre><code>string color =  tePhone1.Color.Name;
+</code></pre><p>2.将颜色字符串存入数据库，附上数据库Dao代码</p>
+<pre><code>    namespace rdms.DB
+   {
+public class StudentDao
+{
+    private static ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    public static List&lt;Student&gt; GetAll()
+    {
+        return DBContext.ScodeSession.From&lt;Student&gt;().Select().ToList();
+    }
+
+    public static int Update(Student s)
+    {        
+        // DBContext.ScodeSession.FromSql(&quot;UPDATE  Student  SET  color = &apos;&quot;+s.color+ &quot;&apos; where s_id = &quot; + s.s_id);
+        return DBContext.ScodeSession.Update(s);
+
+    }
+
+    public static Student getStudent(int id)
+    {
+        List&lt;Student&gt; list = DBContext.ScodeSession.FromSql(&quot;SELECT *  FROM Student  where s_id = &quot; + id).ToList&lt;Student&gt;();
+        if (list != null &amp;&amp; list.Count &gt; 0)
+        {
+            return list[0];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static int Add(Student s)
+    {
+        return DBContext.ScodeSession.Insert(s);
+    }
+
+    public static void Delete(Student s)
+    {
+        DBContext.ScodeSession.Delete&lt;Student&gt;(s);
+    }
+
+}
+</code></pre><p>}</p>
+<p>3.在显示列表点击Run Designer，在事件列表中找到RowStyle,给一个事件名称</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color3.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color4.png" alt=""></p>
+<p>4.具体实现代码如下</p>
+<pre><code>//颜色字符串转颜色对象
+public static Color GetColor(string ColorStr)
+  {
+      int ARGBvalue = 0;
+      Color newColor = Color.FromName(ColorStr);
+      if ((newColor.A + newColor.R + newColor.G + newColor.B) == 0)
+      {
+          int.TryParse(ColorStr, System.Globalization.NumberStyles.HexNumber, null, out ARGBvalue);
+          newColor = Color.FromArgb(ARGBvalue);
+      }
+      return newColor;
+  }
+
+private void gridView2_RowStyle_2(object sender, RowStyleEventArgs e)
+  {
+      List&lt;Student&gt; list = StudentDao.GetAll();
+      string name = &quot;&quot;;                    
+      while(e.RowHandle &gt;= 0) {
+          if (gridView2.GetRowCellValue(e.RowHandle, &quot;NAME&quot;)!=null) { //NAME为列的字段名fildName
+             name = gridView2.GetRowCellValue(e.RowHandle, &quot;NAME&quot;).ToString();
+          }
+
+          if (list != null &amp;&amp; list.Count &gt; 0)
+          {
+              for (int i = 0; i &lt; list.Count; i++)
+              {
+                  Student s = list[i];                       
+                  if (name != &quot;&quot; )
+                  {
+                      if (name.Equals(s.name))
+                      {
+
+                          Color color = GetColor(s.color);
+                          e.Appearance.ForeColor = color;//改变字体颜色
+                          //e.Appearance.BackColor = Color.Red;//改变背景色
+                      }
+                  }
+
+              }
+          }
+                  break;
+      }
+  }
+</code></pre><p>5.效果预览如下:</p>
+<p>点击添加名单–选择颜色等</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color1.png" alt=""></p>
+<p>显示列表如下，根据条件显示字体颜色</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color2.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/07/csharp Dockmanager窗体显示和隐藏/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2305,7 +2343,7 @@ if (list != null &amp;&amp; list.Count &gt; 0)
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

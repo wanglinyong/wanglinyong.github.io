@@ -90,7 +90,10 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mqc.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mq.png">
-<meta property="og:updated_time" content="2018-01-05T12:11:08.566Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mysql-1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mysql-2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mysql-3.png">
+<meta property="og:updated_time" content="2018-03-25T02:10:19.490Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="linux系统各服务相关设置">
 <meta name="twitter:description" content="一、配置JDK环境变量#vi /etc/profile 在该profile文件中最下面添加： export JAVA_HOME=/root/softs/jdk1.8.0_77 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar export PATH=$PATH:$JAVA_HOME/bin 添加完毕保存退出 友情提示">
@@ -590,6 +593,62 @@ OK
 <pre><code>dos2unix *
 </code></pre><p>终止正在运行的程序</p>
 <pre><code>ctrl+z可以将一个正在前台执行的命令放到后台，并且处于暂停状态，不可执行
+</code></pre><h1 id="六、MySql安装及自启动配置"><a href="#六、MySql安装及自启动配置" class="headerlink" title="六、MySql安装及自启动配置"></a>六、MySql安装及自启动配置</h1><h2 id="1-下载mysql源安装包"><a href="#1-下载mysql源安装包" class="headerlink" title="1.下载mysql源安装包"></a>1.下载mysql源安装包</h2><pre><code>wget http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpm
+</code></pre><p>如果没有wget命令，yum安装</p>
+<pre><code>yum -y install wget
+</code></pre><h2 id="2-安装mysql源"><a href="#2-安装mysql源" class="headerlink" title="2.安装mysql源"></a>2.安装mysql源</h2><pre><code>yum localinstall mysql57-community-release-el7-8.noarch.rpm
+</code></pre><p>检查mysql源是否安装成功</p>
+<pre><code>yum repolist enabled | grep &quot;mysql.*-community.*&quot;
+</code></pre><p>看到下图所示表示安装成功。</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mysql-1.png" alt=""></p>
+<h2 id="3、安装MySQL"><a href="#3、安装MySQL" class="headerlink" title="3、安装MySQL"></a>3、安装MySQL</h2><pre><code>yum install mysql-community-server
+</code></pre><p>启动MySQL服务</p>
+<pre><code>systemctl start mysqld
+</code></pre><p>查看MySQL的启动状态，如下图所示</p>
+<pre><code>systemctl status mysqld
+</code></pre><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mysql-2.png" alt=""></p>
+<h2 id="4、设置开机自启动"><a href="#4、设置开机自启动" class="headerlink" title="4、设置开机自启动"></a>4、设置开机自启动</h2><pre><code>systemctl enable mysqld
+systemctl daemon-reload
+</code></pre><p>修改root本地登录密码,mysql安装完成之后，在/var/log/mysqld.log文件中给root生成了一个默认密码。通过下面的方式找到root默认密码</p>
+<pre><code>grep &apos;temporary password&apos; /var/log/mysqld.log
+</code></pre><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/mysql-3.png" alt=""></p>
+<p>然后登录mysql进行修改：</p>
+<pre><code>mysql -uroot -p
+
+mysql&gt; ALTER USER &apos;root&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;root&apos;; 
+</code></pre><h2 id="注意：mysql5-7默认安装了密码安全检查插件"><a href="#注意：mysql5-7默认安装了密码安全检查插件" class="headerlink" title="注意：mysql5.7默认安装了密码安全检查插件"></a>注意：mysql5.7默认安装了密码安全检查插件</h2><p>默认密码检查策略要求密码必须包含：大小写字母、数字和特殊符号，并且长度不能少于8位。否则会提示如下错误</p>
+<pre><code>ERROR 1819 (HY000): Your password does not satisfy 
+
+the current policy requirements
+</code></pre><p>修改密码策略</p>
+<p>在/etc/my.cnf文件添加validate_password_policy配置，指定密码策略</p>
+<p>选择0（LOW），1（MEDIUM），2（STRONG）其中一种，选择2需要提供密码字典文件</p>
+<pre><code>validate_password_policy=0
+</code></pre><p>如果不需要密码策略，添加my.cnf文件中添加如下配置禁用即可：</p>
+<pre><code>validate_password = off
+</code></pre><p>重新启动mysql服务使配置生效：</p>
+<pre><code>systemctl restart mysqld
+</code></pre><h2 id="5、添加远程登录用户"><a href="#5、添加远程登录用户" class="headerlink" title="5、添加远程登录用户"></a>5、添加远程登录用户</h2><p>默认只允许root帐户在本地登录，如果要在其它机器上连接mysql，必须修改root允许远程连接，或者添加一个允许远程连接的帐户，为了安全起见，添加一个新的帐户：</p>
+<pre><code>mysql&gt; GRANT ALL PRIVILEGES ON *.* TO 
+&apos;wanglinyong&apos;@&apos;%&apos; IDENTIFIED BY &apos;wanglinyong0617&apos; 
+WITH GRANT OPTION;
+</code></pre><h2 id="6、配置默认编码为utf8"><a href="#6、配置默认编码为utf8" class="headerlink" title="6、配置默认编码为utf8"></a>6、配置默认编码为utf8</h2><p>修改/etc/my.cnf配置文件，在[mysqld]下添加编码配置，如下所示：</p>
+<pre><code>[mysqld]
+character_set_server=utf8
+init_connect=&apos;SET NAMES utf8&apos;
+</code></pre><p>重新启动mysql服务</p>
+<pre><code>systemctl restart mysqld
+</code></pre><p>默认配置文件路径： </p>
+<pre><code>配置文件：/etc/my.cnf 
+日志文件：/var/log//var/log/mysqld.log 
+服务启动脚本：/usr/lib/systemd/system/mysqld.service 
+socket文件：/var/run/mysqld/mysqld.pid
+</code></pre><h1 id="注意"><a href="#注意" class="headerlink" title="注意!!"></a>注意!!</h1><p>如果启动项目之后访问网页总是提示某表找不到，是因为mysql表名区分了大小写</p>
+<p>解决办法</p>
+<pre><code>vi /etc/my.cnf
+</code></pre><p>加入如下配置即可</p>
+<pre><code>[mysqld]
+lower_case_table_names=1
 </code></pre>
       
     </div>
@@ -652,8 +711,8 @@ OK
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/wanglinyong.github.io/2017/11/22/linux系统如何移动mysql存放文件的位置/" rel="next" title="linux系统如何移动mysql存放文件的位置">
-                <i class="fa fa-chevron-left"></i> linux系统如何移动mysql存放文件的位置
+              <a href="/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/" rel="next" title="linux下安装nginx及开机自启动">
+                <i class="fa fa-chevron-left"></i> linux下安装nginx及开机自启动
               </a>
             
           </div>
@@ -662,8 +721,8 @@ OK
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/" rel="prev" title="linux下安装nginx及开机自启动">
-                linux下安装nginx及开机自启动 <i class="fa fa-chevron-right"></i>
+              <a href="/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/" rel="prev" title="JSP遍历两个集合的情况">
+                JSP遍历两个集合的情况 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -748,7 +807,7 @@ OK
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -826,7 +885,7 @@ OK
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、配置JDK环境变量"><span class="nav-number">1.</span> <span class="nav-text">一、配置JDK环境变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、防火墙设置"><span class="nav-number">2.</span> <span class="nav-text">二、防火墙设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展"><span class="nav-number">2.1.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、Tomcat开机自启动配置"><span class="nav-number">3.</span> <span class="nav-text">三、Tomcat开机自启动配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、ActiveMQ开机自启动配置"><span class="nav-number">4.</span> <span class="nav-text">四、ActiveMQ开机自启动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展-1"><span class="nav-number">4.1.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、Redis开机自启动配置"><span class="nav-number">5.</span> <span class="nav-text">五、Redis开机自启动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展-2"><span class="nav-number">5.1.</span> <span class="nav-text">拓展</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、配置JDK环境变量"><span class="nav-number">1.</span> <span class="nav-text">一、配置JDK环境变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、防火墙设置"><span class="nav-number">2.</span> <span class="nav-text">二、防火墙设置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展"><span class="nav-number">2.1.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、Tomcat开机自启动配置"><span class="nav-number">3.</span> <span class="nav-text">三、Tomcat开机自启动配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、ActiveMQ开机自启动配置"><span class="nav-number">4.</span> <span class="nav-text">四、ActiveMQ开机自启动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展-1"><span class="nav-number">4.1.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、Redis开机自启动配置"><span class="nav-number">5.</span> <span class="nav-text">五、Redis开机自启动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展-2"><span class="nav-number">5.1.</span> <span class="nav-text">拓展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、MySql安装及自启动配置"><span class="nav-number">6.</span> <span class="nav-text">六、MySql安装及自启动配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-下载mysql源安装包"><span class="nav-number">6.1.</span> <span class="nav-text">1.下载mysql源安装包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-安装mysql源"><span class="nav-number">6.2.</span> <span class="nav-text">2.安装mysql源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、安装MySQL"><span class="nav-number">6.3.</span> <span class="nav-text">3、安装MySQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、设置开机自启动"><span class="nav-number">6.4.</span> <span class="nav-text">4、设置开机自启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意：mysql5-7默认安装了密码安全检查插件"><span class="nav-number">6.5.</span> <span class="nav-text">注意：mysql5.7默认安装了密码安全检查插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、添加远程登录用户"><span class="nav-number">6.6.</span> <span class="nav-text">5、添加远程登录用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、配置默认编码为utf8"><span class="nav-number">6.7.</span> <span class="nav-text">6、配置默认编码为utf8</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注意"><span class="nav-number">7.</span> <span class="nav-text">注意!!</span></a></li></ol></div>
             
 
           </div>
