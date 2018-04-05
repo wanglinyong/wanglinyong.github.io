@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/wanglinyong.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/wanglinyong.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/wanglinyong.github.io/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/wanglinyong.github.io/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/wanglinyong.github.io/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/wanglinyong.github.io/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/wanglinyong.github.io/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+  <link rel="alternate" href="/wanglinyong.github.io/atom.xml" title="Wang's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="一、添加右击菜单1、打开工具箱，选择ContextMenuStrip如下图  2、可输入右键菜单名称及添加图标，如下图  3、如果想在哪个窗口右击显示就在哪个窗口ALT+ENTER打开属性窗口，将ContextMenuStrip选项的值设为刚才添加的名字，如下图  4、双击右键添加的菜单即可添加单击事件 二、添加回车Enter事件1、在要添加回车事件的文本框ALT+ENTER打开属性窗口，如下：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c#GridView获取选中当前行">
+<meta property="og:url" content="https://wanglinyong.github.io/2018/01/02/csharp获取选中当前行/index.html">
+<meta property="og:site_name" content="Wang&#39;s Blog">
+<meta property="og:description" content="一、添加右击菜单1、打开工具箱，选择ContextMenuStrip如下图  2、可输入右键菜单名称及添加图标，如下图  3、如果想在哪个窗口右击显示就在哪个窗口ALT+ENTER打开属性窗口，将ContextMenuStrip选项的值设为刚才添加的名字，如下图  4、双击右键添加的菜单即可添加单击事件 二、添加回车Enter事件1、在要添加回车事件的文本框ALT+ENTER打开属性窗口，如下：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/s1.png">
+<meta property="og:updated_time" content="2018-01-02T08:56:08.072Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="c#GridView获取选中当前行">
+<meta name="twitter:description" content="一、添加右击菜单1、打开工具箱，选择ContextMenuStrip如下图  2、可输入右键菜单名称及添加图标，如下图  3、如果想在哪个窗口右击显示就在哪个窗口ALT+ENTER打开属性窗口，将ContextMenuStrip选项的值设为刚才添加的名字，如下图  4、双击右键添加的菜单即可添加单击事件 二、添加回车Enter事件1、在要添加回车事件的文本框ALT+ENTER打开属性窗口，如下：">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/wanglinyong.github.io/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wanglinyong.github.io/2018/01/02/csharp获取选中当前行/"/>
+
+
+
+
+
+  <title>c#GridView获取选中当前行 | Wang's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?your_id";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/wanglinyong/wanglinyong.github.io/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/wanglinyong.github.io/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/wanglinyong.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/wanglinyong.github.io/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/wanglinyong.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/wanglinyong.github.io/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/wanglinyong.github.io/about/index.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/02/csharp获取选中当前行/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">c#GridView获取选中当前行</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-02T16:23:05+08:00">
+                2018-01-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/01/02/csharp获取选中当前行/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/02/csharp获取选中当前行/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、添加右击菜单"><a href="#一、添加右击菜单" class="headerlink" title="一、添加右击菜单"></a>一、添加右击菜单</h1><p>1、打开工具箱，选择ContextMenuStrip如下图</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool1.png" alt=""></p>
+<p>2、可输入右键菜单名称及添加图标，如下图</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool2.png" alt=""></p>
+<p>3、如果想在哪个窗口右击显示就在哪个窗口ALT+ENTER打开属性窗口，将<br>ContextMenuStrip选项的值设为刚才添加的名字，如下图</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool3.png" alt=""></p>
+<p>4、双击右键添加的菜单即可添加单击事件</p>
+<h1 id="二、添加回车Enter事件"><a href="#二、添加回车Enter事件" class="headerlink" title="二、添加回车Enter事件"></a>二、添加回车Enter事件</h1><p>1、在要添加回车事件的文本框ALT+ENTER打开属性窗口，如下：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter1.png" alt=""></p>
+<p>2、将KeyDown选项的值填上触发回车事件的方法名，如下</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter2.png" alt=""></p>
+<p>3、写入触发事件方法，如：</p>
+<pre><code>private void txtPwd_KeyDown(object sender, KeyEventArgs e)
+  {
+      if (e.KeyCode == Keys.Enter)
+      {
+          this.btnSearch_Click(sender, e);//触发与点击按钮一样的效果
+      }
+  }
+</code></pre><h1 id="三、获取选中行数据"><a href="#三、获取选中行数据" class="headerlink" title="三、获取选中行数据"></a>三、获取选中行数据</h1><p>1、右击AddToBlack后触发点击事件，代码如下</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/s1.png" alt=""></p>
+<pre><code>private void addToBlackToolStripMenuItem_Click_1(object sender, EventArgs e)
+ {
+     int[] rows = gridView1.GetSelectedRows();
+     rdms_ueidinfo info = null;
+     if (rows.Length &gt; 0)
+     {
+         if (list != null &amp;&amp; list.Count &gt; 0)
+         {
+             info = list[rows[0]];
+         }
+         else
+         {
+             info = xxData.Ueidinfos[rows[0]];
+         }
+         Contact contact = new Contact();
+         contact.IMSI = info.imsi;
+         contact.IMEI = info.imei;
+         DialogResult ret = DialogResult.Cancel;
+         Cursor.Current = Cursors.WaitCursor;
+         using (frmEditContact frm = new frmEditContact(contact, OwnerForm.Ribbon))
+         {
+             ret = frm.ShowDialog(OwnerForm);
+         }
+         Cursor.Current = Cursors.Default;
+     }
+ }
+</code></pre><p>2、双击行获取选中行数据，代码如下</p>
+<pre><code>    private void addToBlackListByDouble(object sender, EventArgs e)
+{
+    int[] rows = gridView1.GetSelectedRows();
+    rdms_ueidinfo info = null;
+    if (rows.Length &gt; 0)
+    {
+        if (list != null &amp;&amp; list.Count &gt; 0)
+        {
+             info = list[rows[0]];
+        }
+        else {
+             info = xxData.Ueidinfos[rows[0]];
+        }
+        Contact contact = new Contact();
+        contact.IMSI = info.imsi;
+        contact.IMEI = info.imei;
+        DialogResult ret = DialogResult.Cancel;
+        Cursor.Current = Cursors.WaitCursor;
+        using (frmEditContact frm = new frmEditContact(contact, OwnerForm.Ribbon))
+        {
+            ret = frm.ShowDialog(OwnerForm);
+        }
+        Cursor.Current = Cursors.Default;
+    }
+
+}
+</code></pre><p>3、代码解释：</p>
+<pre><code>rdms_ueidinfo info = null;
+if (list != null &amp;&amp; list.Count &gt; 0)
+           {
+                info = list[rows[0]];
+           }
+           else {
+                info = xxData.Ueidinfos[rows[0]];
+           }
+</code></pre><p>点击查询后，将根据查询条件查询的结果list再次显示到该列表，此时要获取选中行，就需要判断，如果list不为null表示当前列表是根据查询后显示的结果，否则就是初始列表，要做不同的判断才能选中想要的结果，之前一直选不中，甚是烦恼，真的是难者不会，会者不难，经过多次摸索才明白。</p>
+
+      
+    </div>
+    
+    
+    
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/weixin.jpg" alt="WangLinYong 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/zfb.jpg" alt="WangLinYong 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/wanglinyong.github.io/2017/12/10/csharp进度条/" rel="next" title="C#通过Devexpress控件实现进度条功能">
+                <i class="fa fa-chevron-left"></i> C#通过Devexpress控件实现进度条功能
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/" rel="prev" title="Sqlite 获取一小时内数据sql">
+                Sqlite 获取一小时内数据sql <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/01/02/csharp获取选中当前行/"
+           data-title="c#GridView获取选中当前行" data-url="https://wanglinyong.github.io/2018/01/02/csharp获取选中当前行/">
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WangLinYong</p>
+              <p class="site-description motion-element" itemprop="description">JAVA，Python，C#，Node.js，个人博客，Github，hexo</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/wanglinyong.github.io/archives/">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/wanglinyong.github.io/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/wanglinyong.github.io/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/wanglinyong.github.io/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/wanglinyong" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/yourname" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、添加右击菜单"><span class="nav-number">1.</span> <span class="nav-text">一、添加右击菜单</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、添加回车Enter事件"><span class="nav-number">2.</span> <span class="nav-text">二、添加回车Enter事件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、获取选中行数据"><span class="nav-number">3.</span> <span class="nav-text">三、获取选中行数据</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WangLinYong</span>
+
+  
+</div>
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/wanglinyong.github.io/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"your_username"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/wanglinyong.github.io/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/wanglinyong.github.io/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
