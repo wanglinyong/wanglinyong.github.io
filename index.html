@@ -274,6 +274,569 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/04/10/BadBoy+Jmeter压力测试/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/04/10/BadBoy+Jmeter压力测试/" itemprop="url">BadBoy+Jmeter压力测试</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-10T19:42:48+08:00">
+                2018-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/性能测试/" itemprop="url" rel="index">
+                    <span itemprop="name">性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/04/10/BadBoy+Jmeter压力测试/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/04/10/BadBoy+Jmeter压力测试/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、下载BadBoy和Jmeter"><a href="#一、下载BadBoy和Jmeter" class="headerlink" title="一、下载BadBoy和Jmeter"></a>一、下载BadBoy和Jmeter</h1><h2 id="1-下载链接"><a href="#1-下载链接" class="headerlink" title="1.下载链接"></a>1.下载链接</h2><p>BadBoy</p>
+<pre><code>http://www.badboy.com.au/download/index
+</code></pre><p>Jmeter</p>
+<pre><code>http://jmeter.apache.org/download_jmeter.cgi
+</code></pre><h2 id="2-下载过程如图"><a href="#2-下载过程如图" class="headerlink" title="2.下载过程如图"></a>2.下载过程如图</h2><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/bd-1.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/bd-2.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/jm-1.png" alt=""></p>
+<h2 id="3-解压并配置环境变量"><a href="#3-解压并配置环境变量" class="headerlink" title="3.解压并配置环境变量"></a>3.解压并配置环境变量</h2><p>将下载好的BadBoy和Jmeter解压到合适的地方</p>
+<p>配置环境变量</p>
+<pre><code>变量名称：JMETER_HOME
+
+变量值：  G:\wly\apache-jmeter-4.0
+</code></pre><p> 在classpath后面加入：                          </p>
+<pre><code>%JMETER_HOME%\lib\ext\ApacheJMeter_core.jar;%JMETER_HOME%\lib\jorphan.jar;%JMETER_HOME%\lib\logkit-2.0.jar;
+</code></pre><h2 id="二、录制Jmeter脚本"><a href="#二、录制Jmeter脚本" class="headerlink" title="二、录制Jmeter脚本"></a>二、录制Jmeter脚本</h2><h2 id="1-打开BadBoy"><a href="#1-打开BadBoy" class="headerlink" title="1.打开BadBoy"></a>1.打开BadBoy</h2><p>（1）点击badboy.exe ,打开BadBoy,界面如下：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/bd-3.png" alt=""></p>
+<p>（2）输入URL，点击回车开始录制</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/bd-4.png" alt=""></p>
+<p>（3）此时左侧script下多了一条记录，右侧出现调试页面的首页</p>
+<p>然后点击登录，访问首页，然后退出，badboy界面如下，总共有五条记录</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/bd-5.png" alt=""></p>
+<p>（4）接下来导出jmter脚本，点击</p>
+<pre><code>file-&gt;Export to Jmeter
+</code></pre><p>导出后缀为.jmx的文件</p>
+<h2 id="2-打开Jmeter"><a href="#2-打开Jmeter" class="headerlink" title="2.打开Jmeter"></a>2.打开Jmeter</h2><p>（1）进入Jmeter的bin目录，点击jmeter.bat运行Jmeter</p>
+<p>（2）File-&gt;Open打开刚才导出的jmeter脚本 界面如下：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/jm-2.png" alt=""></p>
+<p>（3）Thread Group线程组就是定义并发数量的，step就是压测的步骤。<br>Number of Threads(users) 表示线程数量，如果设置为5000，就是模拟5000个人不断重复刚才的 首页-&gt;登录-&gt;首页-&gt;退出 操作</p>
+<p>Ram-Up Period(in seconds)表示间隔时间</p>
+<p>Loop Count 表示循环次数</p>
+<p>压力测试：线程数越多压力越大，间隔时间越短压力越大</p>
+<p>（4）添加监听器</p>
+<p>添加聚合报告、查看结果树和用表格查看，如下图：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/jm-3.png" alt=""></p>
+<p>（5）运行</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/jm-4.png" alt=""></p>
+<p>（6）查看结果</p>
+<p>查看结果树，如下：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/jm-5.png" alt=""></p>
+<p>聚合报告，如下：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/jm-6.png" alt=""></p>
+<p>表格查看，如下：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/jm-7.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/04/06/linux系统搭建文件服务器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/04/06/linux系统搭建文件服务器/" itemprop="url">linux系统搭建文件服务器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-06T10:48:23+08:00">
+                2018-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/04/06/linux系统搭建文件服务器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/04/06/linux系统搭建文件服务器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一、安装-httpd-服务"><a href="#一、安装-httpd-服务" class="headerlink" title="一、安装 httpd 服务"></a>一、安装 httpd 服务</h2><pre><code>yum install httpd
+</code></pre><p>查看版本号</p>
+<pre><code>httpd -version
+</code></pre><h2 id="二、启动-httpd-服务"><a href="#二、启动-httpd-服务" class="headerlink" title="二、启动 httpd 服务"></a>二、启动 httpd 服务</h2><pre><code>service httpd start
+</code></pre><h2 id="三、容易出现的问题"><a href="#三、容易出现的问题" class="headerlink" title="三、容易出现的问题"></a>三、容易出现的问题</h2><p>1.防火墙未开放端口</p>
+<pre><code>开启端口：firewall-cmd --zone=public --add-port=8989/tcp --permanent
+
+重启防火墙：firewall-cmd --reload 
+
+查看已开放端口：firewall-cmd --list-ports
+</code></pre><p>2.端口被占用</p>
+<pre><code>更改端口号
+</code></pre><p>修改配置文件，默认路径是</p>
+<pre><code>/etc/httpd/conf/httpd.conf 
+</code></pre><p>主要修改以下内容</p>
+<pre><code>Listen 80 --&gt; Listen 8987     #监听端口
+
+#ServerName www.example.com:80 --&gt; ServerName 192.168.120.132:8987    #服务名称ip:port
+
+DocumentRoot &quot;/var/www/html&quot; --&gt;  DocumentRoot &quot;/home/profile&quot;   #文件根目录
+
+&lt;Directory &quot;/var/www/html&quot;&gt; ---&gt;  &lt;Directory &quot;/home/profile&quot;&gt;  #文件路径1
+
+&lt;Directory &quot;/var/www/html&quot;&gt; ---&gt;  &lt;Directory &quot;/home/profile&quot;&gt;  #文件路径2
+</code></pre><p>3.出现apache CentOS Permission denied: AH00072</p>
+<p>关闭SELINUX</p>
+<pre><code>setenforce 0
+</code></pre><p>修改配置文件</p>
+<pre><code>vim /etc/selinux/config
+
+SELINUX=enforcing 改成--&gt; SELINUX=disabled
+</code></pre><h2 id="四、启动服务"><a href="#四、启动服务" class="headerlink" title="四、启动服务"></a>四、启动服务</h2><pre><code>service httpd start
+</code></pre><p>停止服务</p>
+<pre><code>service httpd stop
+</code></pre><h2 id="五、远程访问"><a href="#五、远程访问" class="headerlink" title="五、远程访问"></a>五、远程访问</h2><p>在浏览器中输入 ip:port 即可访问设置的 /home/profile 目录;</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ftp.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/31/linux系统安装git/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/03/31/linux系统安装git/" itemprop="url">linux系统安装git</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-31T14:36:00+08:00">
+                2018-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/03/31/linux系统安装git/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/31/linux系统安装git/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、安装git依赖包"><a href="#一、安装git依赖包" class="headerlink" title="一、安装git依赖包"></a>一、安装git依赖包</h1><pre><code>yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc perl-ExtUtils-MakeMaker
+</code></pre><h1 id="二、删除已有的git"><a href="#二、删除已有的git" class="headerlink" title="二、删除已有的git"></a>二、删除已有的git</h1><pre><code>yum remove git
+</code></pre><h1 id="三、下载git源码"><a href="#三、下载git源码" class="headerlink" title="三、下载git源码"></a>三、下载git源码</h1><p>切换到你的包文件存放目录下</p>
+<pre><code>　cd /home/softs
+</code></pre><p>下载git安装包</p>
+<pre><code>wget https://www.kernel.org/pub/software/scm/git/git-2.8.3.tar.gz
+</code></pre><p>解压git安装包</p>
+<pre><code>tar -zxvf git-2.8.3.tar.gz
+
+cd git-2.8.3
+</code></pre><p>配置git安装路径</p>
+<pre><code>./configure prefix=/usr/local/git/
+</code></pre><p>编译并且安装</p>
+<pre><code>make &amp;&amp; make install
+</code></pre><h1 id="四、将git指令添加到bash中"><a href="#四、将git指令添加到bash中" class="headerlink" title="四、将git指令添加到bash中"></a>四、将git指令添加到bash中</h1><pre><code>vi /etc/profile
+</code></pre><p>在最后一行加入</p>
+<pre><code>export PATH=$PATH:/usr/local/git/bin
+</code></pre><p>让该配置文件立即生效</p>
+<pre><code>source /etc/profile
+</code></pre><p>查看git版本号</p>
+<pre><code>git --version
+</code></pre><p>git已经安装完毕 </p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/24/DES加密解密/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1804,500 +2367,11 @@ private void gridView2_RowStyle_2(object sender, RowStyleEventArgs e)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/07/csharp Dockmanager窗体显示和隐藏/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/07/csharp Dockmanager窗体显示和隐藏/" itemprop="url">c# 利用Dockmanager工具使窗体显示和隐藏</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-07T19:28:32+08:00">
-                2018-01-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/01/07/csharp Dockmanager窗体显示和隐藏/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/07/csharp Dockmanager窗体显示和隐藏/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>1.打开工具箱，选择Dockmanager工具，如下：</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/panel1.png" alt=""></p>
-<p>2.点击dockManager1的倒三角，点击Add bottom panel 在底部添加panel,如下：</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/panel2.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/panel3.png" alt=""></p>
-<p>3.可将内容添加到此panel窗体中，点击图钉按钮即可选择固定与否<br><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/panel4.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/" itemprop="url">Sqlite 获取一小时内数据sql</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-05T11:08:05+08:00">
-                2018-01-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/05/sqlite获取一小时内数据sql/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>项目中用到了Sqlite数据库，需要查询距当前一小时内的数据，由于对Sqlite不熟，各种百度找答案，查到了很多日期函数，但是就是不起作用，最后经过摸索最终解决该问题，在此记录一下，有需要的小伙伴也可以看一下。</p>
-<p>1.查询距当前时间一小时内的数据</p>
-<pre><code>SELECT * FROM table_name t where datetime(t.create_time) &gt; datetime(&apos;now&apos;,&apos;-1 hour&apos;,&apos;localtime&apos;) 
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/02/csharp获取选中当前行/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/02/csharp获取选中当前行/" itemprop="url">c#GridView获取选中当前行</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-02T16:23:05+08:00">
-                2018-01-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/01/02/csharp获取选中当前行/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/02/csharp获取选中当前行/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、添加右击菜单"><a href="#一、添加右击菜单" class="headerlink" title="一、添加右击菜单"></a>一、添加右击菜单</h1><p>1、打开工具箱，选择ContextMenuStrip如下图</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool1.png" alt=""></p>
-<p>2、可输入右键菜单名称及添加图标，如下图</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool2.png" alt=""></p>
-<p>3、如果想在哪个窗口右击显示就在哪个窗口ALT+ENTER打开属性窗口，将<br>ContextMenuStrip选项的值设为刚才添加的名字，如下图</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool3.png" alt=""></p>
-<p>4、双击右键添加的菜单即可添加单击事件</p>
-<h1 id="二、添加回车Enter事件"><a href="#二、添加回车Enter事件" class="headerlink" title="二、添加回车Enter事件"></a>二、添加回车Enter事件</h1><p>1、在要添加回车事件的文本框ALT+ENTER打开属性窗口，如下：</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter1.png" alt=""></p>
-<p>2、将KeyDown选项的值填上触发回车事件的方法名，如下</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter2.png" alt=""></p>
-<p>3、写入触发事件方法，如：</p>
-<pre><code>private void txtPwd_KeyDown(object sender, KeyEventArgs e)
-  {
-      if (e.KeyCode == Keys.Enter)
-      {
-          this.btnSearch_Click(sender, e);//触发与点击按钮一样的效果
-      }
-  }
-</code></pre><h1 id="三、获取选中行数据"><a href="#三、获取选中行数据" class="headerlink" title="三、获取选中行数据"></a>三、获取选中行数据</h1><p>1、右击AddToBlack后触发点击事件，代码如下</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/s1.png" alt=""></p>
-<pre><code>private void addToBlackToolStripMenuItem_Click_1(object sender, EventArgs e)
- {
-     int[] rows = gridView1.GetSelectedRows();
-     rdms_ueidinfo info = null;
-     if (rows.Length &gt; 0)
-     {
-         if (list != null &amp;&amp; list.Count &gt; 0)
-         {
-             info = list[rows[0]];
-         }
-         else
-         {
-             info = xxData.Ueidinfos[rows[0]];
-         }
-         Contact contact = new Contact();
-         contact.IMSI = info.imsi;
-         contact.IMEI = info.imei;
-         DialogResult ret = DialogResult.Cancel;
-         Cursor.Current = Cursors.WaitCursor;
-         using (frmEditContact frm = new frmEditContact(contact, OwnerForm.Ribbon))
-         {
-             ret = frm.ShowDialog(OwnerForm);
-         }
-         Cursor.Current = Cursors.Default;
-     }
- }
-</code></pre><p>2、双击行获取选中行数据，代码如下</p>
-<pre><code>    private void addToBlackListByDouble(object sender, EventArgs e)
-{
-    int[] rows = gridView1.GetSelectedRows();
-    rdms_ueidinfo info = null;
-    if (rows.Length &gt; 0)
-    {
-        if (list != null &amp;&amp; list.Count &gt; 0)
-        {
-             info = list[rows[0]];
-        }
-        else {
-             info = xxData.Ueidinfos[rows[0]];
-        }
-        Contact contact = new Contact();
-        contact.IMSI = info.imsi;
-        contact.IMEI = info.imei;
-        DialogResult ret = DialogResult.Cancel;
-        Cursor.Current = Cursors.WaitCursor;
-        using (frmEditContact frm = new frmEditContact(contact, OwnerForm.Ribbon))
-        {
-            ret = frm.ShowDialog(OwnerForm);
-        }
-        Cursor.Current = Cursors.Default;
-    }
-
-}
-</code></pre><p>3、代码解释：</p>
-<pre><code>rdms_ueidinfo info = null;
-if (list != null &amp;&amp; list.Count &gt; 0)
-           {
-                info = list[rows[0]];
-           }
-           else {
-                info = xxData.Ueidinfos[rows[0]];
-           }
-</code></pre><p>点击查询后，将根据查询条件查询的结果list再次显示到该列表，此时要获取选中行，就需要判断，如果list不为null表示当前列表是根据查询后显示的结果，否则就是初始列表，要做不同的判断才能选中想要的结果，之前一直选不中，甚是烦恼，真的是难者不会，会者不难，经过多次摸索才明白。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/wanglinyong.github.io/page/2/">2</a><a class="extend next" rel="next" href="/wanglinyong.github.io/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/wanglinyong.github.io/page/2/">2</a><a class="page-number" href="/wanglinyong.github.io/page/3/">3</a><a class="extend next" rel="next" href="/wanglinyong.github.io/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2344,7 +2418,7 @@ if (list != null &amp;&amp; list.Count &gt; 0)
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">23</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2355,7 +2429,7 @@ if (list != null &amp;&amp; list.Count &gt; 0)
               
               <div class="site-state-item site-state-categories">
                 <a href="/wanglinyong.github.io/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2366,7 +2440,7 @@ if (list != null &amp;&amp; list.Count &gt; 0)
               
               <div class="site-state-item site-state-tags">
                 <a href="/wanglinyong.github.io/tags/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
