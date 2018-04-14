@@ -81,17 +81,27 @@
 
 
 
-<meta name="description" content="概述项目中用到了Sqlite数据库，需要查询距当前一小时内的数据，由于对Sqlite不熟，各种百度找答案，查到了很多日期函数，但是就是不起作用，最后经过摸索最终解决该问题，在此记录一下，有需要的小伙伴也可以看一下。 1.查询距当前时间一小时内的数据 SELECT * FROM table_name t where datetime(t.create_time) &amp;gt; datetime(&amp;apo">
+<meta name="description" content="一、项目包含功能使用SSM框架开发一个自己的博客系统，包含的功能大致有: 1.登录、注册 2.邮件或者手机验证码激活 3.点赞、评论、回复 4.书写博客 5.个人主页 6.博客管理 7.密码账号修改 8.网页聊天 … 二、项目所用技术使用到的技术主要有 1.主体框架：SpringMVC + Spring + Mybatis 2.安全框架：Spring-Security 3.数据库：Mysql 4.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Sqlite 获取一小时内数据sql">
-<meta property="og:url" content="https://wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/index.html">
+<meta property="og:title" content="（一）从零开始开发SSM项目-项目介绍">
+<meta property="og:url" content="https://wanglinyong.github.io/2018/03/15/（一）从零开始开发SSM项目-项目介绍/index.html">
 <meta property="og:site_name" content="Wang&#39;s Blog">
-<meta property="og:description" content="概述项目中用到了Sqlite数据库，需要查询距当前一小时内的数据，由于对Sqlite不熟，各种百度找答案，查到了很多日期函数，但是就是不起作用，最后经过摸索最终解决该问题，在此记录一下，有需要的小伙伴也可以看一下。 1.查询距当前时间一小时内的数据 SELECT * FROM table_name t where datetime(t.create_time) &amp;gt; datetime(&amp;apo">
+<meta property="og:description" content="一、项目包含功能使用SSM框架开发一个自己的博客系统，包含的功能大致有: 1.登录、注册 2.邮件或者手机验证码激活 3.点赞、评论、回复 4.书写博客 5.个人主页 6.博客管理 7.密码账号修改 8.网页聊天 … 二、项目所用技术使用到的技术主要有 1.主体框架：SpringMVC + Spring + Mybatis 2.安全框架：Spring-Security 3.数据库：Mysql 4.">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-05T03:15:41.153Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/login.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/login2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/register.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/index.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/answer.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/writer.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/personal.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/update.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/repassword.png">
+<meta property="og:updated_time" content="2018-04-13T12:26:17.223Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Sqlite 获取一小时内数据sql">
-<meta name="twitter:description" content="概述项目中用到了Sqlite数据库，需要查询距当前一小时内的数据，由于对Sqlite不熟，各种百度找答案，查到了很多日期函数，但是就是不起作用，最后经过摸索最终解决该问题，在此记录一下，有需要的小伙伴也可以看一下。 1.查询距当前时间一小时内的数据 SELECT * FROM table_name t where datetime(t.create_time) &amp;gt; datetime(&amp;apo">
+<meta name="twitter:title" content="（一）从零开始开发SSM项目-项目介绍">
+<meta name="twitter:description" content="一、项目包含功能使用SSM框架开发一个自己的博客系统，包含的功能大致有: 1.登录、注册 2.邮件或者手机验证码激活 3.点赞、评论、回复 4.书写博客 5.个人主页 6.博客管理 7.密码账号修改 8.网页聊天 … 二、项目所用技术使用到的技术主要有 1.主体框架：SpringMVC + Spring + Mybatis 2.安全框架：Spring-Security 3.数据库：Mysql 4.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/login.png">
 
 
 
@@ -121,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="https://wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/"/>
+  <link rel="canonical" href="https://wanglinyong.github.io/2018/03/15/（一）从零开始开发SSM项目-项目介绍/"/>
 
 
 
 
 
-  <title>Sqlite 获取一小时内数据sql | Wang's Blog</title>
+  <title>（一）从零开始开发SSM项目-项目介绍 | Wang's Blog</title>
   
 
 
@@ -274,7 +284,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/15/（一）从零开始开发SSM项目-项目介绍/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -291,7 +301,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Sqlite 获取一小时内数据sql</h1>
+          <h1 class="post-title" itemprop="name headline">（一）从零开始开发SSM项目-项目介绍</h1>
         
 
         <div class="post-meta">
@@ -303,8 +313,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-05T11:08:05+08:00">
-                2018-01-05
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-15T20:08:23+08:00">
+                2018-03-15
               </time>
             
 
@@ -322,8 +332,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/05/sqlite获取一小时内数据sql/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2018/03/15/（一）从零开始开发SSM项目-项目介绍/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/15/（一）从零开始开发SSM项目-项目介绍/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,10 +361,46 @@
       
 
       
-        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>项目中用到了Sqlite数据库，需要查询距当前一小时内的数据，由于对Sqlite不熟，各种百度找答案，查到了很多日期函数，但是就是不起作用，最后经过摸索最终解决该问题，在此记录一下，有需要的小伙伴也可以看一下。</p>
-<p>1.查询距当前时间一小时内的数据</p>
-<pre><code>SELECT * FROM table_name t where datetime(t.create_time) &gt; datetime(&apos;now&apos;,&apos;-1 hour&apos;,&apos;localtime&apos;) 
-</code></pre>
+        <h1 id="一、项目包含功能"><a href="#一、项目包含功能" class="headerlink" title="一、项目包含功能"></a>一、项目包含功能</h1><p>使用SSM框架开发一个自己的博客系统，包含的功能大致有:</p>
+<p>1.登录、注册</p>
+<p>2.邮件或者手机验证码激活</p>
+<p>3.点赞、评论、回复</p>
+<p>4.书写博客</p>
+<p>5.个人主页</p>
+<p>6.博客管理</p>
+<p>7.密码账号修改</p>
+<p>8.网页聊天</p>
+<p>…</p>
+<h1 id="二、项目所用技术"><a href="#二、项目所用技术" class="headerlink" title="二、项目所用技术"></a>二、项目所用技术</h1><p>使用到的技术主要有</p>
+<p>1.主体框架：SpringMVC + Spring + Mybatis</p>
+<p>2.安全框架：Spring-Security</p>
+<p>3.数据库：Mysql</p>
+<p>4.缓存技术：Redis</p>
+<p>5.消息中间件：ActiveMQ</p>
+<p>6.分布式服务框架：Dubbo</p>
+<p>7.搜索引擎：solr</p>
+<p>8.页面静态化技术：Velocity</p>
+<p>9.富文本编辑器： Kindeditor</p>
+<p>10.Web通信：WebSocket</p>
+<p>11.异步更新：Ajax</p>
+<p>12.前端框架：zui、bootstrap、Jquery</p>
+<h1 id="三、部分页面效果如下："><a href="#三、部分页面效果如下：" class="headerlink" title="三、部分页面效果如下："></a>三、部分页面效果如下：</h1><p>1.登录页面（账号登录和手机快捷登录）</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/login.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/login2.png" alt=""></p>
+<p>2.注册页面</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/register.png" alt=""></p>
+<p>3.首页（评论、回复及点赞）</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/index.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/answer.png" alt=""></p>
+<p>4.写博客页面</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/writer.png" alt=""></p>
+<p>5.个人主页</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/personal.png" alt=""></p>
+<p>6.个人信息页面</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/update.png" alt=""></p>
+<p>7.修改密码页面</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/repassword.png" alt=""></p>
+
       
     </div>
     
@@ -416,8 +462,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/wanglinyong.github.io/2018/01/02/csharp获取选中当前行/" rel="next" title="c#GridView获取选中当前行">
-                <i class="fa fa-chevron-left"></i> c#GridView获取选中当前行
+              <a href="/wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/" rel="next" title="JAVA-UDP接收和发送json数据">
+                <i class="fa fa-chevron-left"></i> JAVA-UDP接收和发送json数据
               </a>
             
           </div>
@@ -426,8 +472,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/wanglinyong.github.io/2018/01/07/csharp Dockmanager窗体显示和隐藏/" rel="prev" title="c# 利用Dockmanager工具使窗体显示和隐藏">
-                c# 利用Dockmanager工具使窗体显示和隐藏 <i class="fa fa-chevron-right"></i>
+              <a href="/wanglinyong.github.io/2018/03/15/嵌入式数据库H2/" rel="prev" title="嵌入式数据库H2">
+                嵌入式数据库H2 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -459,8 +505,8 @@
 
   
     <div class="comments" id="comments">
-      <div class="ds-thread" data-thread-key="2018/01/05/sqlite获取一小时内数据sql/"
-           data-title="Sqlite 获取一小时内数据sql" data-url="https://wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/">
+      <div class="ds-thread" data-thread-key="2018/03/15/（一）从零开始开发SSM项目-项目介绍/"
+           data-title="（一）从零开始开发SSM项目-项目介绍" data-url="https://wanglinyong.github.io/2018/03/15/（一）从零开始开发SSM项目-项目介绍/">
       </div>
     </div>
 
@@ -592,7 +638,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、项目包含功能"><span class="nav-number">1.</span> <span class="nav-text">一、项目包含功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、项目所用技术"><span class="nav-number">2.</span> <span class="nav-text">二、项目所用技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、部分页面效果如下："><span class="nav-number">3.</span> <span class="nav-text">三、部分页面效果如下：</span></a></li></ol></div>
             
 
           </div>
