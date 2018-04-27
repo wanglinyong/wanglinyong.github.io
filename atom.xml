@@ -6,7 +6,7 @@
   <link href="/wanglinyong.github.io/atom.xml" rel="self"/>
   
   <link href="https://wanglinyong.github.io/"/>
-  <updated>2018-04-22T02:46:23.173Z</updated>
+  <updated>2018-04-27T12:15:08.641Z</updated>
   <id>https://wanglinyong.github.io/</id>
   
   <author>
@@ -17,11 +17,41 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>linux文件服务器httpd开机自启动</title>
+    <link href="https://wanglinyong.github.io/2018/04/27/linux%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8httpd%E5%BC%80%E6%9C%BA%E8%87%AA%E5%90%AF%E5%8A%A8/"/>
+    <id>https://wanglinyong.github.io/2018/04/27/linux文件服务器httpd开机自启动/</id>
+    <published>2018-04-27T12:15:18.000Z</published>
+    <updated>2018-04-27T12:15:08.641Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一、相关命令"><a href="#一、相关命令" class="headerlink" title="一、相关命令"></a>一、相关命令</h1><p>1.查看所有系统服务</p><pre><code>systemctl list-units --all --type=service</code></pre><p>2.查询服务状态</p><pre><code>systemctl status httpd.service</code></pre><p>3.查询服务是否为开机启动</p><pre><code>systemctl is-enabled httpd.service</code></pre><p>enabled是 disabled否</p><p>4.设置服务为开机启动状态</p><pre><code>systemctl enable httpd.service</code></pre><p>会自动创建一个系统链接</p><pre><code>Created symlink from /etc/systemd/system/multi-user.target.wants/httpd.service to /usr/lib/systemd/system/httpd.service.</code></pre><p>5.设置服务为开机不启动状态</p><p>systemctl disable httpd.service</p><p>会自动移除系统链接</p><pre><code>Removed symlink /etc/systemd/system/multi-user.target.wants/httpd.service.</code></pre><p>二、设置httpd开机自启动</p><pre><code>systemctl enable httpd.service</code></pre><p>重启即可。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;一、相关命令&quot;&gt;&lt;a href=&quot;#一、相关命令&quot; class=&quot;headerlink&quot; title=&quot;一、相关命令&quot;&gt;&lt;/a&gt;一、相关命令&lt;/h1&gt;&lt;p&gt;1.查看所有系统服务&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;systemctl list-units --all -
+      
+    
+    </summary>
+    
+      <category term="Linux" scheme="https://wanglinyong.github.io/categories/Linux/"/>
+    
+    
+      <category term="Linux" scheme="https://wanglinyong.github.io/tags/Linux/"/>
+    
+      <category term="httpd" scheme="https://wanglinyong.github.io/tags/httpd/"/>
+    
+      <category term="文件服务器" scheme="https://wanglinyong.github.io/tags/%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
     <title>linux系统mysql的远程访问</title>
     <link href="https://wanglinyong.github.io/2018/04/22/linux%E7%B3%BB%E7%BB%9Fmysql%E7%9A%84%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE/"/>
     <id>https://wanglinyong.github.io/2018/04/22/linux系统mysql的远程访问/</id>
     <published>2018-04-22T02:46:18.000Z</published>
-    <updated>2018-04-22T02:46:23.173Z</updated>
+    <updated>2018-04-27T12:02:27.389Z</updated>
     
     <content type="html"><![CDATA[<h1 id="一、创建用户设置权限"><a href="#一、创建用户设置权限" class="headerlink" title="一、创建用户设置权限"></a>一、创建用户设置权限</h1><p>以root身份登录mysql</p><pre><code>[root@ ~]mysql -uroot -p[root@ ~]Enter password: xxxxxx</code></pre><p>创建用户</p><pre><code>mysql&gt;create user &apos;wanglinyong&apos;@&apos;%&apos; identified by &apos;wanglinyong9527&apos;;</code></pre><p>授权</p><pre><code>mysql&gt;grant all privileges on *.* to &apos;wanglinyong&apos;@&apos;%&apos; identified by &apos;wanglinyong9527&apos; with grant option;</code></pre><p>其中’wanglinyong’@’%’是允许该用户在任何主机上远程连接，如果只允许在某一台主机上连接，可指定ip</p><pre><code>mysql&gt;grant all privileges on *.* to &apos;wanglinyong&apos;@&apos;10.xx.xx.x&apos; identified by &apos;wanglinyong9527&apos; with grant option;</code></pre><p>授权之后记得要刷新权限</p><pre><code>mysql&gt;flush privileges;</code></pre><h1 id="二、Navicate远程连接测试"><a href="#二、Navicate远程连接测试" class="headerlink" title="二、Navicate远程连接测试"></a>二、Navicate远程连接测试</h1><p>1.如果连接失败，提示：</p><pre><code>1045-Access denied for user&apos;wanglinyong&apos;@&apos;ip&apos;(using password:YES)</code></pre><p>则表示密码输入错误。</p><p>2.如果提示：</p><pre><code>ERROR 2003(HY000): Can’t connect to MySQL server on xxxxx</code></pre><p>如果服务器是阿里云的，可能没有开通3306端口，要去服务器上添加安全组，增加3360端口即可</p><p>3.Navicate连接成功后，只有information_schema一个数据库</p><p>在linux系统以root用户登录</p><p>先查一下其他数据库是否被删除</p><pre><code>mysql&gt;show databases;</code></pre><p>如果还在，查看下mysql库的用户表</p><pre><code>mysql&gt;select host,user from mysql.user;</code></pre><p>结果如下：</p><pre><code>+----------------+-----------------+| host           | user            |+----------------+-----------------+| %              | wanglinyong     || localhost      | mysql.session   || localhost      | root            |+----------------+-----------------+3 rows in set (0.00 sec)</code></pre><p>说明wanglinyong用户允许在任何远程主机登录</p><p>然后查看，远程登录的用户是否有权限</p><pre><code>mysql&gt; show grants for &apos;wanglinyong&apos;@&apos;%&apos;;</code></pre><p>结果不是</p><pre><code>GRANT ALL PRIVILEGES ON *.* TO &apos;wanglinyong5112&apos;@&apos;%&apos; WITH GRANT OPTION </code></pre><p>说明权限不够，重新授权</p><pre><code>mysql&gt;grant all privileges on *.* to &apos;wanglinyong&apos;@&apos;%&apos; identified by &apos;wanglinyong9527&apos; with grant option;</code></pre><p>刷新权限：</p><pre><code>mysql&gt;flush privileges;</code></pre><p>重新连接应该就OK了！</p><h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>如果还不行, vi /etc/mysql/mysql.conf.d/mysqld.cnf,检查下是否有</p><pre><code>bind-address = 127.0.0.1</code></pre><p>如果有，请把它注释掉（加#号注释）。如果找不到mysqld.cnf,有的可能在 /etc/my.cnf文件内</p><p>保存退出后重启mysql服务</p><pre><code>sudo /etc/init.d/mysql restart</code></pre><p>或者</p><pre><code>systemctl restart mysqld</code></pre>]]></content>
     
@@ -35,7 +65,7 @@
     
     </summary>
     
-      <category term="Linux,Mysql" scheme="https://wanglinyong.github.io/categories/Linux-Mysql/"/>
+      <category term="Linux" scheme="https://wanglinyong.github.io/categories/Linux/"/>
     
     
       <category term="Linux" scheme="https://wanglinyong.github.io/tags/Linux/"/>
@@ -457,28 +487,6 @@ model.addAttribute(&amp;quot;numbers&amp;quot;,numbers);
       
         &lt;h1 id=&quot;一、配置JDK环境变量&quot;&gt;&lt;a href=&quot;#一、配置JDK环境变量&quot; class=&quot;headerlink&quot; title=&quot;一、配置JDK环境变量&quot;&gt;&lt;/a&gt;一、配置JDK环境变量&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;#vi /etc/profile
 &lt;/code&gt;&lt;/
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>linux系统如何移动mysql存放文件的位置</title>
-    <link href="https://wanglinyong.github.io/2017/11/22/linux%E7%B3%BB%E7%BB%9F%E5%A6%82%E4%BD%95%E7%A7%BB%E5%8A%A8mysql%E5%AD%98%E6%94%BE%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%8D%E7%BD%AE/"/>
-    <id>https://wanglinyong.github.io/2017/11/22/linux系统如何移动mysql存放文件的位置/</id>
-    <published>2017-11-22T10:58:06.000Z</published>
-    <updated>2017-11-22T06:33:07.883Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="查看mysql情况"><a href="#查看mysql情况" class="headerlink" title="查看mysql情况"></a>查看mysql情况</h2><p>指令 ps -ef | grep mysql 得出结果</p><p>1.root     17659     1  0  2011 ?        00:00:00 /bin/sh /usr/bin/mysqld_safe –datadir=/var/lib/mysql –socket=/var/lib/mysql/mysql.sock –log-error=/var/log/mysqld.log –pid-file=/var/run/mysqld/mysqld.pid   </p><p>2.mysql    17719 17659  0  2011 ?        03:14:57 /usr/libexec/mysqld –basedir=/usr –datadir=/var/lib/mysql –user=mysql –pid-file=/var/run/mysqld/mysqld.pid –skip-external-locking –socket=/var/lib/mysql/mysql.sock  </p><p>usr/bin/mysql 是指：mysql的运行路径 </p><p>var/lib/mysql 是指：mysql数据库文件的存放路径 </p><p>usr/lib/mysql 是指：mysql的安装路径</p><h2 id="移动mysql存放文件位置"><a href="#移动mysql存放文件位置" class="headerlink" title="移动mysql存放文件位置"></a>移动mysql存放文件位置</h2><p>假如要把目录移到/home/data下需要进行下面几步：</p><p>1、home目录下建立data目录</p><pre><code>cd /homemkdir data</code></pre><p>2、把MySQL服务进程停掉：</p><pre><code>mysqladmin -u root -p shutdown</code></pre><p>3、把/var/lib/mysql整个目录移到/home/data</p><pre><code>mv /var/lib/mysql　/home/data/</code></pre><p>这样就把MySQL的数据文件移动到了/home/data/mysql下</p><p>4、找到my.cnf配置文件<br>　　如果/etc/目录下没有my.cnf配置文件，请到/usr/share/mysql/下找到*.cnf文件，拷贝其中一个到/etc/并改名为my.cnf)中。命令如下：</p><pre><code>[root@test1 mysql]# cp /usr/share/mysql/my-medium.cnf　/etc/my.cnf</code></pre><p>5、编辑MySQL的配置文件/etc/my.cnf<br>　　为保证MySQL能够正常工作，需要指明mysql.sock文件的产生位置。修改socket=/var/lib/mysql/mysql.sock一行中等号右边的值为：/home/mysql/mysql.sock 。操作如下：</p><pre><code>vi　 my.cnf　　　 (用vi工具编辑my.cnf文件，找到下列数据修改之)[mysql]（加上此行）socket=/home/data/mysql/mysql.sock（加上此行）[mysqld]#datadir=/var/lib/mysql（原内容，为了更稳妥用“#”注释此行）#socket=/var/lib/mysql/mysql.sock（原内容，为了更稳妥用“#”注释此行）datadir=/home/data/mysql（加上此行）socket=/home/data/mysql/mysql.sock（加上此行）</code></pre><p>6、修改MySQL启动脚本/etc/init.d/mysql（如果init.d目录下没有mysql文件请忽略此步骤）</p><p>　　最后，需要修改MySQL启动脚本/etc/init.d/mysql，把其中datadir=/var/lib/mysql一行中，等号右边的路径改成你现在的实际存放路径：home/data/mysql。</p><pre><code>[root@test1 etc]# vi　/etc/init.d/mysql#datadir=/var/lib/mysql　　　　（注释此行）datadir=/home/data/mysql　　 （加上此行）</code></pre><p>7、重新启动MySQL服务</p><pre><code>/etc/init.d/mysql　start</code></pre><p>或用reboot命令重启Linux<br>如果工作正常移动就成功了，否则对照前面的7步再检查一下。还要注意目录的属主和权限。</p><h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>如果更换mysql数据目录后出现：</p><p>ERROR 2002 (HY000): Can’t connect to local MySQL server through socket ‘/var/lib/mysql/mysql.sock’ (2)</p><p>说明无法通过socket文件/var/lib/mysql/mysql.sock连接到mysql服务器，也就是说对于mysql程序来说，尽管把socket文件从/var/lib/mysql/mysql.sock转移到了/home/data/mysql/mysql.sock,在my.cnf里设置了，mysqld是知道了，但是对于mysql还是会从默认的安装目录/var/lib/mysql/里找这个mysql.sock文件，找不着，就不知道从哪里启动了。</p><p>解决方案一：设置软连接</p><pre><code>ln –s /home/data/mysql/mysql.sock /var/lib/mysql/</code></pre><p>做完软连接，重启mysql服务，再次通过mysql程序连接就可以连上了。</p><p>解决方案二：检查my.cnf配置，是否有如下配置，如果没有，加上</p><pre><code>[mysql]socket=/home/data/mysql/mysql.sock</code></pre><h2 id="帮助命令"><a href="#帮助命令" class="headerlink" title="帮助命令"></a>帮助命令</h2><p>1.查找命令</p><pre><code>find / -name my.cnf　　#在根目录下查找文件my.cnf，表示在整个硬盘查找find /etc -name my.cnf　　#在/etc目录下文件my.cnffind /etc -name &apos;*srm*&apos;　　#使用通配符*(0或者任意多个)。表示在/etc目录下查找文件名中含有字符串‘srm’的文件find . -name &apos;srm*&apos; 　　#表示当前目录下查找文件名开头是字符串‘srm’的文件</code></pre><p>2.查看文件占用大小</p><pre><code>du -sh /*  查看根目录下所有文件的大小du -sh /home/* 查看 home目录下所有文件的大小du -sh * 查看当前目录下所有文件的大小</code></pre><p>3.查看硬盘使用情况</p><pre><code>df -h </code></pre>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;查看mysql情况&quot;&gt;&lt;a href=&quot;#查看mysql情况&quot; class=&quot;headerlink&quot; title=&quot;查看mysql情况&quot;&gt;&lt;/a&gt;查看mysql情况&lt;/h2&gt;&lt;p&gt;指令 ps -ef | grep mysql 得出结果&lt;/p&gt;
-&lt;p&gt;1.root 
       
     
     </summary>
