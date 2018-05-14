@@ -274,7 +274,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -293,7 +293,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/" itemprop="url">linux下安装nginx及开机自启动</a></h1>
+                <a class="post-title-link" href="/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/" itemprop="url">JSP遍历两个集合的情况</a></h1>
         
 
         <div class="post-meta">
@@ -305,8 +305,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-26T20:36:06+08:00">
-                2017-11-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-05T19:36:06+08:00">
+                2017-12-05
               </time>
             
 
@@ -324,8 +324,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/26/linux下安装nginx及开机自启动/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/12/05/jsp遍历两个集合情况/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -355,313 +355,27 @@
       
         
           
-            <h1 id="一、安装nginx"><a href="#一、安装nginx" class="headerlink" title="一、安装nginx"></a>一、安装nginx</h1><p>1.从<a href="http://nginx.org/download/上下载相应的版本(或者wget" target="_blank" rel="external">http://nginx.org/download/上下载相应的版本(或者wget</a> <a href="http://nginx.org/download/nginx-1.5.9.tar.gz直接在Linux上用命令下载" target="_blank" rel="external">http://nginx.org/download/nginx-1.5.9.tar.gz直接在Linux上用命令下载</a>)</p>
-<pre><code>wget http://nginx.org/download/nginx-1.5.9.tar.gz
-</code></pre><p>2.解压 </p>
-<pre><code>tar -zxvf nginx-1.5.9.tar.gz 
-</code></pre><p>3.设置一下配置信息，或者不执行此步，直接默认配置，与后面配置有关</p>
-<pre><code>./configure --prefix=/usr/local/nginx 
-</code></pre><p>4.make 编译 （make的过程是把各种语言写的源码文件，变成可执行文件和各种库文件）</p>
-<pre><code>make
-</code></pre><p>5.make install 安装 （make install是把这些编译出来的可执行文件和库文件复制到合适的地方）</p>
-<pre><code>make install
-</code></pre><p>6.启动nginx</p>
-<pre><code>/usr/local/nginx/sbin/nginx
-</code></pre><p>7.访问nginx，nginx默认端口为80</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/nginx.png" alt=""></p>
-<p>8.安装过程中可能会遇到的错误</p>
-<p>（1）错误为：./configure: error: the HTTP rewrite module requires the PCRE library.</p>
-<p>安装pcre-devel解决问题</p>
-<pre><code>yum -y install pcre-devel
-</code></pre><p>（2）错误提示：./configure: error: the HTTP cache module requires md5 functions<br>from OpenSSL library.   You can either disable the module by using<br>–without-http-cache option, or install the OpenSSL library into the system,<br>or build the OpenSSL library statically from the source with nginx by using<br>–with-http_ssl_module –with-openssl=<path></path> options.</p>
-<p>解决办法：</p>
-<pre><code>yum -y install openssl openssl-devel
-</code></pre><h1 id="二、nginx开机自启动"><a href="#二、nginx开机自启动" class="headerlink" title="二、nginx开机自启动"></a>二、nginx开机自启动</h1><p>1.在linux系统的/etc/init.d/目录下创建nginx文件</p>
-<pre><code>vim /etc/init.d/nginx
-</code></pre><p>2.在脚本中添加如下命令：</p>
-<pre><code>#!/bin/sh
-#
-# nginx - this script starts and stops the nginx daemon
-#
-# chkconfig:   - 85 15
-# description:  NGINX is an HTTP(S) server, HTTP(S) reverse \
-#               proxy and IMAP/POP3 proxy server
-# processname: nginx
-# config:      /etc/nginx/nginx.conf
-# config:      /etc/sysconfig/nginx
-# pidfile:     /var/run/nginx.pid
-# Source function library.
-. /etc/rc.d/init.d/functions
-# Source networking configuration.
-. /etc/sysconfig/network
-# Check that networking is up.
-[ &quot;$NETWORKING&quot; = &quot;no&quot; ] &amp;&amp; exit 0
-nginx=&quot;/usr/sbin/nginx&quot;
-prog=$(basename $nginx)
-NGINX_CONF_FILE=&quot;/etc/nginx/nginx.conf&quot;
-[ -f /etc/sysconfig/nginx ] &amp;&amp; . /etc/sysconfig/nginx
-lockfile=/var/lock/subsys/nginx
-make_dirs() {
-# make required directories
-user=`$nginx -V 2&gt;&amp;1 | grep &quot;configure arguments:&quot; | sed &apos;s/[^*]*--user=\([^ ]*\).*/\1/g&apos; -`
-if [ -z &quot;`grep $user /etc/passwd`&quot; ]; then
-   useradd -M -s /bin/nologin $user
-fi
-options=`$nginx -V 2&gt;&amp;1 | grep &apos;configure arguments:&apos;`
-for opt in $options; do
-   if [ `echo $opt | grep &apos;.*-temp-path&apos;` ]; then
-       value=`echo $opt | cut -d &quot;=&quot; -f 2`
-       if [ ! -d &quot;$value&quot; ]; then
-           # echo &quot;creating&quot; $value
-           mkdir -p $value &amp;&amp; chown -R $user $value
-       fi
-   fi
-done
-}
-start() {
-[ -x $nginx ] || exit 5
-[ -f $NGINX_CONF_FILE ] || exit 6
-make_dirs
-echo -n $&quot;Starting $prog: &quot;
-daemon $nginx -c $NGINX_CONF_FILE
-retval=$?
-echo
-[ $retval -eq 0 ] &amp;&amp; touch $lockfile
-return $retval
-}
-stop() {
-echo -n $&quot;Stopping $prog: &quot;
-killproc $prog -QUIT
-retval=$?
-echo
-[ $retval -eq 0 ] &amp;&amp; rm -f $lockfile
-return $retval
-}
-restart() {
-configtest || return $?
-stop
-sleep 1
-start
-}
-reload() {
-configtest || return $?
-echo -n $&quot;Reloading $prog: &quot;
-killproc $nginx -HUP
-RETVAL=$?
-echo
-}
-force_reload() {
-restart
-}
-configtest() {
-$nginx -t -c $NGINX_CONF_FILE
-}
-rh_status() {
-status $prog
-}
-rh_status_q() {
-rh_status &gt;/dev/null 2&gt;&amp;1
-}
-case &quot;$1&quot; in
-start)
-    rh_status_q &amp;&amp; exit 0
-    $1
-    ;;
-stop)
-    rh_status_q || exit 0
-    $1
-    ;;
-restart|configtest)
-    $1
-    ;;
-reload)
-    rh_status_q || exit 7
-    $1
-    ;;
-force-reload)
-    force_reload
-    ;;
-status)
-    rh_status
-    ;;
-condrestart|try-restart)
-    rh_status_q || exit 0
-        ;;
- *)
-    echo $&quot;Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}&quot;
-    exit 2
-esac
-</code></pre><p>3.如果你是自定义编译安装的nginx，需要根据您的安装路径修改下面这两项配置：</p>
-<pre><code>nginx=&quot;/usr/local/nginx/sbin/nginx&quot; 修改成nginx执行程序的路径。
-
-NGINX_CONF_FILE=&quot;/usr/local/nginx/conf/nginx.conf&quot; 修改成配置文件的路径。
-</code></pre><p>4.保存脚本文件后设置文件的执行权限：</p>
-<pre><code>chmod a+x /etc/init.d/nginx
-</code></pre><p>5.通过该脚本启动停止nginx服务</p>
-<pre><code>/etc/init.d/nginx start
-/etc/init.d/nginx stop
-</code></pre><p>6.使用chkconfig进行管理，将nginx服务加入chkconfig管理列表</p>
-<pre><code>chkconfig --add /etc/init.d/nginx
-</code></pre><p>7.使用service对nginx进行启动，停止。重启等操作</p>
-<pre><code>service nginx start
-service nginx stop
-</code></pre><p>8.设置终端模式开机启动</p>
-<pre><code>chkconfig nginx on
-</code></pre><h1 id="三、发布静态资源"><a href="#三、发布静态资源" class="headerlink" title="三、发布静态资源"></a>三、发布静态资源</h1><p>1.确定静态资源存放位置</p>
-<pre><code>/home/images
-</code></pre><p>2.修改nginx.conf配置文件</p>
-<pre><code>vi /usr/local/nginx/conf/nginx.conf
-</code></pre><p>3.主要修改如下：</p>
-<pre><code>#user  nobody;
-worker_processes  1;
-
-#error_log  logs/error.log;
-#error_log  logs/error.log  notice;
-#error_log  logs/error.log  info;
-
-#pid        logs/nginx.pid;
-
-
-events {
-worker_connections  1024;
-}
-
-
-http {
-include       mime.types;
-default_type  application/octet-stream;
-
-#log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;
-#                  &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;
-#                  &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;
-
-#access_log  logs/access.log  main;
-
-sendfile        on;
-#tcp_nopush     on;
-
-#keepalive_timeout  0;
-keepalive_timeout  65;
-
-#gzip  on;
-
-server {
-    listen       80;
-    server_name  localhost;
-
-    #charset koi8-r;
-     charset utf-8;    
-
-    #access_log  logs/host.access.log  main;
-
-     location ~ .*\.(gif|jpg|jpeg|png)$ {    
-    expires 24h;    
-        root /home/images/;#指定图片存放路径    
-        access_log /home/softs/nginx-1.5.9/logs/images.log;#日志存放路径    
-        proxy_store on;    
-        proxy_store_access user:rw group:rw all:rw;    
-        proxy_temp_path         /home/images/;#图片访问路径    
-        proxy_redirect          off;    
-        proxy_set_header        Host 127.0.0.1;    
-        client_max_body_size    10m;    
-        client_body_buffer_size 1280k;    
-        proxy_connect_timeout   900;    
-        proxy_send_timeout      900;    
-        proxy_read_timeout      900;    
-        proxy_buffer_size       40k;    
-        proxy_buffers           40 320k;    
-        proxy_busy_buffers_size 640k;    
-        proxy_temp_file_write_size 640k;    
-        if ( !-e $request_filename)    
-        {    
-             proxy_pass  http://127.0.0.1;#默认80端口    
-        }    
-}      
-
-    location / {
-        root   /home/html; #html访问路径  
-        index  index.html index.htm;
-    }
-
-    #error_page  404              /404.html;
-
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-        root   html;
-    }
-
-    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-    #
-    #location ~ \.php$ {
-    #    proxy_pass   http://127.0.0.1;
-    #}
-
-    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    #
-    #location ~ \.php$ {
-    #    root           html;
-    #    fastcgi_pass   127.0.0.1:9000;
-    #    fastcgi_index  index.php;
-    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
-    #    include        fastcgi_params;
-    #}
-
-    # deny access to .htaccess files, if Apache&apos;s document root
-    # concurs with nginx&apos;s one
-    #
-    #location ~ /\.ht {
-    #    deny  all;
-    #}
-}
-
-
-# another virtual host using mix of IP-, name-, and port-based configuration
-#
-#server {
-#    listen       8000;
-#    listen       somename:8080;
-#    server_name  somename  alias  another.alias;
-
-#    location / {
-#        root   html;
-#        index  index.html index.htm;
-#    }
-#}
-
-
-# HTTPS server
-#
-#server {
-#    listen       443 ssl;
-#    server_name  localhost;
-
-#    ssl_certificate      cert.pem;
-#    ssl_certificate_key  cert.key;
-
-#    ssl_session_cache    shared:SSL:1m;
-#    ssl_session_timeout  5m;
-
-#    ssl_ciphers  HIGH:!aNULL:!MD5;
-#    ssl_prefer_server_ciphers  on;
-
-#    location / {
-#        root   html;
-#        index  index.html index.htm;
-#    }
-#}
-
-}
-</code></pre><p>4.查看编译是否出错，如果没出错则成功</p>
-<pre><code>cd /usr/local/nginx/sbin/
-./nginx -t
-</code></pre><p>5.显示如下即代表成功（如果报目录不存在错误，就创建目录即可）</p>
-<pre><code>nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok
-nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful
-</code></pre><p>6.访问静态资源:192.168.120.139/1.png</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png" alt=""></p>
-
+            <p>比如后台系统传递两个集合:</p>
+<pre><code>model.addAttribute(&quot;list&quot;,list);
+model.addAttribute(&quot;numbers&quot;,numbers);
+</code></pre><p>前台系统:</p>
+<p>1.首先引入标签库</p>
+<pre><code>&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;  
+</code></pre><p>2.编写js代码</p>
+<pre><code>&lt;c:forEach var=&quot;item&quot; items=&quot;${list.list }&quot; varStatus=&quot;s&quot;&gt;
+        &lt;tr target=&quot;item_id&quot; rel=&quot;${item.id}&quot;&gt;
+            &lt;td&gt;${item.name }&lt;/td&gt;
+            &lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;
+            &lt;td&gt;${item.area }&lt;/td&gt;
+            &lt;td&gt;${item.moduleName }&lt;/td&gt;
+            &lt;td&gt;&lt;fmt:formatDate value=&quot;${item.rptTime}&quot; pattern=&quot;yyyy-MM-dd HH:mm:ss&quot;&gt;&lt;/fmt:formatDate&gt;&lt;/td&gt;           
+        &lt;/tr&gt;
+&lt;/c:forEach&gt;
+</code></pre><p>说明：</p>
+<pre><code>&lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;
+其中name是numbers集合存储的对象类型的属性，如果numbers集合存储的是String，可以直接使用
+&lt;td&gt;${numbers[s.count-1]}&lt;/td&gt;
+</code></pre>
           
         
       
@@ -1086,6 +800,444 @@ socket文件：/var/run/mysqld/mysqld.pid
 <pre><code>[mysqld]
 lower_case_table_names=1
 </code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/" itemprop="url">linux下安装nginx及开机自启动</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-26T20:36:06+08:00">
+                2017-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2017/11/26/linux下安装nginx及开机自启动/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/26/linux下安装nginx及开机自启动/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、安装nginx"><a href="#一、安装nginx" class="headerlink" title="一、安装nginx"></a>一、安装nginx</h1><p>1.从<a href="http://nginx.org/download/上下载相应的版本(或者wget" target="_blank" rel="external">http://nginx.org/download/上下载相应的版本(或者wget</a> <a href="http://nginx.org/download/nginx-1.5.9.tar.gz直接在Linux上用命令下载" target="_blank" rel="external">http://nginx.org/download/nginx-1.5.9.tar.gz直接在Linux上用命令下载</a>)</p>
+<pre><code>wget http://nginx.org/download/nginx-1.5.9.tar.gz
+</code></pre><p>2.解压 </p>
+<pre><code>tar -zxvf nginx-1.5.9.tar.gz 
+</code></pre><p>3.设置一下配置信息，或者不执行此步，直接默认配置，与后面配置有关</p>
+<pre><code>./configure --prefix=/usr/local/nginx 
+</code></pre><p>4.make 编译 （make的过程是把各种语言写的源码文件，变成可执行文件和各种库文件）</p>
+<pre><code>make
+</code></pre><p>5.make install 安装 （make install是把这些编译出来的可执行文件和库文件复制到合适的地方）</p>
+<pre><code>make install
+</code></pre><p>6.启动nginx</p>
+<pre><code>/usr/local/nginx/sbin/nginx
+</code></pre><p>7.访问nginx，nginx默认端口为80</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/nginx.png" alt=""></p>
+<p>8.安装过程中可能会遇到的错误</p>
+<p>（1）错误为：./configure: error: the HTTP rewrite module requires the PCRE library.</p>
+<p>安装pcre-devel解决问题</p>
+<pre><code>yum -y install pcre-devel
+</code></pre><p>（2）错误提示：./configure: error: the HTTP cache module requires md5 functions<br>from OpenSSL library.   You can either disable the module by using<br>–without-http-cache option, or install the OpenSSL library into the system,<br>or build the OpenSSL library statically from the source with nginx by using<br>–with-http_ssl_module –with-openssl=<path></path> options.</p>
+<p>解决办法：</p>
+<pre><code>yum -y install openssl openssl-devel
+</code></pre><h1 id="二、nginx开机自启动"><a href="#二、nginx开机自启动" class="headerlink" title="二、nginx开机自启动"></a>二、nginx开机自启动</h1><p>1.在linux系统的/etc/init.d/目录下创建nginx文件</p>
+<pre><code>vim /etc/init.d/nginx
+</code></pre><p>2.在脚本中添加如下命令：</p>
+<pre><code>#!/bin/sh
+#
+# nginx - this script starts and stops the nginx daemon
+#
+# chkconfig:   - 85 15
+# description:  NGINX is an HTTP(S) server, HTTP(S) reverse \
+#               proxy and IMAP/POP3 proxy server
+# processname: nginx
+# config:      /etc/nginx/nginx.conf
+# config:      /etc/sysconfig/nginx
+# pidfile:     /var/run/nginx.pid
+# Source function library.
+. /etc/rc.d/init.d/functions
+# Source networking configuration.
+. /etc/sysconfig/network
+# Check that networking is up.
+[ &quot;$NETWORKING&quot; = &quot;no&quot; ] &amp;&amp; exit 0
+nginx=&quot;/usr/sbin/nginx&quot;
+prog=$(basename $nginx)
+NGINX_CONF_FILE=&quot;/etc/nginx/nginx.conf&quot;
+[ -f /etc/sysconfig/nginx ] &amp;&amp; . /etc/sysconfig/nginx
+lockfile=/var/lock/subsys/nginx
+make_dirs() {
+# make required directories
+user=`$nginx -V 2&gt;&amp;1 | grep &quot;configure arguments:&quot; | sed &apos;s/[^*]*--user=\([^ ]*\).*/\1/g&apos; -`
+if [ -z &quot;`grep $user /etc/passwd`&quot; ]; then
+   useradd -M -s /bin/nologin $user
+fi
+options=`$nginx -V 2&gt;&amp;1 | grep &apos;configure arguments:&apos;`
+for opt in $options; do
+   if [ `echo $opt | grep &apos;.*-temp-path&apos;` ]; then
+       value=`echo $opt | cut -d &quot;=&quot; -f 2`
+       if [ ! -d &quot;$value&quot; ]; then
+           # echo &quot;creating&quot; $value
+           mkdir -p $value &amp;&amp; chown -R $user $value
+       fi
+   fi
+done
+}
+start() {
+[ -x $nginx ] || exit 5
+[ -f $NGINX_CONF_FILE ] || exit 6
+make_dirs
+echo -n $&quot;Starting $prog: &quot;
+daemon $nginx -c $NGINX_CONF_FILE
+retval=$?
+echo
+[ $retval -eq 0 ] &amp;&amp; touch $lockfile
+return $retval
+}
+stop() {
+echo -n $&quot;Stopping $prog: &quot;
+killproc $prog -QUIT
+retval=$?
+echo
+[ $retval -eq 0 ] &amp;&amp; rm -f $lockfile
+return $retval
+}
+restart() {
+configtest || return $?
+stop
+sleep 1
+start
+}
+reload() {
+configtest || return $?
+echo -n $&quot;Reloading $prog: &quot;
+killproc $nginx -HUP
+RETVAL=$?
+echo
+}
+force_reload() {
+restart
+}
+configtest() {
+$nginx -t -c $NGINX_CONF_FILE
+}
+rh_status() {
+status $prog
+}
+rh_status_q() {
+rh_status &gt;/dev/null 2&gt;&amp;1
+}
+case &quot;$1&quot; in
+start)
+    rh_status_q &amp;&amp; exit 0
+    $1
+    ;;
+stop)
+    rh_status_q || exit 0
+    $1
+    ;;
+restart|configtest)
+    $1
+    ;;
+reload)
+    rh_status_q || exit 7
+    $1
+    ;;
+force-reload)
+    force_reload
+    ;;
+status)
+    rh_status
+    ;;
+condrestart|try-restart)
+    rh_status_q || exit 0
+        ;;
+ *)
+    echo $&quot;Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}&quot;
+    exit 2
+esac
+</code></pre><p>3.如果你是自定义编译安装的nginx，需要根据您的安装路径修改下面这两项配置：</p>
+<pre><code>nginx=&quot;/usr/local/nginx/sbin/nginx&quot; 修改成nginx执行程序的路径。
+
+NGINX_CONF_FILE=&quot;/usr/local/nginx/conf/nginx.conf&quot; 修改成配置文件的路径。
+</code></pre><p>4.保存脚本文件后设置文件的执行权限：</p>
+<pre><code>chmod a+x /etc/init.d/nginx
+</code></pre><p>5.通过该脚本启动停止nginx服务</p>
+<pre><code>/etc/init.d/nginx start
+/etc/init.d/nginx stop
+</code></pre><p>6.使用chkconfig进行管理，将nginx服务加入chkconfig管理列表</p>
+<pre><code>chkconfig --add /etc/init.d/nginx
+</code></pre><p>7.使用service对nginx进行启动，停止。重启等操作</p>
+<pre><code>service nginx start
+service nginx stop
+</code></pre><p>8.设置终端模式开机启动</p>
+<pre><code>chkconfig nginx on
+</code></pre><h1 id="三、发布静态资源"><a href="#三、发布静态资源" class="headerlink" title="三、发布静态资源"></a>三、发布静态资源</h1><p>1.确定静态资源存放位置</p>
+<pre><code>/home/images
+</code></pre><p>2.修改nginx.conf配置文件</p>
+<pre><code>vi /usr/local/nginx/conf/nginx.conf
+</code></pre><p>3.主要修改如下：</p>
+<pre><code>#user  nobody;
+worker_processes  1;
+
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+
+#pid        logs/nginx.pid;
+
+
+events {
+worker_connections  1024;
+}
+
+
+http {
+include       mime.types;
+default_type  application/octet-stream;
+
+#log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;
+#                  &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;
+#                  &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;
+
+#access_log  logs/access.log  main;
+
+sendfile        on;
+#tcp_nopush     on;
+
+#keepalive_timeout  0;
+keepalive_timeout  65;
+
+#gzip  on;
+
+server {
+    listen       80;
+    server_name  localhost;
+
+    #charset koi8-r;
+     charset utf-8;    
+
+    #access_log  logs/host.access.log  main;
+
+     location ~ .*\.(gif|jpg|jpeg|png)$ {    
+    expires 24h;    
+        root /home/images/;#指定图片存放路径    
+        access_log /home/softs/nginx-1.5.9/logs/images.log;#日志存放路径    
+        proxy_store on;    
+        proxy_store_access user:rw group:rw all:rw;    
+        proxy_temp_path         /home/images/;#图片访问路径    
+        proxy_redirect          off;    
+        proxy_set_header        Host 127.0.0.1;    
+        client_max_body_size    10m;    
+        client_body_buffer_size 1280k;    
+        proxy_connect_timeout   900;    
+        proxy_send_timeout      900;    
+        proxy_read_timeout      900;    
+        proxy_buffer_size       40k;    
+        proxy_buffers           40 320k;    
+        proxy_busy_buffers_size 640k;    
+        proxy_temp_file_write_size 640k;    
+        if ( !-e $request_filename)    
+        {    
+             proxy_pass  http://127.0.0.1;#默认80端口    
+        }    
+}      
+
+    location / {
+        root   /home/html; #html访问路径  
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ {
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #}
+
+    # deny access to .htaccess files, if Apache&apos;s document root
+    # concurs with nginx&apos;s one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+
+
+# another virtual host using mix of IP-, name-, and port-based configuration
+#
+#server {
+#    listen       8000;
+#    listen       somename:8080;
+#    server_name  somename  alias  another.alias;
+
+#    location / {
+#        root   html;
+#        index  index.html index.htm;
+#    }
+#}
+
+
+# HTTPS server
+#
+#server {
+#    listen       443 ssl;
+#    server_name  localhost;
+
+#    ssl_certificate      cert.pem;
+#    ssl_certificate_key  cert.key;
+
+#    ssl_session_cache    shared:SSL:1m;
+#    ssl_session_timeout  5m;
+
+#    ssl_ciphers  HIGH:!aNULL:!MD5;
+#    ssl_prefer_server_ciphers  on;
+
+#    location / {
+#        root   html;
+#        index  index.html index.htm;
+#    }
+#}
+
+}
+</code></pre><p>4.查看编译是否出错，如果没出错则成功</p>
+<pre><code>cd /usr/local/nginx/sbin/
+./nginx -t
+</code></pre><p>5.显示如下即代表成功（如果报目录不存在错误，就创建目录即可）</p>
+<pre><code>nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful
+</code></pre><p>6.访问静态资源:192.168.120.139/1.png</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/1.png" alt=""></p>
+
           
         
       
@@ -2577,7 +2729,7 @@ public static void main(String[] args) {
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">29</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

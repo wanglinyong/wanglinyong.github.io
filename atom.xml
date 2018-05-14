@@ -6,7 +6,7 @@
   <link href="/wanglinyong.github.io/atom.xml" rel="self"/>
   
   <link href="https://wanglinyong.github.io/"/>
-  <updated>2018-05-10T13:17:06.903Z</updated>
+  <updated>2018-05-14T12:46:48.514Z</updated>
   <id>https://wanglinyong.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>微信小程序日期格式化</title>
+    <link href="https://wanglinyong.github.io/2018/05/11/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%E5%8C%96/"/>
+    <id>https://wanglinyong.github.io/2018/05/11/微信小程序日期格式化/</id>
+    <published>2018-05-11T12:15:18.000Z</published>
+    <updated>2018-05-14T12:46:48.514Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="1-微信小程序util-js下有一个日期格式化函数"><a href="#1-微信小程序util-js下有一个日期格式化函数" class="headerlink" title="1.微信小程序util.js下有一个日期格式化函数"></a>1.微信小程序util.js下有一个日期格式化函数</h2><pre><code>const formatTime = date =&gt; {  var date = new Date(date);    const year = date.getFullYear()  const month = date.getMonth() + 1  const day = date.getDate()  const hour = date.getHours()  const minute = date.getMinutes()  const second = date.getSeconds()  return [year, month, day].map(formatNumber).join(&apos;-&apos;) + &apos; &apos; + [hour, minute, second].map(formatNumber).join(&apos;:&apos;)}module.exports = {  formatTime: formatTime}</code></pre><p>但是它原来是没有下面的这段代码的  它要求传入的data是一个日期参数，为了方便将日期字符串作为参数传递，将date转换一下（这里的参数date就是日期字符串）：</p><pre><code>var date = new Date(date);  </code></pre><h2 id="2-获取后台的list列表数据后，遍历对其进行日期格式化："><a href="#2-获取后台的list列表数据后，遍历对其进行日期格式化：" class="headerlink" title="2.获取后台的list列表数据后，遍历对其进行日期格式化："></a>2.获取后台的list列表数据后，遍历对其进行日期格式化：</h2><p>引入util.js</p><pre><code>var util = require(&apos;../../utils/util.js&apos;);</code></pre><p>评论列表日期格式化代码：</p><pre><code>  if (res.data.result == 0) {  let comms = res.data.lists  console.log(comms)  for(let c in comms){    let  date = util.formatTime(comms[c].ctime)    comms[c].ctime = date  }  that.setData({    commentList: comms || [],    bookIsBuy: res.data.is_buy  });  setTimeout(function () {    that.setData({      commentLoading: false    });  }, 500);} </code></pre><p>调用util.js中的方法</p><pre><code>let  date = util.formatTime(comms[c].ctime)</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;1-微信小程序util-js下有一个日期格式化函数&quot;&gt;&lt;a href=&quot;#1-微信小程序util-js下有一个日期格式化函数&quot; class=&quot;headerlink&quot; title=&quot;1.微信小程序util.js下有一个日期格式化函数&quot;&gt;&lt;/a&gt;1.微信小程序util
+      
+    
+    </summary>
+    
+      <category term="微信小程序" scheme="https://wanglinyong.github.io/categories/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
+    
+    
+      <category term="微信小程序" scheme="https://wanglinyong.github.io/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>微信小程序Java登录流程</title>
@@ -476,30 +501,6 @@
       
       
         &lt;h1 id=&quot;一、Devexpress默认的等待提示框&quot;&gt;&lt;a href=&quot;#一、Devexpress默认的等待提示框&quot; class=&quot;headerlink&quot; title=&quot;一、Devexpress默认的等待提示框&quot;&gt;&lt;/a&gt;一、Devexpress默认的等待提示框&lt;/h1&gt;&lt;
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>JSP遍历两个集合的情况</title>
-    <link href="https://wanglinyong.github.io/2017/12/05/jsp%E9%81%8D%E5%8E%86%E4%B8%A4%E4%B8%AA%E9%9B%86%E5%90%88%E6%83%85%E5%86%B5/"/>
-    <id>https://wanglinyong.github.io/2017/12/05/jsp遍历两个集合情况/</id>
-    <published>2017-12-05T11:36:06.000Z</published>
-    <updated>2017-12-05T09:23:03.216Z</updated>
-    
-    <content type="html"><![CDATA[<p>比如后台系统传递两个集合:</p><pre><code>model.addAttribute(&quot;list&quot;,list);model.addAttribute(&quot;numbers&quot;,numbers);</code></pre><p>前台系统:</p><p>1.首先引入标签库</p><pre><code>&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot; %&gt;  </code></pre><p>2.编写js代码</p><pre><code>&lt;c:forEach var=&quot;item&quot; items=&quot;${list.list }&quot; varStatus=&quot;s&quot;&gt;        &lt;tr target=&quot;item_id&quot; rel=&quot;${item.id}&quot;&gt;            &lt;td&gt;${item.name }&lt;/td&gt;            &lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;            &lt;td&gt;${item.area }&lt;/td&gt;            &lt;td&gt;${item.moduleName }&lt;/td&gt;            &lt;td&gt;&lt;fmt:formatDate value=&quot;${item.rptTime}&quot; pattern=&quot;yyyy-MM-dd HH:mm:ss&quot;&gt;&lt;/fmt:formatDate&gt;&lt;/td&gt;                   &lt;/tr&gt;&lt;/c:forEach&gt;</code></pre><p>说明：</p><pre><code>&lt;td&gt;${numbers[s.count-1].name}&lt;/td&gt;其中name是numbers集合存储的对象类型的属性，如果numbers集合存储的是String，可以直接使用&lt;td&gt;${numbers[s.count-1]}&lt;/td&gt;</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;比如后台系统传递两个集合:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;model.addAttribute(&amp;quot;list&amp;quot;,list);
-model.addAttribute(&amp;quot;numbers&amp;quot;,numbers);
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;
       
     
     </summary>
