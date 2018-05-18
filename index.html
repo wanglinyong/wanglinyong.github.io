@@ -274,6 +274,223 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/05/18/c#借助阿里大于发送短信/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/05/18/c#借助阿里大于发送短信/" itemprop="url">C# 借助阿里大于平台发送短信</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-18T20:30:18+08:00">
+                2018-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/C/" itemprop="url" rel="index">
+                    <span itemprop="name">C#</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/05/18/c#借助阿里大于发送短信/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/05/18/c#借助阿里大于发送短信/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、首先申请签名和模板"><a href="#一、首先申请签名和模板" class="headerlink" title="一、首先申请签名和模板"></a>一、首先申请签名和模板</h1><p>1.登陆阿里云官网，找到短信服务，开通以后进入管理控制台，找到签名管理，申请一个签名，如下图：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-1.png" alt=""></p>
+<p>2.然后找到模板管理，申请一个模板，模板里都有格式内容介绍，申请好以后大概是这样：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-8.png" alt=""></p>
+<p>3.签名名称和模板CODE等会代码中会用到，还有Access Key ID 和 Access Key Secret也要用到，Access Key在个人信息的下拉列表里可以找到，如下图：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-3.png" alt=""></p>
+<h1 id="二、下载-Net平台下的SDK"><a href="#二、下载-Net平台下的SDK" class="headerlink" title="二、下载.Net平台下的SDK"></a>二、下载.Net平台下的SDK</h1><p>1.点击短信服务列表中的帮助文档</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-4.png" alt=""></p>
+<p>2.点击SDK下载，进入到SDK及DEMO下载页面，找到第4个[NET],点击即可下载。</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-5.png" alt=""></p>
+<p>3.将下载好的压缩包进行解压，找到msg_demo目录，在/msg_demo/alicom-mns-receive有发送短信的demo和dll文件</p>
+<h1 id="三、发短信的具体实现"><a href="#三、发短信的具体实现" class="headerlink" title="三、发短信的具体实现"></a>三、发短信的具体实现</h1><p>1.将/msg_demo/alicom-mns-receive/dll目录下的4个dll文件拷贝到你的项目目录下</p>
+<p>2.在你项目的引用右键添加引用，打开引用管理器，如图：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-6.png" alt=""></p>
+<p>3.点击浏览，将阿里大于依赖的4个dll文件添加进来，然后点击确定。</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-7.png" alt=""></p>
+<p>4.将/msg_demo/alicom-mns-receive下的sendsms文件拷贝到你的项目中，将其中Access Key ID 、 Access Key Secret、签名名称、模板CODE替换成你自己的即可，还有接收短信的手机号，模板内容等，可以将main函数改成一个方法sendMsg(string phone,string code)，直接调用方法即可，参数改为接收短信的手机号和短信内容：</p>
+<pre><code>namespace ConsoleApplication1
+{
+class sendsms
+{
+    static String product = &quot;Dysmsapi&quot;;//短信API产品名称
+    static String domain = &quot;dysmsapi.aliyuncs.com&quot;;//短信API产品域名
+    static String accessId = &quot;你的Key&quot;;
+    static String accessSecret = &quot;你的Secret&quot;;
+    static String regionIdForPop = &quot;cn-hangzhou&quot;;
+   public  static void sendMsg(string phone,string code)
+    {
+
+
+        IClientProfile profile = DefaultProfile.GetProfile(regionIdForPop, accessId, accessSecret);
+        DefaultProfile.AddEndpoint(regionIdForPop, regionIdForPop, product, domain);
+        IAcsClient acsClient = new DefaultAcsClient(profile);
+        SendSmsRequest request = new SendSmsRequest();
+        try
+        {
+            //request.SignName = &quot;上云预发测试&quot;;//&quot;管理控制台中配置的短信签名（状态必须是验证通过）&quot;
+            //request.TemplateCode = &quot;SMS_71130001&quot;;//管理控制台中配置的审核通过的短信模板的模板CODE（状态必须是验证通过）&quot;
+            //request.RecNum = &quot;13567939485&quot;;//&quot;接收号码，多个号码可以逗号分隔&quot;
+            //request.ParamString = &quot;{\&quot;name\&quot;:\&quot;123\&quot;}&quot;;//短信模板中的变量；数字需要转换为字符串；个人用户每个变量长度必须小于15个字符。&quot;
+            //SingleSendSmsResponse httpResponse = client.GetAcsResponse(request);
+            request.PhoneNumbers = phone;//接收短信的手机号
+            request.SignName = &quot;签名名称&quot;;
+            request.TemplateCode = &quot;模板CODE&quot;;
+            request.TemplateParam = &quot;{\&quot;code\&quot;:\&quot;&quot; + code + &quot;\&quot;}&quot;;//模板内容
+           // request.OutId = &quot;xxxxxxxx&quot;;  //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
+            //请求失败这里会抛ClientException异常
+            SendSmsResponse sendSmsResponse = acsClient.GetAcsResponse(request);
+            System.Console.WriteLine(sendSmsResponse.Message);
+
+        }
+        catch (ServerException e)
+        {
+            System.Console.WriteLine(&quot;ServerException&quot;);
+        }
+        catch (ClientException e)
+        {
+            System.Console.WriteLine(&quot;ClientException&quot;);
+        }
+    }
+}
+}
+</code></pre><p>5.运行程序，调用发送短信方法进行测试，测试成功！</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/05/11/微信小程序日期格式化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2281,207 +2498,6 @@ cd git-2.8.3
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/24/DES加密解密/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/03/24/DES加密解密/" itemprop="url">DES加密解密</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-24T19:39:28+08:00">
-                2018-03-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/03/24/DES加密解密/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/24/DES加密解密/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、场景"><a href="#一、场景" class="headerlink" title="一、场景"></a>一、场景</h1><p>我将打包好的war包放到linux系统运行时，其他一切正常，唯有登陆的时候怎么都登不上，提示密码错误！</p>
-<p>查看日志后发现每次加密的结果都不同，后来百度得知是DES在linux和windows系统的加密算法不一致导致的。主要是DES补位导致，把补位规则改成”DES/ECB/PKCS5Padding”即可。</p>
-<h1 id="二、DES加密解密代码"><a href="#二、DES加密解密代码" class="headerlink" title="二、DES加密解密代码"></a>二、DES加密解密代码</h1><pre><code>package wang.dreamland.www.common;
-import java.security.Key;
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import org.apache.commons.codec.binary.Base64;
-
-public class MyDes {
-/**
- * 加密数据
- * @param encryptString
- * @param encryptKey
- * @return
- * @throws Exception
- */
-public static String encryptDES(String encryptString, String encryptKey) throws Exception {
-
-    Cipher cipher = Cipher.getInstance(&quot;DES/ECB/PKCS5Padding&quot;);
-    cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(getKey(encryptKey), &quot;DES&quot;));
-    byte[] encryptedData = cipher.doFinal(encryptString.getBytes(&quot;UTF-8&quot;));
-    return Base64.encodeBase64String(encryptedData);
-}
-
-/**
- * key  不足8位补位
- * @param
- */
-public static byte[] getKey(String keyRule) {
-    Key key = null;
-    byte[] keyByte = keyRule.getBytes();
-    // 创建一个空的八位数组,默认情况下为0
-    byte[] byteTemp = new byte[8];
-    // 将用户指定的规则转换成八位数组
-    for (int i = 0; i &lt; byteTemp.length &amp;&amp; i &lt; keyByte.length; i++) {
-        byteTemp[i] = keyByte[i];
-    }
-    key = new SecretKeySpec(byteTemp, &quot;DES&quot;);
-    return key.getEncoded();
-}
-
-/***
- * 解密数据
- * @param decryptString
- * @param decryptKey
- * @return
- * @throws Exception
- */
-
-public static String decryptDES(String decryptString, String decryptKey) throws Exception {
-
-    byte[] sourceBytes = Base64.decodeBase64(decryptString);
-    Cipher cipher = Cipher.getInstance(&quot;DES/ECB/PKCS5Padding&quot;);
-    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKey(decryptKey), &quot;DES&quot;));
-    byte[] decoded = cipher.doFinal(sourceBytes);
-    return new String(decoded, &quot;UTF-8&quot;);
-
-}
-
-public static void main(String[] args) throws Exception {
-    String clearText = &quot;wanglinyong@163.com&quot;;
-    String key = &quot;123456&quot;;//密钥
-    System.out.println(&quot;明文：&quot;+clearText+&quot;\n密钥：&quot;+key);
-    String encryptText = encryptDES(clearText, key);
-    System.out.println(&quot;加密后：&quot;+encryptText);
-    String decryptText = decryptDES(encryptText, key);
-    System.out.println(&quot;解密后：&quot;+decryptText);
-}
-}
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2533,7 +2549,7 @@ public static void main(String[] args) throws Exception {
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2544,7 +2560,7 @@ public static void main(String[] args) throws Exception {
               
               <div class="site-state-item site-state-categories">
                 <a href="/wanglinyong.github.io/categories/index.html">
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2555,7 +2571,7 @@ public static void main(String[] args) throws Exception {
               
               <div class="site-state-item site-state-tags">
                 <a href="/wanglinyong.github.io/tags/index.html">
-                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-count">17</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
