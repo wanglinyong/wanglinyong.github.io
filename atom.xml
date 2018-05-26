@@ -6,7 +6,7 @@
   <link href="/wanglinyong.github.io/atom.xml" rel="self"/>
   
   <link href="https://wanglinyong.github.io/"/>
-  <updated>2018-05-18T12:34:29.317Z</updated>
+  <updated>2018-05-26T11:30:45.237Z</updated>
   <id>https://wanglinyong.github.io/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>从零开始开发SSM项目-博客系统实战</title>
+    <link href="https://wanglinyong.github.io/2018/05/26/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%BC%80%E5%8F%91SSM%E9%A1%B9%E7%9B%AE-%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F%E5%AE%9E%E6%88%98/"/>
+    <id>https://wanglinyong.github.io/2018/05/26/从零开始开发SSM项目-博客系统实战/</id>
+    <published>2018-05-26T11:30:28.000Z</published>
+    <updated>2018-05-26T11:30:45.237Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一、项目包含功能"><a href="#一、项目包含功能" class="headerlink" title="一、项目包含功能"></a>一、项目包含功能</h1><p>使用SSM框架开发一个博客系统，包含的功能大致有:</p><p>1.用户注册与激活，激活方式通过邮件激活</p><p>2.用户的登录和退出，包括账号登录和手机快捷登录</p><p>3.用户账号登录和注册时需要输入验证码验证</p><p>4.首页展示及分页，主要展示文章内容，可进行搜索，将搜索结果高亮显示</p><p>5.首页文章的点赞、踩和评论功能</p><p>6.个人主页模块，包括个人的基本信息，梦分类，发布梦，管理梦以及热梦推荐等</p><p>7.书写文章功能</p><p>8.文章管理功能，包括文章的查看、修改和删除</p><p>9.个人信息修改功能</p><p>10.安全框架 spring-security 的整合，对不符合条件的用户或者 URL 进行拦截</p><p>11.记录用户登录信息，包括登录的时间、IP 等</p><h1 id="二、项目所用技术"><a href="#二、项目所用技术" class="headerlink" title="二、项目所用技术"></a>二、项目所用技术</h1><p>使用到的技术主要有</p><p>1.主体框架：SpringMVC + Spring + Mybatis</p><p>2.安全框架：Spring-Security</p><p>3.数据库：Mysql</p><p>4.缓存技术：Redis</p><p>5.消息中间件：ActiveMQ</p><p>6.搜索引擎：solr</p><p>7.富文本编辑器： Kindeditor</p><p>8.异步更新：Ajax</p><p>9.前端框架：zui、bootstrap、Jquery</p><h1 id="三、部分页面效果如下："><a href="#三、部分页面效果如下：" class="headerlink" title="三、部分页面效果如下："></a>三、部分页面效果如下：</h1><p>1.登录页面（账号登录和手机快捷登录）</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/login-x.png" alt=""></p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/login-y.png" alt=""></p><p>2.注册页面</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/regist-x.png" alt=""></p><p>3.首页（评论、回复及点赞）</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/index-x.png" alt=""></p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/chat-x.png" alt=""></p><p>4.写博客页面</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/write-x.png" alt=""></p><p>5.个人主页</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/personal-x.png" alt=""></p><p>6.个人信息页面</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/update.png" alt=""></p><p>7.修改密码页面</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/repassword-x.png" alt=""></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;一、项目包含功能&quot;&gt;&lt;a href=&quot;#一、项目包含功能&quot; class=&quot;headerlink&quot; title=&quot;一、项目包含功能&quot;&gt;&lt;/a&gt;一、项目包含功能&lt;/h1&gt;&lt;p&gt;使用SSM框架开发一个博客系统，包含的功能大致有:&lt;/p&gt;
+&lt;p&gt;1.用户注册与激活，激活方
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>C# 借助阿里大于平台发送短信</title>
@@ -485,28 +507,6 @@
       
       
         &lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;&lt;p&gt;项目中用到了Sqlite数据库，需要查询距当前一小时内的数据，由于对Sqlite不熟，各种百度找答案，查到了很多日期函数，但是就是不起作用，
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>c#GridView获取选中当前行</title>
-    <link href="https://wanglinyong.github.io/2018/01/02/csharp%E8%8E%B7%E5%8F%96%E9%80%89%E4%B8%AD%E5%BD%93%E5%89%8D%E8%A1%8C/"/>
-    <id>https://wanglinyong.github.io/2018/01/02/csharp获取选中当前行/</id>
-    <published>2018-01-02T08:23:05.000Z</published>
-    <updated>2018-01-02T08:56:08.072Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="一、添加右击菜单"><a href="#一、添加右击菜单" class="headerlink" title="一、添加右击菜单"></a>一、添加右击菜单</h1><p>1、打开工具箱，选择ContextMenuStrip如下图</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool1.png" alt=""></p><p>2、可输入右键菜单名称及添加图标，如下图</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool2.png" alt=""></p><p>3、如果想在哪个窗口右击显示就在哪个窗口ALT+ENTER打开属性窗口，将<br>ContextMenuStrip选项的值设为刚才添加的名字，如下图</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/tool3.png" alt=""></p><p>4、双击右键添加的菜单即可添加单击事件</p><h1 id="二、添加回车Enter事件"><a href="#二、添加回车Enter事件" class="headerlink" title="二、添加回车Enter事件"></a>二、添加回车Enter事件</h1><p>1、在要添加回车事件的文本框ALT+ENTER打开属性窗口，如下：</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter1.png" alt=""></p><p>2、将KeyDown选项的值填上触发回车事件的方法名，如下</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/enter2.png" alt=""></p><p>3、写入触发事件方法，如：</p><pre><code>private void txtPwd_KeyDown(object sender, KeyEventArgs e)  {      if (e.KeyCode == Keys.Enter)      {          this.btnSearch_Click(sender, e);//触发与点击按钮一样的效果      }  }</code></pre><h1 id="三、获取选中行数据"><a href="#三、获取选中行数据" class="headerlink" title="三、获取选中行数据"></a>三、获取选中行数据</h1><p>1、右击AddToBlack后触发点击事件，代码如下</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/s1.png" alt=""></p><pre><code>private void addToBlackToolStripMenuItem_Click_1(object sender, EventArgs e) {     int[] rows = gridView1.GetSelectedRows();     rdms_ueidinfo info = null;     if (rows.Length &gt; 0)     {         if (list != null &amp;&amp; list.Count &gt; 0)         {             info = list[rows[0]];         }         else         {             info = xxData.Ueidinfos[rows[0]];         }         Contact contact = new Contact();         contact.IMSI = info.imsi;         contact.IMEI = info.imei;         DialogResult ret = DialogResult.Cancel;         Cursor.Current = Cursors.WaitCursor;         using (frmEditContact frm = new frmEditContact(contact, OwnerForm.Ribbon))         {             ret = frm.ShowDialog(OwnerForm);         }         Cursor.Current = Cursors.Default;     } }</code></pre><p>2、双击行获取选中行数据，代码如下</p><pre><code>    private void addToBlackListByDouble(object sender, EventArgs e){    int[] rows = gridView1.GetSelectedRows();    rdms_ueidinfo info = null;    if (rows.Length &gt; 0)    {        if (list != null &amp;&amp; list.Count &gt; 0)        {             info = list[rows[0]];        }        else {             info = xxData.Ueidinfos[rows[0]];        }        Contact contact = new Contact();        contact.IMSI = info.imsi;        contact.IMEI = info.imei;        DialogResult ret = DialogResult.Cancel;        Cursor.Current = Cursors.WaitCursor;        using (frmEditContact frm = new frmEditContact(contact, OwnerForm.Ribbon))        {            ret = frm.ShowDialog(OwnerForm);        }        Cursor.Current = Cursors.Default;    }}</code></pre><p>3、代码解释：</p><pre><code>rdms_ueidinfo info = null;if (list != null &amp;&amp; list.Count &gt; 0)           {                info = list[rows[0]];           }           else {                info = xxData.Ueidinfos[rows[0]];           }</code></pre><p>点击查询后，将根据查询条件查询的结果list再次显示到该列表，此时要获取选中行，就需要判断，如果list不为null表示当前列表是根据查询后显示的结果，否则就是初始列表，要做不同的判断才能选中想要的结果，之前一直选不中，甚是烦恼，真的是难者不会，会者不难，经过多次摸索才明白。</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;一、添加右击菜单&quot;&gt;&lt;a href=&quot;#一、添加右击菜单&quot; class=&quot;headerlink&quot; title=&quot;一、添加右击菜单&quot;&gt;&lt;/a&gt;一、添加右击菜单&lt;/h1&gt;&lt;p&gt;1、打开工具箱，选择ContextMenuStrip如下图&lt;/p&gt;
-&lt;p&gt;&lt;img src=
       
     
     </summary>
