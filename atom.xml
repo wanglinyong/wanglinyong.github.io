@@ -6,7 +6,7 @@
   <link href="/wanglinyong.github.io/atom.xml" rel="self"/>
   
   <link href="https://wanglinyong.github.io/"/>
-  <updated>2018-05-26T11:30:45.237Z</updated>
+  <updated>2018-05-29T11:44:50.606Z</updated>
   <id>https://wanglinyong.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Xshell6下载安装</title>
+    <link href="https://wanglinyong.github.io/2018/05/28/Xshell6%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85/"/>
+    <id>https://wanglinyong.github.io/2018/05/28/Xshell6下载安装/</id>
+    <published>2018-05-28T11:23:20.000Z</published>
+    <updated>2018-05-29T11:44:50.606Z</updated>
+    
+    <content type="html"><![CDATA[<p>随着xshell5出现评估期已过的问题，发现好多人不知道怎么下载免费版的Xshell，在这里我将详细告诉大家如何下载和安装最新的Xshell6远程管理工具。</p><p> 1.进入xshell英文官网，链接地址如下：</p><pre><code>http://www.netsarang.com/products/main.html</code></pre><p>2.将鼠标悬浮在Download上会出现三个列表，点击第三个Free License,如下图：</p><p><img src="https://img-blog.csdn.net/20180528160438334" alt=""></p><p>或者点击Download，将窗口滚动到最下方，点击Free for Home &amp; School，如下图：</p><p><img src="https://img-blog.csdn.net/20180528160452206" alt=""></p><p>3.之后会进入Xshell6和Xftp6的下载页面，如下图：</p><p><img src="https://img-blog.csdn.net/20180528160508678" alt=""></p><p>4.点击Xshell6会跳转到填写个人信息的页面，打红星的是必填项，注意邮箱要正确，会将下载链接发到你的邮箱，如下图：</p><p><img src="https://img-blog.csdn.net/20180528160523209" alt=""></p><p>5.填写好信息后，点击Submit提交，这时下载链接就会发送到你填写的邮箱了。</p><p>6.打开邮箱，点击链接进行下载，如下图：</p><p><img src="https://img-blog.csdn.net/20180528160539725" alt=""></p><p>7.下载完成后根据提示进行安装即可。</p><p>xshell6下载完成以后，一般还需要配合xftp6文件上传工具使用，下载步骤同上。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;随着xshell5出现评估期已过的问题，发现好多人不知道怎么下载免费版的Xshell，在这里我将详细告诉大家如何下载和安装最新的Xshell6远程管理工具。&lt;/p&gt;
+&lt;p&gt; 1.进入xshell英文官网，链接地址如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;http://www.n
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>从零开始开发SSM项目-博客系统实战</title>
@@ -486,27 +509,6 @@
       
         &lt;p&gt;1.打开工具箱，选择Dockmanager工具，如下：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/panel1.png&quot; alt=&quot;&quot;&gt;
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Sqlite 获取一小时内数据sql</title>
-    <link href="https://wanglinyong.github.io/2018/01/05/sqlite%E8%8E%B7%E5%8F%96%E4%B8%80%E5%B0%8F%E6%97%B6%E5%86%85%E6%95%B0%E6%8D%AEsql/"/>
-    <id>https://wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/</id>
-    <published>2018-01-05T03:08:05.000Z</published>
-    <updated>2018-01-05T03:15:41.153Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>项目中用到了Sqlite数据库，需要查询距当前一小时内的数据，由于对Sqlite不熟，各种百度找答案，查到了很多日期函数，但是就是不起作用，最后经过摸索最终解决该问题，在此记录一下，有需要的小伙伴也可以看一下。</p><p>1.查询距当前时间一小时内的数据</p><pre><code>SELECT * FROM table_name t where datetime(t.create_time) &gt; datetime(&apos;now&apos;,&apos;-1 hour&apos;,&apos;localtime&apos;) </code></pre>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;&lt;p&gt;项目中用到了Sqlite数据库，需要查询距当前一小时内的数据，由于对Sqlite不熟，各种百度找答案，查到了很多日期函数，但是就是不起作用，
       
     
     </summary>

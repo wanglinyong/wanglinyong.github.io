@@ -274,6 +274,196 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/04/06/linux系统搭建文件服务器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/04/06/linux系统搭建文件服务器/" itemprop="url">linux系统搭建文件服务器</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-06T10:48:23+08:00">
+                2018-04-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/04/06/linux系统搭建文件服务器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/04/06/linux系统搭建文件服务器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一、安装-httpd-服务"><a href="#一、安装-httpd-服务" class="headerlink" title="一、安装 httpd 服务"></a>一、安装 httpd 服务</h2><pre><code>yum install httpd
+</code></pre><p>查看版本号</p>
+<pre><code>httpd -version
+</code></pre><h2 id="二、启动-httpd-服务"><a href="#二、启动-httpd-服务" class="headerlink" title="二、启动 httpd 服务"></a>二、启动 httpd 服务</h2><pre><code>service httpd start
+</code></pre><h2 id="三、容易出现的问题"><a href="#三、容易出现的问题" class="headerlink" title="三、容易出现的问题"></a>三、容易出现的问题</h2><p>1.防火墙未开放端口</p>
+<pre><code>开启端口：firewall-cmd --zone=public --add-port=8989/tcp --permanent
+
+重启防火墙：firewall-cmd --reload 
+
+查看已开放端口：firewall-cmd --list-ports
+</code></pre><p>2.端口被占用</p>
+<pre><code>更改端口号
+</code></pre><p>修改配置文件，默认路径是</p>
+<pre><code>/etc/httpd/conf/httpd.conf 
+</code></pre><p>主要修改以下内容</p>
+<pre><code>Listen 80 --&gt; Listen 8987     #监听端口
+
+#ServerName www.example.com:80 --&gt; ServerName 192.168.120.132:8987    #服务名称ip:port
+
+DocumentRoot &quot;/var/www/html&quot; --&gt;  DocumentRoot &quot;/home/profile&quot;   #文件根目录
+
+&lt;Directory &quot;/var/www/html&quot;&gt; ---&gt;  &lt;Directory &quot;/home/profile&quot;&gt;  #文件路径1
+
+&lt;Directory &quot;/var/www/html&quot;&gt; ---&gt;  &lt;Directory &quot;/home/profile&quot;&gt;  #文件路径2
+</code></pre><p>3.出现apache CentOS Permission denied: AH00072</p>
+<p>关闭SELINUX</p>
+<pre><code>setenforce 0
+</code></pre><p>修改配置文件</p>
+<pre><code>vim /etc/selinux/config
+
+SELINUX=enforcing 改成--&gt; SELINUX=disabled
+</code></pre><h2 id="四、启动服务"><a href="#四、启动服务" class="headerlink" title="四、启动服务"></a>四、启动服务</h2><pre><code>service httpd start
+</code></pre><p>停止服务</p>
+<pre><code>service httpd stop
+</code></pre><h2 id="五、远程访问"><a href="#五、远程访问" class="headerlink" title="五、远程访问"></a>五、远程访问</h2><p>在浏览器中输入 ip:port 即可访问设置的 /home/profile 目录;</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ftp.png" alt=""></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/31/linux系统安装git/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2118,141 +2308,6 @@ private void gridView2_RowStyle_2(object sender, RowStyleEventArgs e)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/" itemprop="url">Sqlite 获取一小时内数据sql</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-05T11:08:05+08:00">
-                2018-01-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/01/05/sqlite获取一小时内数据sql/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/05/sqlite获取一小时内数据sql/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>项目中用到了Sqlite数据库，需要查询距当前一小时内的数据，由于对Sqlite不熟，各种百度找答案，查到了很多日期函数，但是就是不起作用，最后经过摸索最终解决该问题，在此记录一下，有需要的小伙伴也可以看一下。</p>
-<p>1.查询距当前时间一小时内的数据</p>
-<pre><code>SELECT * FROM table_name t where datetime(t.create_time) &gt; datetime(&apos;now&apos;,&apos;-1 hour&apos;,&apos;localtime&apos;) 
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2304,7 +2359,7 @@ private void gridView2_RowStyle_2(object sender, RowStyleEventArgs e)
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
