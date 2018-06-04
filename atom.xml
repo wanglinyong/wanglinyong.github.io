@@ -6,7 +6,7 @@
   <link href="/wanglinyong.github.io/atom.xml" rel="self"/>
   
   <link href="https://wanglinyong.github.io/"/>
-  <updated>2018-05-29T11:44:50.606Z</updated>
+  <updated>2018-06-04T13:03:22.445Z</updated>
   <id>https://wanglinyong.github.io/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>dockpanel动态添加picturebox并绑定图片</title>
+    <link href="https://wanglinyong.github.io/2018/06/04/dockpanel%E5%8A%A8%E6%80%81%E6%B7%BB%E5%8A%A0picturebox%E7%9A%84%E6%96%B9%E6%B3%95/"/>
+    <id>https://wanglinyong.github.io/2018/06/04/dockpanel动态添加picturebox的方法/</id>
+    <published>2018-06-04T12:59:40.000Z</published>
+    <updated>2018-06-04T13:03:22.445Z</updated>
+    
+    <content type="html"><![CDATA[<p>关于DockManager的使用之前已经介绍过，这里不再赘述。直接说如何在dockpanel中动态添加picturebox并绑定图片。</p><h2 id="1-生成picturebox的方法"><a href="#1-生成picturebox的方法" class="headerlink" title="1.生成picturebox的方法"></a>1.生成picturebox的方法</h2><pre><code> public void generatorPictureBox(){    int imageNum = 20;//图片的数量    PictureBox[] pict;    pict = new PictureBox[imageNum];    for (int i = 1; i &lt; imageNum; i++)    {        pict[i] = new System.Windows.Forms.PictureBox();               pict[i].Location = new Point(5 , 10+(i - 1) * 60);//设置图片位置  竖向排列        pict[i].SizeMode = PictureBoxSizeMode.Zoom;        pict[i].Image = Image.FromFile(@&quot;D:\images\&quot; + i + &quot;.png&quot;);//导入图片        pict[i].Size = new Size(50, 50);//设置图片大小        pict[i].BorderStyle = BorderStyle.None;//取消边框        pict[i].Image.Tag = i;        pict[i].Click += singleClick;//给图片绑定点击事件        dockPanel1.Controls.Add(pict[i]); //添加picturebox    }}</code></pre><h2 id="2-给图片绑定的点击事件"><a href="#2-给图片绑定的点击事件" class="headerlink" title="2.给图片绑定的点击事件"></a>2.给图片绑定的点击事件</h2><pre><code>private void singleClick(object sender, EventArgs e)  {      PictureBox p = sender as PictureBox;             LOG.Info(&quot;Click===============imgIndex====&quot;+p.Image.Tag);  }</code></pre><h2 id="3-在窗体初始化的时候调用generatorPictureBox方法即可"><a href="#3-在窗体初始化的时候调用generatorPictureBox方法即可" class="headerlink" title="3.在窗体初始化的时候调用generatorPictureBox方法即可"></a>3.在窗体初始化的时候调用generatorPictureBox方法即可</h2><h2 id="4-效果如下："><a href="#4-效果如下：" class="headerlink" title="4.效果如下："></a>4.效果如下：</h2><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/doc-1.png" alt=""></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;关于DockManager的使用之前已经介绍过，这里不再赘述。直接说如何在dockpanel中动态添加picturebox并绑定图片。&lt;/p&gt;
+&lt;h2 id=&quot;1-生成picturebox的方法&quot;&gt;&lt;a href=&quot;#1-生成picturebox的方法&quot; class=&quot;he
+      
+    
+    </summary>
+    
+      <category term="C#" scheme="https://wanglinyong.github.io/categories/C/"/>
+    
+    
+      <category term="picturebox" scheme="https://wanglinyong.github.io/tags/picturebox/"/>
+    
+      <category term="c#" scheme="https://wanglinyong.github.io/tags/c/"/>
+    
+  </entry>
   
   <entry>
     <title>Xshell6下载安装</title>
@@ -487,28 +515,6 @@
       
       
         &lt;h1 id=&quot;一、根据列表数据改变行字体颜色或者背景色&quot;&gt;&lt;a href=&quot;#一、根据列表数据改变行字体颜色或者背景色&quot; class=&quot;headerlink&quot; title=&quot;一、根据列表数据改变行字体颜色或者背景色&quot;&gt;&lt;/a&gt;一、根据列表数据改变行字体颜色或者背景色&lt;/h1&gt;&lt;
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>c# 利用Dockmanager工具使窗体显示和隐藏</title>
-    <link href="https://wanglinyong.github.io/2018/01/07/csharp%20Dockmanager%E7%AA%97%E4%BD%93%E6%98%BE%E7%A4%BA%E5%92%8C%E9%9A%90%E8%97%8F/"/>
-    <id>https://wanglinyong.github.io/2018/01/07/csharp Dockmanager窗体显示和隐藏/</id>
-    <published>2018-01-07T11:28:32.000Z</published>
-    <updated>2018-01-05T06:46:35.055Z</updated>
-    
-    <content type="html"><![CDATA[<p>1.打开工具箱，选择Dockmanager工具，如下：</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/panel1.png" alt=""></p><p>2.点击dockManager1的倒三角，点击Add bottom panel 在底部添加panel,如下：</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/panel2.png" alt=""></p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/panel3.png" alt=""></p><p>3.可将内容添加到此panel窗体中，点击图钉按钮即可选择固定与否<br><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/panel4.png" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;1.打开工具箱，选择Dockmanager工具，如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/panel1.png&quot; alt=&quot;&quot;&gt;
       
     
     </summary>
