@@ -6,7 +6,7 @@
   <link href="/wanglinyong.github.io/atom.xml" rel="self"/>
   
   <link href="https://wanglinyong.github.io/"/>
-  <updated>2018-06-04T13:03:22.445Z</updated>
+  <updated>2018-07-18T13:33:02.308Z</updated>
   <id>https://wanglinyong.github.io/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Python压缩解压zip文件</title>
+    <link href="https://wanglinyong.github.io/2018/06/28/Python%E5%8E%8B%E7%BC%A9%E8%A7%A3%E5%8E%8Bzip%E6%96%87%E4%BB%B6/"/>
+    <id>https://wanglinyong.github.io/2018/06/28/Python压缩解压zip文件/</id>
+    <published>2018-06-28T03:37:40.000Z</published>
+    <updated>2018-07-18T13:33:02.308Z</updated>
+    
+    <content type="html"><![CDATA[<p>导入相关模块</p><pre><code>import osimport shutilimport zipfilefrom os.path import join, getsize</code></pre><h2 id="一、python压缩指定文件夹"><a href="#一、python压缩指定文件夹" class="headerlink" title="一、python压缩指定文件夹"></a>一、python压缩指定文件夹</h2><pre><code>def zip_file(src_dir):    zip_name = src_dir +&apos;.zip&apos;    z = zipfile.ZipFile(zip_name,&apos;w&apos;,zipfile.ZIP_DEFLATED)    for dirpath, dirnames, filenames in os.walk(src_dir):        fpath = dirpath.replace(src_dir,&apos;&apos;)        fpath = fpath and fpath + os.sep or &apos;&apos;        for filename in filenames:            z.write(os.path.join(dirpath, filename),fpath+filename)            print (&apos;==压缩成功==&apos;)    z.close()</code></pre><p>其中</p><pre><code>src_dir：你要压缩的文件夹的路径zip_name：压缩后zip文件的路径及名称</code></pre><h2 id="二、python解压zip"><a href="#二、python解压zip" class="headerlink" title="二、python解压zip"></a>二、python解压zip</h2><pre><code>def unzip_file(zip_src, dst_dir):    r = zipfile.is_zipfile(zip_src)    if r:             fz = zipfile.ZipFile(zip_src, &apos;r&apos;)        for file in fz.namelist():            fz.extract(file, dst_dir)           else:        print(&apos;This is not zip&apos;)</code></pre><p>其中：</p><pre><code>zip_src:是zip文件的全路径dst_dir：是要解压到的目的文件夹</code></pre><h2 id="三、Python其它操作文件方法"><a href="#三、Python其它操作文件方法" class="headerlink" title="三、Python其它操作文件方法"></a>三、Python其它操作文件方法</h2><h3 id="1-剪切（移动）文件到指定目录"><a href="#1-剪切（移动）文件到指定目录" class="headerlink" title="1.剪切（移动）文件到指定目录"></a>1.剪切（移动）文件到指定目录</h3><pre><code>shutil.move(filename, dst_dir)</code></pre><h3 id="2-删除文件夹"><a href="#2-删除文件夹" class="headerlink" title="2.删除文件夹"></a>2.删除文件夹</h3><pre><code>shutil.rmtree(src_dir)</code></pre><h3 id="3-删除指定文件"><a href="#3-删除指定文件" class="headerlink" title="3.删除指定文件"></a>3.删除指定文件</h3><pre><code>os.remove(file_src)</code></pre><h3 id="4-新建文件夹"><a href="#4-新建文件夹" class="headerlink" title="4.新建文件夹"></a>4.新建文件夹</h3><pre><code>os.mkdir(dst_dir)</code></pre><h3 id="5-遍历文件夹"><a href="#5-遍历文件夹" class="headerlink" title="5.遍历文件夹"></a>5.遍历文件夹</h3><pre><code>for filename in os.listdir(src_dir):</code></pre><h3 id="6-复制文件"><a href="#6-复制文件" class="headerlink" title="6.复制文件"></a>6.复制文件</h3><pre><code>shutil.copyfile(src_file,dst_file)  </code></pre><h3 id="7-获取文件夹大小"><a href="#7-获取文件夹大小" class="headerlink" title="7.获取文件夹大小"></a>7.获取文件夹大小</h3><pre><code>def get_dir_size(dir_path):    size = 0L    for root, dirs, files in os.walk(dir_path):        size += sum([getsize(join(root, name)) for name in files])    return size</code></pre><p>可以根据文件大小做不同的判断，如：</p><pre><code>file_size = get_dir_size(DATA_PATH)max_size = file_size / 1024 / 1024   ##获得的是以Mb为单位的值if max_size &lt; 100:    pass</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;导入相关模块&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import os
+import shutil
+import zipfile
+from os.path import join, getsize
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;一、python压缩指定文件夹&quot;&gt;&lt;a h
+      
+    
+    </summary>
+    
+      <category term="Python" scheme="https://wanglinyong.github.io/categories/Python/"/>
+    
+    
+      <category term="python" scheme="https://wanglinyong.github.io/tags/python/"/>
+    
+  </entry>
   
   <entry>
     <title>dockpanel动态添加picturebox并绑定图片</title>
@@ -494,27 +524,6 @@
       
       
         &lt;h1 id=&quot;一、C-怎样打开Excel文件&quot;&gt;&lt;a href=&quot;#一、C-怎样打开Excel文件&quot; class=&quot;headerlink&quot; title=&quot;一、C#怎样打开Excel文件&quot;&gt;&lt;/a&gt;一、C#怎样打开Excel文件&lt;/h1&gt;&lt;p&gt;1.右键–Add DevExpres
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>C# Gridview 改变行字体颜色或背景色</title>
-    <link href="https://wanglinyong.github.io/2018/01/19/csharp%E6%94%B9%E5%8F%98%E8%A1%8C%E5%AD%97%E4%BD%93%E9%A2%9C%E8%89%B2%E6%88%96%E8%83%8C%E6%99%AF%E8%89%B2/"/>
-    <id>https://wanglinyong.github.io/2018/01/19/csharp改变行字体颜色或背景色/</id>
-    <published>2018-01-19T11:43:06.000Z</published>
-    <updated>2018-03-24T13:21:59.742Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="一、根据列表数据改变行字体颜色或者背景色"><a href="#一、根据列表数据改变行字体颜色或者背景色" class="headerlink" title="一、根据列表数据改变行字体颜色或者背景色"></a>一、根据列表数据改变行字体颜色或者背景色</h1><p>1.ALT+ENTER键打开属性列表，根据Name.Color.Name获取颜色字符串</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color.png" alt=""></p><pre><code>string color =  tePhone1.Color.Name;</code></pre><p>2.将颜色字符串存入数据库，附上数据库Dao代码</p><pre><code>    namespace rdms.DB   {public class StudentDao{    private static ILog LOG = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);    public static List&lt;Student&gt; GetAll()    {        return DBContext.ScodeSession.From&lt;Student&gt;().Select().ToList();    }    public static int Update(Student s)    {                // DBContext.ScodeSession.FromSql(&quot;UPDATE  Student  SET  color = &apos;&quot;+s.color+ &quot;&apos; where s_id = &quot; + s.s_id);        return DBContext.ScodeSession.Update(s);    }    public static Student getStudent(int id)    {        List&lt;Student&gt; list = DBContext.ScodeSession.FromSql(&quot;SELECT *  FROM Student  where s_id = &quot; + id).ToList&lt;Student&gt;();        if (list != null &amp;&amp; list.Count &gt; 0)        {            return list[0];        }        else        {            return null;        }    }    public static int Add(Student s)    {        return DBContext.ScodeSession.Insert(s);    }    public static void Delete(Student s)    {        DBContext.ScodeSession.Delete&lt;Student&gt;(s);    }}</code></pre><p>}</p><p>3.在显示列表点击Run Designer，在事件列表中找到RowStyle,给一个事件名称</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color3.png" alt=""></p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color4.png" alt=""></p><p>4.具体实现代码如下</p><pre><code>//颜色字符串转颜色对象public static Color GetColor(string ColorStr)  {      int ARGBvalue = 0;      Color newColor = Color.FromName(ColorStr);      if ((newColor.A + newColor.R + newColor.G + newColor.B) == 0)      {          int.TryParse(ColorStr, System.Globalization.NumberStyles.HexNumber, null, out ARGBvalue);          newColor = Color.FromArgb(ARGBvalue);      }      return newColor;  }private void gridView2_RowStyle_2(object sender, RowStyleEventArgs e)  {      List&lt;Student&gt; list = StudentDao.GetAll();      string name = &quot;&quot;;                          while(e.RowHandle &gt;= 0) {          if (gridView2.GetRowCellValue(e.RowHandle, &quot;NAME&quot;)!=null) { //NAME为列的字段名fildName             name = gridView2.GetRowCellValue(e.RowHandle, &quot;NAME&quot;).ToString();          }          if (list != null &amp;&amp; list.Count &gt; 0)          {              for (int i = 0; i &lt; list.Count; i++)              {                  Student s = list[i];                                         if (name != &quot;&quot; )                  {                      if (name.Equals(s.name))                      {                          Color color = GetColor(s.color);                          e.Appearance.ForeColor = color;//改变字体颜色                          //e.Appearance.BackColor = Color.Red;//改变背景色                      }                  }              }          }                  break;      }  }</code></pre><p>5.效果预览如下:</p><p>点击添加名单–选择颜色等</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color1.png" alt=""></p><p>显示列表如下，根据条件显示字体颜色</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/color2.png" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;一、根据列表数据改变行字体颜色或者背景色&quot;&gt;&lt;a href=&quot;#一、根据列表数据改变行字体颜色或者背景色&quot; class=&quot;headerlink&quot; title=&quot;一、根据列表数据改变行字体颜色或者背景色&quot;&gt;&lt;/a&gt;一、根据列表数据改变行字体颜色或者背景色&lt;/h1&gt;&lt;
       
     
     </summary>
