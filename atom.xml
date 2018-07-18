@@ -6,7 +6,7 @@
   <link href="/wanglinyong.github.io/atom.xml" rel="self"/>
   
   <link href="https://wanglinyong.github.io/"/>
-  <updated>2018-07-18T13:33:02.308Z</updated>
+  <updated>2018-07-18T13:39:13.452Z</updated>
   <id>https://wanglinyong.github.io/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AccessDeniedException如何处理</title>
+    <link href="https://wanglinyong.github.io/2018/07/02/AccessDeniedException%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86/"/>
+    <id>https://wanglinyong.github.io/2018/07/02/AccessDeniedException如何处理/</id>
+    <published>2018-07-02T02:46:40.000Z</published>
+    <updated>2018-07-18T13:39:13.452Z</updated>
+    
+    <content type="html"><![CDATA[<p>有两种情况：</p><p>1.用户未登录情况下访问受保护资源</p><p>2.用户登录情况下访问被保护资源</p><h2 id="一、用户未登录情况下访问受保护资源"><a href="#一、用户未登录情况下访问受保护资源" class="headerlink" title="一、用户未登录情况下访问受保护资源"></a>一、用户未登录情况下访问受保护资源</h2><p>用户在未登录的情况下访问受保护资源时会自动跳转到配置的登录页面。主要是以下这个配置起作用：</p><pre><code>&lt;security:http auto-config=&quot;false&quot; access-decision-manager-ref=&quot;accessDecisionManager&quot;               use-expressions=&quot;true&quot; entry-point-ref=&quot;loginEntryPoint&quot;&gt; &lt;bean id=&quot;loginEntryPoint&quot;    class=&quot;org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint&quot;&gt;    &lt;!-- 默认登录页的url --&gt;    &lt;constructor-arg value=&quot;/login?error=login&quot;/&gt;&lt;/bean&gt;&lt;/security:http&gt;</code></pre><p>但是这里说的访问路径不包含ajax请求的访问，如果是ajax请求的话，你会看到后台报AccessDeniedException异常，而前台没反应。因为对ajax请求不起作用</p><p>此时你可以这样来解决，在发送ajax请求的页面判断用户是否为空，为空则直接跳转到登录页面，如下：</p><pre><code> var res = &apos;${user.id}&apos;;    if(res==&apos;&apos; || res==null){        window.location.href = &quot;/login.jsp&quot;;    }    $.ajax({    ...})；}</code></pre><p>登录情况下的ajax请求我们下面介绍</p><h2 id="二、用户在登录情况下访问受保护资源"><a href="#二、用户在登录情况下访问受保护资源" class="headerlink" title="二、用户在登录情况下访问受保护资源"></a>二、用户在登录情况下访问受保护资源</h2><p>用户在登录情况下访问受保护资源时，可以有两种解决方案：</p><h3 id="1-配置403错误页面-有瑕疵"><a href="#1-配置403错误页面-有瑕疵" class="headerlink" title="1.配置403错误页面(有瑕疵)"></a>1.配置403错误页面(有瑕疵)</h3><p>因为我们知道访问受保护资源时会返回403错误码，我们可以直接配置403错误页面</p><p>在web.xml中配置错误页面：</p><pre><code>&lt;error-page&gt;    &lt;error-code&gt;403&lt;/error-code&gt;    &lt;location&gt;/WEB-INF/403.jsp&lt;/location&gt;&lt;/error-page&gt;</code></pre><p>在/WEB-INF/下引入403.jsp即可</p><p>此时访问受保护资源时会直接跳转到我们配置的403错误页面</p><p>但是问题又来了，ajax请求访问受保护资源时同样没有反应，且看下面的解决办法</p><h3 id="2-自定义MyAccessDeniedHandler拒绝访问处理器（完美）"><a href="#2-自定义MyAccessDeniedHandler拒绝访问处理器（完美）" class="headerlink" title="2.自定义MyAccessDeniedHandler拒绝访问处理器（完美）"></a>2.自定义MyAccessDeniedHandler拒绝访问处理器（完美）</h3><p>1.新建MyAccessDeniedHandler并实现AccessDeniedHandler接口：</p><pre><code>public class MyAccessDeniedHandler implements AccessDeniedHandler{private String errorPage;public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {    String header = request.getHeader( &quot;X-Requested-With&quot; );    if (header != null &amp;&amp; &quot;XMLHttpRequest&quot;.equals( header )) {        //ajax请求        String jsonObject = &quot;{\&quot;access-denied\&quot;:true}&quot;;        PrintWriter out = response.getWriter();        out.print( jsonObject );        out.flush();        out.close();        return;    } else {        RequestDispatcher dispatcher = request.getRequestDispatcher( errorPage );        dispatcher.forward( request, response );    }}public void setErrorPage(String errorPage) {    if(errorPage != null &amp;&amp; !errorPage.startsWith(&quot;/&quot;)) {        throw new IllegalArgumentException(&quot;errorPage must begin with &apos;/&apos;&quot;);    } else {        this.errorPage = errorPage;    }}}</code></pre><p>(1)通过setter方法获取配置文件中配置的错误页面</p><p>(2)根据请求头信息判断该请求是不是ajax请求</p><p>(3)如果是ajax请求，则返回json格式数据{access-denied:true}</p><p>(4)如果不是ajax请求则将请求转发到配置的错误页面</p><p>2.spring-security.xml配置自定义的AccessDeniedHandler：</p><pre><code>&lt;security:access-denied-handler ref=&quot;accessDeniedHandler&quot;/&gt;&lt;bean id=&quot;accessDeniedHandler&quot; class=&quot;wang.dreamland.www.security.MyAccessDeniedHandler&quot;&gt;    &lt;property name=&quot;errorPage&quot; value=&quot;/accessDenied.jsp&quot;&gt;&lt;/property&gt;&lt;/bean&gt;</code></pre><p>3.在webapp目录下新建accessDenied.jsp文件：</p><pre><code>&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;&lt;html&gt;&lt;head&gt;&lt;title&gt;无访问权限&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;span style=&quot;color: red&quot;&gt;无访问权限&lt;/span&gt;&lt;/body&gt;&lt;/html&gt;</code></pre><p>4.在发ajax请求的页面做下判断：</p><pre><code>$.ajax({       type:&apos;post&apos;,       url:&apos;/list&apos;,       dataType:&apos;json&apos;,       success:function(data){           var noAccess = data[&quot;access-denied&quot;]           if(noAccess){               window.location.href = &quot;${ctx}/accessDenied.jsp&quot;;               return           }       ...   }   });</code></pre><p>如果noAccess=true则跳转到accessDenied.jsp页面</p><p>这样就完美解决了登陆后无访问权限跳转的问题。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;有两种情况：&lt;/p&gt;
+&lt;p&gt;1.用户未登录情况下访问受保护资源&lt;/p&gt;
+&lt;p&gt;2.用户登录情况下访问被保护资源&lt;/p&gt;
+&lt;h2 id=&quot;一、用户未登录情况下访问受保护资源&quot;&gt;&lt;a href=&quot;#一、用户未登录情况下访问受保护资源&quot; class=&quot;headerlink&quot; ti
+      
+    
+    </summary>
+    
+      <category term="Java" scheme="https://wanglinyong.github.io/categories/Java/"/>
+    
+    
+      <category term="java" scheme="https://wanglinyong.github.io/tags/java/"/>
+    
+      <category term="security" scheme="https://wanglinyong.github.io/tags/security/"/>
+    
+  </entry>
   
   <entry>
     <title>Python压缩解压zip文件</title>
@@ -389,9 +419,9 @@ from os.path import join, getsize
       <category term="Linux" scheme="https://wanglinyong.github.io/categories/Linux/"/>
     
     
-      <category term="Linux" scheme="https://wanglinyong.github.io/tags/Linux/"/>
-    
       <category term="Git" scheme="https://wanglinyong.github.io/tags/Git/"/>
+    
+      <category term="Linux" scheme="https://wanglinyong.github.io/tags/Linux/"/>
     
   </entry>
   
@@ -438,9 +468,9 @@ from os.path import join, getsize
       <category term="Linux" scheme="https://wanglinyong.github.io/categories/Linux/"/>
     
     
-      <category term="Linux" scheme="https://wanglinyong.github.io/tags/Linux/"/>
-    
       <category term="Git" scheme="https://wanglinyong.github.io/tags/Git/"/>
+    
+      <category term="Linux" scheme="https://wanglinyong.github.io/tags/Linux/"/>
     
       <category term="Gogs" scheme="https://wanglinyong.github.io/tags/Gogs/"/>
     
@@ -503,27 +533,6 @@ from os.path import join, getsize
       
         &lt;h1 id=&quot;Mysql每天定时清空表&quot;&gt;&lt;a href=&quot;#Mysql每天定时清空表&quot; class=&quot;headerlink&quot; title=&quot;Mysql每天定时清空表&quot;&gt;&lt;/a&gt;Mysql每天定时清空表&lt;/h1&gt;&lt;p&gt;1.设置开启event scheduler&lt;/p&gt;
 &lt;pre
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>C# 打开Excel文件方法</title>
-    <link href="https://wanglinyong.github.io/2018/01/23/csharp%E6%89%93%E5%BC%80Excel%E6%96%87%E4%BB%B6/"/>
-    <id>https://wanglinyong.github.io/2018/01/23/csharp打开Excel文件/</id>
-    <published>2018-01-23T11:43:06.000Z</published>
-    <updated>2018-03-24T13:22:27.397Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="一、C-怎样打开Excel文件"><a href="#一、C-怎样打开Excel文件" class="headerlink" title="一、C#怎样打开Excel文件"></a>一、C#怎样打开Excel文件</h1><p>1.右键–Add DevExpress Item – New Item，新建一个Form窗体</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e1.png" alt=""></p><p>2.打开工具箱，搜索spreadsheetControl</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e2.png" alt=""></p><p>3.将工具spreadsheetControl拖入新建的窗体中</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e3.png" alt=""></p><p>4.可添加打开，保存，打印等按钮，我是随窗体打开一起打开excel，所以没有添加按钮，主要代码如下：</p><pre><code>using System;using System.Collections.Generic;using System.ComponentModel;using System.Data;using System.Drawing;using System.Text;using System.Linq;using System.Threading.Tasks;using System.Windows.Forms;using DevExpress.XtraEditors;using System.IO;using DevExpress.Spreadsheet;namespace rdms.Forms{public partial class frmARFCN : Form{    private static log4net.ILog LOG = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);    //记录窗体的名称    readonly string mainFormText;    public frmARFCN()    {        InitializeComponent();        //记录窗体的名称，并实现文档变化事件的处理，方便显示新的文件名称        mainFormText = this.Text;        this.spreadsheetControl1.DocumentLoaded += new EventHandler(spreadsheetControl1_DocumentLoaded);        openFile();    }    /// &lt;summary&gt;    /// 文档变化后，实现对新文件名称的显示    /// &lt;/summary&gt;    void spreadsheetControl1_DocumentLoaded(object sender, EventArgs e)    {        string fileName = Path.GetFileName(this.spreadsheetControl1.Document.Path);        if (String.IsNullOrEmpty(fileName))        {            Text = mainFormText;        }        else        {            Text = fileName + &quot; - &quot; + mainFormText;        }    }    /// &lt;summary&gt;    /// 打开Excel文件    /// &lt;/summary&gt;    private void openFile()    {        string path = Application.StartupPath;        LOG.Info(&quot;path===&quot;+path);        string filePath = path + &quot;\\Data\\about.xls&quot;;        if (!string.IsNullOrEmpty(filePath))        {            IWorkbook workbook = spreadsheetControl1.Document;            workbook.LoadDocument(filePath);        }    }    /// &lt;summary&gt;    /// 保存Excel文件    /// &lt;/summary&gt;    private void btnSaveFile_Click(object sender, EventArgs e)    {        spreadsheetControl1.SaveDocument();    }    /// &lt;summary&gt;    /// Excel文件打印    /// &lt;/summary&gt;    private void btnPreview_Click(object sender, EventArgs e)    {        this.spreadsheetControl1.ShowPrintPreview();    }}}</code></pre><p>5.点击某个按钮弹出frmARFCN的form窗体</p><pre><code> private void btn_Click(object sender, EventArgs e){            using (frmARFCN frm = new frmARFCN())    {        DialogResult ret = frm.ShowDialog(this);    }       }</code></pre><p>6.显示效果如下</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/e4.png" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;一、C-怎样打开Excel文件&quot;&gt;&lt;a href=&quot;#一、C-怎样打开Excel文件&quot; class=&quot;headerlink&quot; title=&quot;一、C#怎样打开Excel文件&quot;&gt;&lt;/a&gt;一、C#怎样打开Excel文件&lt;/h1&gt;&lt;p&gt;1.右键–Add DevExpres
       
     
     </summary>

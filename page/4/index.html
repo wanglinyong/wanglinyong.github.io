@@ -274,6 +274,264 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/11/17/python-十六进制数据传递与接收/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2017/11/17/python-十六进制数据传递与接收/" itemprop="url">Python-十六进制数据传递与接收</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-17T20:58:06+08:00">
+                2017-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2017/11/17/python-十六进制数据传递与接收/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/11/17/python-十六进制数据传递与接收/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="实际应用场景"><a href="#实际应用场景" class="headerlink" title="实际应用场景"></a>实际应用场景</h1><p>python客户端与服务端（c程序）进行通讯，需接收服务端发来的16进制码流，并对16进制数据进行解码，得到相应字段的数据，并可以将数据打包成对应格式的码流发送给服务端，多字节整数传输采用网络字节序。</p>
+<h2 id="1-1-网络字节序"><a href="#1-1-网络字节序" class="headerlink" title="1.1 网络字节序"></a>1.1 网络字节序</h2><p>网络字节顺序是TCP/IP中规定好的一种数据表示格式，它与具体的CPU类型、操作系统等无关，从而可以保证数据在不同主机之间传输时能够被正确解释。网络字节顺序采用big endian（大端）排序方式。</p>
+<p>为了同c中的结构体交换数据，还要考虑c或c++编译器使用了字节对齐，通常是以4个字节为单位的32位系统，故而struct根据本地机器字节顺序转换.可以用格式中的第一个字符来改变对齐方式.定义如下</p>
+<pre><code>Character      Byte order          Size               Alignment
+
+@(默认)            本机              本机              本机,凑够4字节
+
+=                 本机                标准              none,按原字节数
+
+&lt;                 小端                标准              none,按原字节数
+
+&gt;                 大端                标准              none,按原字节数
+
+!              network(大端)         标准              none,按原字节数
+</code></pre><h2 id="1-2-python-struct的模块"><a href="#1-2-python-struct的模块" class="headerlink" title="1.2 python struct的模块"></a>1.2 python struct的模块</h2><p>作用：按照指定格式将Python数据转换为字符串,该字符串为字节流,如网络传输时,不能传输int,此时先将int转化为字节流,然后再发送;<br>按照指定格式将字节流转换为Python指定的数据类型;<br>处理二进制数据,如果用struct来处理文件的话,需要用’wb’,’rb’以二进制(字节流)写,读的方式来处理文件;<br>处理c语言中的结构体;</p>
+<p>struct中两个重要的函数：</p>
+<p>（1）pack(fmt,v1,v2…)：打包函数    </p>
+<p>返回值类型：string    </p>
+<p>按照给定的格式(fmt),把数据转换成字符串(字节流),并将该字符串返回.</p>
+<p>（2）unpack(fmt,v1,v2…..)：解包函数</p>
+<p>返回值类型：tuple</p>
+<p>按照给定的格式(fmt)解析字节流,并返回解析结果</p>
+<h2 id="2-消息发送的格式"><a href="#2-消息发送的格式" class="headerlink" title="2.消息发送的格式"></a>2.消息发送的格式</h2><p>消息采用消息头+消息体格式。</p>
+<pre><code>UINT8         1字节            8位无符号整形      
+UINT16        2字节            16位无符号整形         
+UINT32        4字节            32位无符号整形
+UINT64        8字节            64位无符号整形
+</code></pre><p>1.消息头</p>
+<pre><code>字段                  类型                  说明
+
+消息编号            UINT8                    -
+
+保留                  UINT8                用0填充
+
+消息体长度           UINT16      不包括消息头的长度，范围：0 -- 65535
+</code></pre><p>1.1消息编号</p>
+<pre><code>编号            消息                    用途                     说明
+
+0xe1     W_HEARTBEAT               心跳消息                消息体长度为0
+
+0xq1      QUERY_SM                  查询SM请求            消息体长度为0
+
+0xq2     QUERYSM_RPT             查询SM数据上报        
+
+0xs1     SCAN_PL                    扫描PL请求            消息体长度为0
+
+0xs2     SCANPL_ACK                扫描PL请求应答
+</code></pre><p>1.2消息体格式 </p>
+<p>（1）心跳消息(W_HEARTBEAT)     每30秒发送一次，无消息体</p>
+<p>（2）QUERY_SM       查询SM数据请求   无消息体</p>
+<p>（3）QUERYSM_RPT     查询SM数据应答    消息体长度为27</p>
+<pre><code>  字段           长度      类型           说明
+
+reserved         6         CHAR            ——
+
+strName            16         CHAR           字符串
+
+RS                 4         INT32           信号强度(-140～-44dBm)
+                                              0：RS值无效
+
+Rs_si           1              BYTE            0:SI
+                                               1:RS
+</code></pre><p>（4）SCAN_PL     扫描PL请求   消息体长度为0</p>
+<p>（5）SCANPL_ACK   扫描PL请求应答</p>
+<pre><code> 字段                长度      类型           说明
+
+reserved         4         UINT32            ——
+
+result             2         UINT16           0:成功，1：失败
+
+count             2         UINT16           info数量
+
+info            13 * 10     info[10]     最多10个info列表
+</code></pre><p>5-1） info消息体</p>
+<pre><code>字段                长度          类型             说明
+
+ID                     4            UINT32              ID值
+
+Num                 6            CHAR              号码
+
+fn                 2            UINT16              fn频率
+
+power               1            UINT8              功率
+</code></pre><h2 id="3-代码示例如下"><a href="#3-代码示例如下" class="headerlink" title="3.代码示例如下"></a>3.代码示例如下</h2><p>3.1 发送程序（打包程序）：</p>
+<pre><code>def th_heart():
+    while True:
+        logging.info(&apos;SEND W_HEARTBEAT&apos;)
+        cmd_word = 0xe1
+        tx_buf = struct.pack(&apos;&lt;i&apos;, cmd_word)
+        ModuleSocket.sendto(tx_buf, (&apos;192.168.1.209&apos;, 2843))
+           time.sleep(60)
+
+def send_query_sm(id):
+       header = 0xq1
+      b = 0
+       b_len = 0
+       body = struct.pack(&quot;&lt;2BH&quot;, header, b, b_len)
+      send_msg(id, body)
+
+def send_scan_pl(id):
+       header = 0xs1
+      b = 0
+       b_len = 0
+       body = struct.pack(&quot;&lt;2BH&quot;, header, b, b_len)
+      send_msg(id, body)
+
+def send_msg(id,body):     
+    addr = (192.168.1.209,2843)
+    ModuleSocket.sendto(body, addr)
+    msg = repr(body)
+    logging.info(&apos;send serial %s to %s&apos; % (msg, addr))    
+</code></pre><p>3.2 接收程序（解包程序）：</p>
+<pre><code> if temp.find(&apos;0xq2&apos;) &gt;=0:
+    logging.info(&apos;QUERYSM_RPT&apos;)
+    header,b,b_len,reserved,strName,RS,Rs_si = struct.unpack(&quot;&gt;2BH6s16siB&quot;, body)
+    strName = strName[0:-1]
+    logging.info(&quot;header:%s, b:%s, b_len:%s,reserved:%s, strName:%s, RS:%s, Rs_si:%s&quot; % (header, b, b_len, reserved, strName, RS, Rs_si))
+    sm_rpt(moduleId, strName)
+
+if temp.find(&apos;0xs2&apos;) &gt;= 0:
+    logging.info(&apos;SCANPL_ACK&apos;)
+    header, b, b_len, reserved, result, count = struct.unpack(&quot;&gt;2BHIHH&quot;, body[0:12])
+    ID,Num,fn,power = struct.unpack(&quot;&gt;I6sHB&quot;, body[12:25])
+    logging.info(&quot;reserved:%s, result:%s, count:%s&quot; %(reserved,result,count))
+    logging.info(&quot;ID:%s, Num:%s, fn:%s, power:%s&quot; % (ID, Num, fn, power))
+    pl_rpt(moduleId, ID, Num,fn,power)    
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2017/11/05/JAVA-基于UDP的Socket实现/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1265,7 +1523,7 @@ public static void main(String[] args) {
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1287,7 +1545,7 @@ public static void main(String[] args) {
               
               <div class="site-state-item site-state-tags">
                 <a href="/wanglinyong.github.io/tags/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

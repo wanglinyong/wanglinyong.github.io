@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="java,security," />
 
 
 
@@ -81,17 +81,18 @@
 
 
 
-<meta name="description" content="一、UDP服务端发送数据public class UdpClient {  public static void main(String[] args) throws Exception {     DatagramSocket socket = new DatagramSocket();      String s = getJsonStr();     byte[] buf = s.getBy">
+<meta name="description" content="有两种情况： 1.用户未登录情况下访问受保护资源 2.用户登录情况下访问被保护资源 一、用户未登录情况下访问受保护资源用户在未登录的情况下访问受保护资源时会自动跳转到配置的登录页面。主要是以下这个配置起作用： &amp;lt;security:http auto-config=&amp;quot;false&amp;quot; access-decision-manager-ref=&amp;quot;accessDecisio">
+<meta name="keywords" content="java,security">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JAVA-UDP接收和发送json数据">
-<meta property="og:url" content="https://wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/index.html">
+<meta property="og:title" content="AccessDeniedException如何处理">
+<meta property="og:url" content="https://wanglinyong.github.io/2018/07/02/AccessDeniedException如何处理/index.html">
 <meta property="og:site_name" content="Wang&#39;s Blog">
-<meta property="og:description" content="一、UDP服务端发送数据public class UdpClient {  public static void main(String[] args) throws Exception {     DatagramSocket socket = new DatagramSocket();      String s = getJsonStr();     byte[] buf = s.getBy">
+<meta property="og:description" content="有两种情况： 1.用户未登录情况下访问受保护资源 2.用户登录情况下访问被保护资源 一、用户未登录情况下访问受保护资源用户在未登录的情况下访问受保护资源时会自动跳转到配置的登录页面。主要是以下这个配置起作用： &amp;lt;security:http auto-config=&amp;quot;false&amp;quot; access-decision-manager-ref=&amp;quot;accessDecisio">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-03-16T07:21:44.959Z">
+<meta property="og:updated_time" content="2018-07-18T13:39:13.452Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JAVA-UDP接收和发送json数据">
-<meta name="twitter:description" content="一、UDP服务端发送数据public class UdpClient {  public static void main(String[] args) throws Exception {     DatagramSocket socket = new DatagramSocket();      String s = getJsonStr();     byte[] buf = s.getBy">
+<meta name="twitter:title" content="AccessDeniedException如何处理">
+<meta name="twitter:description" content="有两种情况： 1.用户未登录情况下访问受保护资源 2.用户登录情况下访问被保护资源 一、用户未登录情况下访问受保护资源用户在未登录的情况下访问受保护资源时会自动跳转到配置的登录页面。主要是以下这个配置起作用： &amp;lt;security:http auto-config=&amp;quot;false&amp;quot; access-decision-manager-ref=&amp;quot;accessDecisio">
 
 
 
@@ -121,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="https://wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/"/>
+  <link rel="canonical" href="https://wanglinyong.github.io/2018/07/02/AccessDeniedException如何处理/"/>
 
 
 
 
 
-  <title>JAVA-UDP接收和发送json数据 | Wang's Blog</title>
+  <title>AccessDeniedException如何处理 | Wang's Blog</title>
   
 
 
@@ -274,7 +275,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/07/02/AccessDeniedException如何处理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="WangLinYong">
@@ -291,7 +292,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JAVA-UDP接收和发送json数据</h1>
+          <h1 class="post-title" itemprop="name headline">AccessDeniedException如何处理</h1>
         
 
         <div class="post-meta">
@@ -303,8 +304,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-06T19:49:09+08:00">
-                2018-03-06
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-02T10:46:40+08:00">
+                2018-07-02
               </time>
             
 
@@ -314,6 +315,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -322,8 +345,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/06/UDP接收和发送json数据/" itemprop="commentCount"></span>
+                <a href="/wanglinyong.github.io/2018/07/02/AccessDeniedException如何处理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/07/02/AccessDeniedException如何处理/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,100 +374,104 @@
       
 
       
-        <h1 id="一、UDP服务端发送数据"><a href="#一、UDP服务端发送数据" class="headerlink" title="一、UDP服务端发送数据"></a>一、UDP服务端发送数据</h1><pre><code>public class UdpClient {
+        <p>有两种情况：</p>
+<p>1.用户未登录情况下访问受保护资源</p>
+<p>2.用户登录情况下访问被保护资源</p>
+<h2 id="一、用户未登录情况下访问受保护资源"><a href="#一、用户未登录情况下访问受保护资源" class="headerlink" title="一、用户未登录情况下访问受保护资源"></a>一、用户未登录情况下访问受保护资源</h2><p>用户在未登录的情况下访问受保护资源时会自动跳转到配置的登录页面。主要是以下这个配置起作用：</p>
+<pre><code>&lt;security:http auto-config=&quot;false&quot; access-decision-manager-ref=&quot;accessDecisionManager&quot;
+               use-expressions=&quot;true&quot; entry-point-ref=&quot;loginEntryPoint&quot;&gt;
 
-public static void main(String[] args) throws Exception {
-    DatagramSocket socket = new DatagramSocket();
+ &lt;bean id=&quot;loginEntryPoint&quot;
+    class=&quot;org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint&quot;&gt;
+    &lt;!-- 默认登录页的url --&gt;
+    &lt;constructor-arg value=&quot;/login?error=login&quot;/&gt;
+&lt;/bean&gt;
 
-    String s = getJsonStr();
-    byte[] buf = s.getBytes();
-    //将数据打包
-    DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName(&quot;192.168.11.139&quot;), 6070);
-    socket.send(packet);
-    socket.close();
-
-}
-
-public  static  String getJsonStr(){
-    Person p = new Person();
-    p.setName( &quot;张三&quot; );
-    p.setAge( 18 );
-    p.setGender( &quot;男&quot; );
-    return JSONObject.toJSONString( p );
-}
-}
-</code></pre><p>利用fastjson将对象转换为json字符串</p>
-<pre><code>JSONObject.toJSONString( p );
-</code></pre><h1 id="二、UDP客户端接收数据"><a href="#二、UDP客户端接收数据" class="headerlink" title="二、UDP客户端接收数据"></a>二、UDP客户端接收数据</h1><pre><code>public class UdpServer {
-
-public static void main(String[] args) throws Exception {
-    // 定义一个接收端，并且指定了接收的端口号
-    DatagramSocket socket = new DatagramSocket(6070);
-
-    while (true) {
-        byte[] buf = new byte[1024];
-        // 解析数据包
-        DatagramPacket packet = new DatagramPacket(buf, buf.length);
-
-        socket.receive(packet);
-
-        String ip = packet.getAddress().getHostAddress();
-
-        buf = packet.getData();
-
-        String data = new String(buf, 0, packet.getLength());
-
-        System.out.println(&quot;收到 &quot; + ip + &quot; 发来的消息：&quot; + data);
-
-        //Person p = JSON.parseObject(data, new TypeReference&lt;Person&gt;() {});
-        Person p=JSONObject.parseObject(data, Person.class);//JSON字符串转对象
-        System.out.println(p.toString());
+&lt;/security:http&gt;
+</code></pre><p>但是这里说的访问路径不包含ajax请求的访问，如果是ajax请求的话，你会看到后台报AccessDeniedException异常，而前台没反应。因为对ajax请求不起作用</p>
+<p>此时你可以这样来解决，在发送ajax请求的页面判断用户是否为空，为空则直接跳转到登录页面，如下：</p>
+<pre><code> var res = &apos;${user.id}&apos;;
+    if(res==&apos;&apos; || res==null){
+        window.location.href = &quot;/login.jsp&quot;;
     }
+    $.ajax({
+    ...
+})；
+}
+</code></pre><p>登录情况下的ajax请求我们下面介绍</p>
+<h2 id="二、用户在登录情况下访问受保护资源"><a href="#二、用户在登录情况下访问受保护资源" class="headerlink" title="二、用户在登录情况下访问受保护资源"></a>二、用户在登录情况下访问受保护资源</h2><p>用户在登录情况下访问受保护资源时，可以有两种解决方案：</p>
+<h3 id="1-配置403错误页面-有瑕疵"><a href="#1-配置403错误页面-有瑕疵" class="headerlink" title="1.配置403错误页面(有瑕疵)"></a>1.配置403错误页面(有瑕疵)</h3><p>因为我们知道访问受保护资源时会返回403错误码，我们可以直接配置403错误页面</p>
+<p>在web.xml中配置错误页面：</p>
+<pre><code>&lt;error-page&gt;
+    &lt;error-code&gt;403&lt;/error-code&gt;
+    &lt;location&gt;/WEB-INF/403.jsp&lt;/location&gt;
+&lt;/error-page&gt;
+</code></pre><p>在/WEB-INF/下引入403.jsp即可</p>
+<p>此时访问受保护资源时会直接跳转到我们配置的403错误页面</p>
+<p>但是问题又来了，ajax请求访问受保护资源时同样没有反应，且看下面的解决办法</p>
+<h3 id="2-自定义MyAccessDeniedHandler拒绝访问处理器（完美）"><a href="#2-自定义MyAccessDeniedHandler拒绝访问处理器（完美）" class="headerlink" title="2.自定义MyAccessDeniedHandler拒绝访问处理器（完美）"></a>2.自定义MyAccessDeniedHandler拒绝访问处理器（完美）</h3><p>1.新建MyAccessDeniedHandler并实现AccessDeniedHandler接口：</p>
+<pre><code>public class MyAccessDeniedHandler implements AccessDeniedHandler{
+private String errorPage;
+public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
+    String header = request.getHeader( &quot;X-Requested-With&quot; );
+    if (header != null &amp;&amp; &quot;XMLHttpRequest&quot;.equals( header )) {
+        //ajax请求
+        String jsonObject = &quot;{\&quot;access-denied\&quot;:true}&quot;;
+        PrintWriter out = response.getWriter();
+        out.print( jsonObject );
+        out.flush();
+        out.close();
+        return;
+    } else {
+        RequestDispatcher dispatcher = request.getRequestDispatcher( errorPage );
+        dispatcher.forward( request, response );
+    }
+}
 
+public void setErrorPage(String errorPage) {
+    if(errorPage != null &amp;&amp; !errorPage.startsWith(&quot;/&quot;)) {
+        throw new IllegalArgumentException(&quot;errorPage must begin with &apos;/&apos;&quot;);
+    } else {
+        this.errorPage = errorPage;
+    }
 }
 }
-</code></pre><p>利用fastjson将接收到的json字符串转为对象</p>
-<pre><code>Person p=JSONObject.parseObject(data, Person.class);//JSON字符串转对象
-</code></pre><p>三、实体类Person</p>
-<pre><code>public class Person {
-private  String  name;
-private  int age;
-private String gender;
+</code></pre><p>(1)通过setter方法获取配置文件中配置的错误页面</p>
+<p>(2)根据请求头信息判断该请求是不是ajax请求</p>
+<p>(3)如果是ajax请求，则返回json格式数据{access-denied:true}</p>
+<p>(4)如果不是ajax请求则将请求转发到配置的错误页面</p>
+<p>2.spring-security.xml配置自定义的AccessDeniedHandler：</p>
+<pre><code>&lt;security:access-denied-handler ref=&quot;accessDeniedHandler&quot;/&gt;
+&lt;bean id=&quot;accessDeniedHandler&quot; class=&quot;wang.dreamland.www.security.MyAccessDeniedHandler&quot;&gt;
+    &lt;property name=&quot;errorPage&quot; value=&quot;/accessDenied.jsp&quot;&gt;&lt;/property&gt;
+&lt;/bean&gt;
+</code></pre><p>3.在webapp目录下新建accessDenied.jsp文件：</p>
+<pre><code>&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;无访问权限&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;span style=&quot;color: red&quot;&gt;无访问权限&lt;/span&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>4.在发ajax请求的页面做下判断：</p>
+<pre><code>$.ajax({
+       type:&apos;post&apos;,
+       url:&apos;/list&apos;,
+       dataType:&apos;json&apos;,
+       success:function(data){
+           var noAccess = data[&quot;access-denied&quot;]
+           if(noAccess){
+               window.location.href = &quot;${ctx}/accessDenied.jsp&quot;;
+               return
+           }
+       ...
+   }
+   });
+</code></pre><p>如果noAccess=true则跳转到accessDenied.jsp页面</p>
+<p>这样就完美解决了登陆后无访问权限跳转的问题。</p>
 
-public String getName() {
-    return name;
-}
-
-public void setName(String name) {
-    this.name = name;
-}
-
-public int getAge() {
-    return age;
-}
-
-public void setAge(int age) {
-    this.age = age;
-}
-
-public String getGender() {
-    return gender;
-}
-
-public void setGender(String gender) {
-    this.gender = gender;
-}
-
-@Override
-
-public String toString() {
-    return &quot;Person{&quot; +
-            &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
-            &quot;, age=&quot; + age +
-            &quot;, gender=&apos;&quot; + gender + &apos;\&apos;&apos; +
-            &apos;}&apos;;
-}
-</code></pre>
       
     </div>
     
@@ -497,6 +524,14 @@ public String toString() {
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/wanglinyong.github.io/tags/java/" rel="tag"><i class="fa fa-tag"></i> java</a>
+          
+            <a href="/wanglinyong.github.io/tags/security/" rel="tag"><i class="fa fa-tag"></i> security</a>
+          
+        </div>
+      
 
       
       
@@ -506,8 +541,8 @@ public String toString() {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/wanglinyong.github.io/2018/01/26/mysql定时清空表/" rel="next" title="Mysql每天定时清空表">
-                <i class="fa fa-chevron-left"></i> Mysql每天定时清空表
+              <a href="/wanglinyong.github.io/2018/06/28/Python压缩解压zip文件/" rel="next" title="Python压缩解压zip文件">
+                <i class="fa fa-chevron-left"></i> Python压缩解压zip文件
               </a>
             
           </div>
@@ -515,10 +550,6 @@ public String toString() {
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/wanglinyong.github.io/2018/03/15/嵌入式数据库H2/" rel="prev" title="嵌入式数据库H2">
-                嵌入式数据库H2 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -549,8 +580,8 @@ public String toString() {
 
   
     <div class="comments" id="comments">
-      <div class="ds-thread" data-thread-key="2018/03/06/UDP接收和发送json数据/"
-           data-title="JAVA-UDP接收和发送json数据" data-url="https://wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/">
+      <div class="ds-thread" data-thread-key="2018/07/02/AccessDeniedException如何处理/"
+           data-title="AccessDeniedException如何处理" data-url="https://wanglinyong.github.io/2018/07/02/AccessDeniedException如何处理/">
       </div>
     </div>
 
@@ -682,7 +713,7 @@ public String toString() {
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、UDP服务端发送数据"><span class="nav-number">1.</span> <span class="nav-text">一、UDP服务端发送数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、UDP客户端接收数据"><span class="nav-number">2.</span> <span class="nav-text">二、UDP客户端接收数据</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、用户未登录情况下访问受保护资源"><span class="nav-number">1.</span> <span class="nav-text">一、用户未登录情况下访问受保护资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、用户在登录情况下访问受保护资源"><span class="nav-number">2.</span> <span class="nav-text">二、用户在登录情况下访问受保护资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-配置403错误页面-有瑕疵"><span class="nav-number">2.1.</span> <span class="nav-text">1.配置403错误页面(有瑕疵)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-自定义MyAccessDeniedHandler拒绝访问处理器（完美）"><span class="nav-number">2.2.</span> <span class="nav-text">2.自定义MyAccessDeniedHandler拒绝访问处理器（完美）</span></a></li></ol></li></ol></div>
             
 
           </div>

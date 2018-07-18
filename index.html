@@ -274,6 +274,257 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/07/02/AccessDeniedException如何处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/07/02/AccessDeniedException如何处理/" itemprop="url">AccessDeniedException如何处理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-02T10:46:40+08:00">
+                2018-07-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/07/02/AccessDeniedException如何处理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/07/02/AccessDeniedException如何处理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>有两种情况：</p>
+<p>1.用户未登录情况下访问受保护资源</p>
+<p>2.用户登录情况下访问被保护资源</p>
+<h2 id="一、用户未登录情况下访问受保护资源"><a href="#一、用户未登录情况下访问受保护资源" class="headerlink" title="一、用户未登录情况下访问受保护资源"></a>一、用户未登录情况下访问受保护资源</h2><p>用户在未登录的情况下访问受保护资源时会自动跳转到配置的登录页面。主要是以下这个配置起作用：</p>
+<pre><code>&lt;security:http auto-config=&quot;false&quot; access-decision-manager-ref=&quot;accessDecisionManager&quot;
+               use-expressions=&quot;true&quot; entry-point-ref=&quot;loginEntryPoint&quot;&gt;
+
+ &lt;bean id=&quot;loginEntryPoint&quot;
+    class=&quot;org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint&quot;&gt;
+    &lt;!-- 默认登录页的url --&gt;
+    &lt;constructor-arg value=&quot;/login?error=login&quot;/&gt;
+&lt;/bean&gt;
+
+&lt;/security:http&gt;
+</code></pre><p>但是这里说的访问路径不包含ajax请求的访问，如果是ajax请求的话，你会看到后台报AccessDeniedException异常，而前台没反应。因为对ajax请求不起作用</p>
+<p>此时你可以这样来解决，在发送ajax请求的页面判断用户是否为空，为空则直接跳转到登录页面，如下：</p>
+<pre><code> var res = &apos;${user.id}&apos;;
+    if(res==&apos;&apos; || res==null){
+        window.location.href = &quot;/login.jsp&quot;;
+    }
+    $.ajax({
+    ...
+})；
+}
+</code></pre><p>登录情况下的ajax请求我们下面介绍</p>
+<h2 id="二、用户在登录情况下访问受保护资源"><a href="#二、用户在登录情况下访问受保护资源" class="headerlink" title="二、用户在登录情况下访问受保护资源"></a>二、用户在登录情况下访问受保护资源</h2><p>用户在登录情况下访问受保护资源时，可以有两种解决方案：</p>
+<h3 id="1-配置403错误页面-有瑕疵"><a href="#1-配置403错误页面-有瑕疵" class="headerlink" title="1.配置403错误页面(有瑕疵)"></a>1.配置403错误页面(有瑕疵)</h3><p>因为我们知道访问受保护资源时会返回403错误码，我们可以直接配置403错误页面</p>
+<p>在web.xml中配置错误页面：</p>
+<pre><code>&lt;error-page&gt;
+    &lt;error-code&gt;403&lt;/error-code&gt;
+    &lt;location&gt;/WEB-INF/403.jsp&lt;/location&gt;
+&lt;/error-page&gt;
+</code></pre><p>在/WEB-INF/下引入403.jsp即可</p>
+<p>此时访问受保护资源时会直接跳转到我们配置的403错误页面</p>
+<p>但是问题又来了，ajax请求访问受保护资源时同样没有反应，且看下面的解决办法</p>
+<h3 id="2-自定义MyAccessDeniedHandler拒绝访问处理器（完美）"><a href="#2-自定义MyAccessDeniedHandler拒绝访问处理器（完美）" class="headerlink" title="2.自定义MyAccessDeniedHandler拒绝访问处理器（完美）"></a>2.自定义MyAccessDeniedHandler拒绝访问处理器（完美）</h3><p>1.新建MyAccessDeniedHandler并实现AccessDeniedHandler接口：</p>
+<pre><code>public class MyAccessDeniedHandler implements AccessDeniedHandler{
+private String errorPage;
+public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
+    String header = request.getHeader( &quot;X-Requested-With&quot; );
+    if (header != null &amp;&amp; &quot;XMLHttpRequest&quot;.equals( header )) {
+        //ajax请求
+        String jsonObject = &quot;{\&quot;access-denied\&quot;:true}&quot;;
+        PrintWriter out = response.getWriter();
+        out.print( jsonObject );
+        out.flush();
+        out.close();
+        return;
+    } else {
+        RequestDispatcher dispatcher = request.getRequestDispatcher( errorPage );
+        dispatcher.forward( request, response );
+    }
+}
+
+public void setErrorPage(String errorPage) {
+    if(errorPage != null &amp;&amp; !errorPage.startsWith(&quot;/&quot;)) {
+        throw new IllegalArgumentException(&quot;errorPage must begin with &apos;/&apos;&quot;);
+    } else {
+        this.errorPage = errorPage;
+    }
+}
+}
+</code></pre><p>(1)通过setter方法获取配置文件中配置的错误页面</p>
+<p>(2)根据请求头信息判断该请求是不是ajax请求</p>
+<p>(3)如果是ajax请求，则返回json格式数据{access-denied:true}</p>
+<p>(4)如果不是ajax请求则将请求转发到配置的错误页面</p>
+<p>2.spring-security.xml配置自定义的AccessDeniedHandler：</p>
+<pre><code>&lt;security:access-denied-handler ref=&quot;accessDeniedHandler&quot;/&gt;
+&lt;bean id=&quot;accessDeniedHandler&quot; class=&quot;wang.dreamland.www.security.MyAccessDeniedHandler&quot;&gt;
+    &lt;property name=&quot;errorPage&quot; value=&quot;/accessDenied.jsp&quot;&gt;&lt;/property&gt;
+&lt;/bean&gt;
+</code></pre><p>3.在webapp目录下新建accessDenied.jsp文件：</p>
+<pre><code>&lt;%@ page contentType=&quot;text/html;charset=UTF-8&quot; language=&quot;java&quot; %&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;无访问权限&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;span style=&quot;color: red&quot;&gt;无访问权限&lt;/span&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>4.在发ajax请求的页面做下判断：</p>
+<pre><code>$.ajax({
+       type:&apos;post&apos;,
+       url:&apos;/list&apos;,
+       dataType:&apos;json&apos;,
+       success:function(data){
+           var noAccess = data[&quot;access-denied&quot;]
+           if(noAccess){
+               window.location.href = &quot;${ctx}/accessDenied.jsp&quot;;
+               return
+           }
+       ...
+   }
+   });
+</code></pre><p>如果noAccess=true则跳转到accessDenied.jsp页面</p>
+<p>这样就完美解决了登陆后无访问权限跳转的问题。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/06/28/Python压缩解压zip文件/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2137,210 +2388,6 @@ at WriteWrap.afterWrite [as oncomplete] (net.js:880:14)
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/04/22/linux系统mysql的远程访问/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/04/22/linux系统mysql的远程访问/" itemprop="url">linux系统mysql的远程访问</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-22T10:46:18+08:00">
-                2018-04-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/wanglinyong.github.io/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/04/22/linux系统mysql的远程访问/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/04/22/linux系统mysql的远程访问/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、创建用户设置权限"><a href="#一、创建用户设置权限" class="headerlink" title="一、创建用户设置权限"></a>一、创建用户设置权限</h1><p>以root身份登录mysql</p>
-<pre><code>[root@ ~]mysql -uroot -p
-
-[root@ ~]Enter password: xxxxxx
-</code></pre><p>创建用户</p>
-<pre><code>mysql&gt;create user &apos;wanglinyong&apos;@&apos;%&apos; identified by &apos;wanglinyong9527&apos;;
-</code></pre><p>授权</p>
-<pre><code>mysql&gt;grant all privileges on *.* to &apos;wanglinyong&apos;@&apos;%&apos; identified by &apos;wanglinyong9527&apos; with grant option;
-</code></pre><p>其中’wanglinyong’@’%’是允许该用户在任何主机上远程连接，如果只允许在某一台主机上连接，可指定ip</p>
-<pre><code>mysql&gt;grant all privileges on *.* to &apos;wanglinyong&apos;@&apos;10.xx.xx.x&apos; identified by &apos;wanglinyong9527&apos; with grant option;
-</code></pre><p>授权之后记得要刷新权限</p>
-<pre><code>mysql&gt;flush privileges;
-</code></pre><h1 id="二、Navicate远程连接测试"><a href="#二、Navicate远程连接测试" class="headerlink" title="二、Navicate远程连接测试"></a>二、Navicate远程连接测试</h1><p>1.如果连接失败，提示：</p>
-<pre><code>1045-Access denied for user&apos;wanglinyong&apos;@&apos;ip&apos;(using password:YES)
-</code></pre><p>则表示密码输入错误。</p>
-<p>2.如果提示：</p>
-<pre><code>ERROR 2003(HY000): Can’t connect to MySQL server on xxxxx
-</code></pre><p>如果服务器是阿里云的，可能没有开通3306端口，要去服务器上添加安全组，增加3360端口即可</p>
-<p>3.Navicate连接成功后，只有information_schema一个数据库</p>
-<p>在linux系统以root用户登录</p>
-<p>先查一下其他数据库是否被删除</p>
-<pre><code>mysql&gt;show databases;
-</code></pre><p>如果还在，查看下mysql库的用户表</p>
-<pre><code>mysql&gt;select host,user from mysql.user;
-</code></pre><p>结果如下：</p>
-<pre><code>+----------------+-----------------+
-| host           | user            |
-+----------------+-----------------+
-| %              | wanglinyong     |
-| localhost      | mysql.session   |
-| localhost      | root            |
-+----------------+-----------------+
-3 rows in set (0.00 sec)
-</code></pre><p>说明wanglinyong用户允许在任何远程主机登录</p>
-<p>然后查看，远程登录的用户是否有权限</p>
-<pre><code>mysql&gt; show grants for &apos;wanglinyong&apos;@&apos;%&apos;;
-</code></pre><p>结果不是</p>
-<pre><code>GRANT ALL PRIVILEGES ON *.* TO &apos;wanglinyong5112&apos;@&apos;%&apos; WITH GRANT OPTION 
-</code></pre><p>说明权限不够，重新授权</p>
-<pre><code>mysql&gt;grant all privileges on *.* to &apos;wanglinyong&apos;@&apos;%&apos; identified by &apos;wanglinyong9527&apos; with grant option;
-</code></pre><p>刷新权限：</p>
-<pre><code>mysql&gt;flush privileges;
-</code></pre><p>重新连接应该就OK了！</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>如果还不行, vi /etc/mysql/mysql.conf.d/mysqld.cnf,检查下是否有</p>
-<pre><code>bind-address = 127.0.0.1
-</code></pre><p>如果有，请把它注释掉（加#号注释）。如果找不到mysqld.cnf,有的可能在 /etc/my.cnf文件内</p>
-<p>保存退出后重启mysql服务</p>
-<pre><code>sudo /etc/init.d/mysql restart
-</code></pre><p>或者</p>
-<pre><code>systemctl restart mysqld
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2392,7 +2439,7 @@ at WriteWrap.afterWrite [as oncomplete] (net.js:880:14)
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2414,7 +2461,7 @@ at WriteWrap.afterWrite [as oncomplete] (net.js:880:14)
               
               <div class="site-state-item site-state-tags">
                 <a href="/wanglinyong.github.io/tags/index.html">
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
