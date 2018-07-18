@@ -6,7 +6,7 @@
   <link href="/wanglinyong.github.io/atom.xml" rel="self"/>
   
   <link href="https://wanglinyong.github.io/"/>
-  <updated>2018-07-18T13:39:13.452Z</updated>
+  <updated>2018-07-18T13:50:12.700Z</updated>
   <id>https://wanglinyong.github.io/</id>
   
   <author>
@@ -15,6 +15,85 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Solr工作原理</title>
+    <link href="https://wanglinyong.github.io/2018/07/13/solr%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/"/>
+    <id>https://wanglinyong.github.io/2018/07/13/solr工作原理/</id>
+    <published>2018-07-13T06:56:19.000Z</published>
+    <updated>2018-07-18T13:50:12.700Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Solr简介"><a href="#Solr简介" class="headerlink" title="Solr简介"></a>Solr简介</h2><p>Solr是一个独立的企业级搜索应用服务器，它对外提供类似于Web-service的API接口。用户可以通过http请求，向搜索引擎服务器提交一定格式的XML文件，生成索引；也可以通过Http Get操作提出查找请求，并得到XML格式的返回结果。</p><p>要想知道solr的实现原理，首先得了解什么是全文检索、solr的索引创建过程和索引搜索过程。</p><h2 id="一、全文检索"><a href="#一、全文检索" class="headerlink" title="一、全文检索"></a>一、全文检索</h2><p>首先举个例子：比如现在有5个文档，我现在想从5个文档中查找出包含”solr工作原理”的文档，此时有两种做法：</p><p>1.顺序扫描法:对5个文档依次查找，包含目标字段的文档就记录下来，最后查找的结果可能是在2,3文档中，这种查找方式叫做<strong>顺序扫描法</strong>。</p><p>顺序扫描法在文档数量较少的情况下，查找速度还是很快的，但是当文档数量很多时，查找速度就差强人意了。</p><p>2.全文检索:对文档内容进行分词，对分词后的结果创建索引，然后通过对索引进行搜索的方式叫做<strong>全文检索</strong>。</p><p>全文检索就相当于根据偏旁部首或者读音去查找字典，在文档很多的情况，这种查找速度肯定比你一个一个文档查找要快。</p><h2 id="二、索引创建和搜索过程"><a href="#二、索引创建和搜索过程" class="headerlink" title="二、索引创建和搜索过程"></a>二、索引创建和搜索过程</h2><h3 id="1-创建索引"><a href="#1-创建索引" class="headerlink" title="1.创建索引"></a>1.创建索引</h3><p>举例子：</p><p>文档一：solr是基于Lucene开发的企业级搜索引擎技术</p><p>文档二：Solr是一个独立的企业级搜索应用服务器，Solr是一个高性能，基于Lucene的全文搜索服务器</p><p>首先经过分词器分词，solr会为分词后的结果（词典）创建索引，然后将索引和文档id列表对应起来，如下图所示：</p><p><img src="https://images.gitbook.cn/2b1670f0-8665-11e8-9b0d-95de449dc107" alt="enter image description here"></p><p>比如：solr在文档1和文档2中都有出现，所以对应的文档ID列表中既包含文档1的ID也包含文档2的ID，文档ID列表对应到具体的文档，并体现该词典在该文档中出现的频次，频次越多说明权重越大，权重越大搜索的结果就会排在前面。</p><p>solr内部会对分词的结果做如下处理：</p><p>1.去除停词和标点符号，例如英文的this，that等， 中文的”的”,”一”等没有特殊含义的词</p><p>2.会将所有的大写英文字母转换成小写，方便统一创建索引和搜索索引</p><p>3.将复数形式转为单数形式，比如students转为student，也是方便统一创建索引和搜索索引</p><h3 id="2-索引搜索过程"><a href="#2-索引搜索过程" class="headerlink" title="2.索引搜索过程"></a>2.索引搜索过程</h3><p>知道了创建索引的过程，那么根据索引进行搜索就变得简单了。</p><p>1.用户输入搜索条件</p><p>2.对搜索条件进行分词处理</p><p>3.根据分词的结果查找索引</p><p>4.根据索引找到文档ID列表</p><p>5.根据文档ID列表找到具体的文档，根据出现的频次等计算权重，最后将文档列表按照权重排序返回</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;Solr简介&quot;&gt;&lt;a href=&quot;#Solr简介&quot; class=&quot;headerlink&quot; title=&quot;Solr简介&quot;&gt;&lt;/a&gt;Solr简介&lt;/h2&gt;&lt;p&gt;Solr是一个独立的企业级搜索应用服务器，它对外提供类似于Web-service的API接口。用户可以通过h
+      
+    
+    </summary>
+    
+      <category term="Solr" scheme="https://wanglinyong.github.io/categories/Solr/"/>
+    
+    
+      <category term="solr" scheme="https://wanglinyong.github.io/tags/solr/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring-Security登录认证授权原理</title>
+    <link href="https://wanglinyong.github.io/2018/07/10/Spring-Security%E7%99%BB%E5%BD%95%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E5%8E%9F%E7%90%86/"/>
+    <id>https://wanglinyong.github.io/2018/07/10/Spring-Security登录认证授权原理/</id>
+    <published>2018-07-10T02:09:10.000Z</published>
+    <updated>2018-07-18T13:47:57.755Z</updated>
+    
+    <content type="html"><![CDATA[<p>spring-security源码下载地址：</p><pre><code>https://github.com/spring-projects/spring-security</code></pre><h2 id="Spring-Security源码解读："><a href="#Spring-Security源码解读：" class="headerlink" title="Spring-Security源码解读："></a>Spring-Security源码解读：</h2><p>1.使用ctrl+shift+n组合键查找UsernamePasswordAuthenticationFilter过滤器，该过滤器是用来处理用户认证逻辑的，进入后如图：</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/security-3.png" alt=""></p><p>(1)可以看到它默认的登录请求url是”/login”，并且只允许POST方式的请求</p><p>(2)obtainUsername()方法点进去发现它默认是根据参数名为”username”和”password”来获取用户名和密码的</p><p>(3)通过构造方法实例化一个UsernamePasswordAuthenticationToken对象，此时调用的是UsernamePasswordAuthenticationToken的两个参数的构造函数,如果点击进不去，可直接用ctrl+shift+n查找(等依赖自动下载完成就可以跟进了)，如图：</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/security-4.png" alt=""></p><p>其中super(null)调用的是父类的构造方法，传入的是权限集合，因为目前还没有认证通过，所以不知道有什么权限信息，这里设置为null,然后将用户名和密码分别赋值给principal和credentials，同样因为此时还未进行身份认证，所以setAuthenticated(false)</p><p>(4)setDetails(request, authRequest)是将当前的请求信息设置到UsernamePasswordAuthenticationToken中</p><p>(5)通过调用getAuthenticationManager()来获取AuthenticationManager，通过调用它的authenticate方法来查找支持该token(UsernamePasswordAuthenticationToken)认证方式的provider，然后调用该provider的authenticate方法进行认证)</p><p>2.AuthenticationManager是用来管理AuthenticationProvider的接口，通过查找后进入，然后使用ctrl+H组合键查看它的继承关系，找到ProviderManager实现类，它实现了AuthenticationManager接口，查看它的authenticate方法，它里面有段这样的代码：</p><pre><code>for (AuthenticationProvider provider : getProviders()) {        if (!provider.supports(toTest)) {            continue;        }    ...    try {            result = provider.authenticate(authentication);    ...    }}</code></pre><p>通过for循环遍历AuthenticationProvider对象的集合，找到支持当前认证方式的AuthenticationProvider，找到之后调用该AuthenticationProvider的authenticate方法进行认证处理：</p><pre><code>result = provider.authenticate(authentication);</code></pre><p>3.AuthenticationProvider接口，就是进行身份认证的接口，它里面有两个方法：authenticate认证方法和supports是否支持某种类型token的方法，通过ctrl+h查看继承关系，找到AbstractUserDetailsAuthenticationProvider抽象类，它实现了AuthenticationProvider接口，它的supports方法如下：</p><pre><code>public boolean supports(Class&lt;?&gt; authentication) {    return (UsernamePasswordAuthenticationToken.class        .isAssignableFrom(authentication));    }</code></pre><p>说明它是支持UsernamePasswordAuthenticationToken类型的AuthenticationProvider</p><p>再看它的authenticate认证方法，其中有一段这样的代码：</p><pre><code>boolean cacheWasUsed = true;    UserDetails user = this.userCache.getUserFromCache(username);    if (user == null) {        cacheWasUsed = false;        try {            user = retrieveUser(username,                    (UsernamePasswordAuthenticationToken) authentication);        }    ...    }</code></pre><p>如果从缓存中没有获取到UserDetails，那么它调用retrieveUser方法来获取用户信息UserDetails，这里的retrieveUser是抽象方法，等一会我们看它的子类实现。</p><p>用户信息UserDetails是个接口，我们进入查看，它包含以下6个接口方法：</p><pre><code>Collection&lt;? extends GrantedAuthority&gt; getAuthorities();//获取权限集合String getPassword();  //获取密码String getUsername();    //获取用户名boolean isAccountNonExpired(); //账户未过期boolean isAccountNonLocked();    //账户未锁定boolean isCredentialsNonExpired(); //密码未过期boolean isEnabled();    //账户可用</code></pre><p>查看它的继承关系发现User类实现了该接口，并实现了该接口的所有方法</p><p>接着AbstractUserDetailsAuthenticationProvider往下看，找到下面的代码：</p><pre><code>preAuthenticationChecks.check(user);additionalAuthenticationChecks(user,            (UsernamePasswordAuthenticationToken) authentication);</code></pre><p>preAuthenticationChecks预检查，在最下面的内部类DefaultPreAuthenticationChecks中可以看到，它会检查上面提到的三个boolean方法，即检查账户未锁定、账户可用、账户未过期，如果上面的方法只要有一个返回false，就会抛出异常，那么认证就会失败。</p><p>additionalAuthenticationChecks是附加检查，是个抽象方法，等下看子类的具体实现。</p><p>下面还有个postAuthenticationChecks.check(user)后检查，在最下面的DefaultPostAuthenticationChecks内部类中可以看到，它会检查密码未过期，如果为false就会抛出异常</p><p>如果上面的检查都通过并且没有异常，表示认证通过，会调用下面的方法：</p><pre><code>createSuccessAuthentication(principalToReturn, authentication, user);</code></pre><p>跟进发现此时通过构造方法实例化对象UsernamePasswordAuthenticationToken时，调用的是三个参数的构造方法:</p><pre><code>    public UsernamePasswordAuthenticationToken(Object principal, Object credentials,        Collection&lt;? extends GrantedAuthority&gt; authorities) {    super(authorities);    this.principal = principal;    this.credentials = credentials;    super.setAuthenticated(true); // must use super, as we override}</code></pre><p>此时会调用父类的构造方法设置权限信息，并调用父类的setAuthenticated(true)方法，到这里就表示认证通过了。</p><p>下面我们看看AbstractUserDetailsAuthenticationProvider的子类，同ctrl+h可查看继承关系，找到DaoAuthenticationProvider</p><p>4.DaoAuthenticationProvider类</p><p>(1)查看additionalAuthenticationChecks附加检查方法，它主要是检查用户密码的正确性，如果密码为空或者错误都会抛出异常</p><p>(2)获取用户信息UserDetails的retrieveUser方法，主要看下面这段代码：</p><pre><code>UserDetails loadedUser = this.getUserDetailsService().loadUserByUsername(username);</code></pre><p>它是调用了getUserDetailsService先获取到UserDetailsService对象，通过调用UserDetailsService对象的loadUserByUsername方法获取用户信息UserDetails</p><p>找到UserDetailsService，发现它是一个接口，查看继承关系，有很多实现，都是spring-security提供的实现类，并不满足我们的需要，我们想自己制定获取用户信息的逻辑，所以我们可以实现这个接口。比如从我们的数据库中查找用户信息</p><p>5.SecurityContextPersistenceFilter过滤器</p><p>那么用户认证成功之后，又是怎么保存认证信息的呢，在下一次请求过来是如何判断该用户是否已经认证了呢？</p><p>请求进来时会经过SecurityContextPersistenceFilter过滤器，进入SecurityContextPersistenceFilter过滤器并找到以下代码：</p><pre><code>SecurityContext contextBeforeChainExecution = repo.loadContext(holder);</code></pre><p>从session中获取SecurityContext对象，如果没有就实例化一个SecurityContext对象</p><pre><code>SecurityContextHolder.setContext(contextBeforeChainExecution);</code></pre><p>将SecurityContext对象设置到SecurityContextHolder中</p><pre><code>chain.doFilter(holder.getRequest(), holder.getResponse());</code></pre><p>表示放行，执行下一个过滤器</p><p>执行完后面的过滤并经过servlet处理之后，响应给浏览器之前再次经过此过滤器。查看以下代码：</p><pre><code>SecurityContext contextAfterChainExecution = SecurityContextHolder.getContext();SecurityContextHolder.clearContext();this.repo.saveContext(contextAfterChainExecution, holder.getRequest(), holder.getResponse());</code></pre><p>通过SecurityContextHolder获取SecurityContext对象，然后清除SecurityContext，最后将获取的SecurityContext对象放入session中</p><p>其中SecurityContextHolder是与ThreadLocal绑定的，即本线程内所有的方法都可以获得SecurityContext对象，而SecurityContext对象中包含了Authentication对象，即用户的认证信息，spring-security判断用户是否认证主要是根据SecurityContext中的Authentication对象来判断。Authentication对象的详细信息如图：</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/security.png" alt=""></p><p>最后整个过程的流程大致如下图：</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/spring-securityx.png" alt=""></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;spring-security源码下载地址：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;https://github.com/spring-projects/spring-security
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;Spring-Security源码解读：&quot;&gt;&lt;a hr
+      
+    
+    </summary>
+    
+      <category term="Java" scheme="https://wanglinyong.github.io/categories/Java/"/>
+    
+    
+      <category term="java" scheme="https://wanglinyong.github.io/tags/java/"/>
+    
+      <category term="spring-security" scheme="https://wanglinyong.github.io/tags/spring-security/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>读取properties文件内容最简单的两种方式</title>
+    <link href="https://wanglinyong.github.io/2018/07/03/%E8%8E%B7%E5%8F%96properties%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9%E6%9C%80%E7%AE%80%E5%8D%95%E6%96%B9%E5%BC%8F/"/>
+    <id>https://wanglinyong.github.io/2018/07/03/获取properties文件内容最简单方式/</id>
+    <published>2018-07-03T00:47:49.000Z</published>
+    <updated>2018-07-18T13:41:13.884Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="一、使用ResourceBundle读取jdbc-properties文件"><a href="#一、使用ResourceBundle读取jdbc-properties文件" class="headerlink" title="一、使用ResourceBundle读取jdbc.properties文件"></a>一、使用ResourceBundle读取jdbc.properties文件</h2><pre><code>public static void main(String[] args) {    ResourceBundle bundle = ResourceBundle.getBundle(&quot;jdbc&quot;);    String value= bundle.getString(&quot;driverClasss&quot;);    System.out.println(value);}</code></pre><p>结果如下：</p><pre><code>com.mysql.jdbc.Driver</code></pre><h2 id="二、自定义工具类PropertiesUtils读取jdbc-properties文件："><a href="#二、自定义工具类PropertiesUtils读取jdbc-properties文件：" class="headerlink" title="二、自定义工具类PropertiesUtils读取jdbc.properties文件："></a>二、自定义工具类PropertiesUtils读取jdbc.properties文件：</h2><h3 id="1-PropertiesUtils代码如下："><a href="#1-PropertiesUtils代码如下：" class="headerlink" title="1.PropertiesUtils代码如下："></a>1.PropertiesUtils代码如下：</h3><pre><code>import java.io.FileNotFoundException;import java.io.IOException;import java.util.Properties;/** * Created by wly on 2018/7/3. */public class  {private static Properties props = new Properties();public static String getValue(String key) {    return props.getProperty(key);}public static void updateProperties(String key, String value) {    props.setProperty(key, value);}static {    try {        props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(&quot;jdbc.properties&quot;));    } catch (FileNotFoundException var1) {        var1.printStackTrace();    } catch (IOException var2) {        var2.printStackTrace();    }}}</code></pre><h3 id="2-main方法测试"><a href="#2-main方法测试" class="headerlink" title="2.main方法测试"></a>2.main方法测试</h3><pre><code>public static void main(String[] args) {    String name = getValue( &quot;driverClasss&quot; );    System.out.println(&quot;mysql的driverClasss===&quot;+name);    updateProperties( &quot;driverClasss&quot;,&quot;oracle.jdbc.driver.OracleDriver&quot; );    name = getValue( &quot;driverClasss&quot; );    System.out.println(&quot;修改成Oracle的driverClasss====&quot;+name);}</code></pre><p>测试结果：</p><pre><code>mysql的driverClasss===com.mysql.jdbc.Driver修改成Oracle的driverClasss====oracle.jdbc.driver.OracleDriver</code></pre><p>一个是根据key获取对应的value值</p><p>一个是根据key值设置对应的value值，注意不会改变propertis文件内容</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;一、使用ResourceBundle读取jdbc-properties文件&quot;&gt;&lt;a href=&quot;#一、使用ResourceBundle读取jdbc-properties文件&quot; class=&quot;headerlink&quot; title=&quot;一、使用ResourceBundle
+      
+    
+    </summary>
+    
+      <category term="Java" scheme="https://wanglinyong.github.io/categories/Java/"/>
+    
+    
+      <category term="java" scheme="https://wanglinyong.github.io/tags/java/"/>
+    
+  </entry>
   
   <entry>
     <title>AccessDeniedException如何处理</title>
@@ -419,9 +498,9 @@ from os.path import join, getsize
       <category term="Linux" scheme="https://wanglinyong.github.io/categories/Linux/"/>
     
     
-      <category term="Git" scheme="https://wanglinyong.github.io/tags/Git/"/>
-    
       <category term="Linux" scheme="https://wanglinyong.github.io/tags/Linux/"/>
+    
+      <category term="Git" scheme="https://wanglinyong.github.io/tags/Git/"/>
     
   </entry>
   
@@ -468,75 +547,11 @@ from os.path import join, getsize
       <category term="Linux" scheme="https://wanglinyong.github.io/categories/Linux/"/>
     
     
-      <category term="Git" scheme="https://wanglinyong.github.io/tags/Git/"/>
-    
       <category term="Linux" scheme="https://wanglinyong.github.io/tags/Linux/"/>
     
+      <category term="Git" scheme="https://wanglinyong.github.io/tags/Git/"/>
+    
       <category term="Gogs" scheme="https://wanglinyong.github.io/tags/Gogs/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>嵌入式数据库H2</title>
-    <link href="https://wanglinyong.github.io/2018/03/15/%E5%B5%8C%E5%85%A5%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93H2/"/>
-    <id>https://wanglinyong.github.io/2018/03/15/嵌入式数据库H2/</id>
-    <published>2018-03-15T12:08:23.000Z</published>
-    <updated>2018-03-16T09:32:16.929Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>由于项目中需要将数据库嵌入到程序中，一起打包发给客户使用，所以需要使用嵌入式数据库，目前常用的嵌入式数据库有：Berkeley DB、Couchbase Lite、LevelDB、SQLite、UnQLite、H2等，由于H2具有以下特点，所以最终选择了H2作为存储数据库。</p><pre><code>1、纯Java编写，不受平台的限制；2、只有一个jar文件，适合作为嵌入式数据库使用；3、h2提供了一个十分方便的web控制台用于操作和管理数据库内容；4、功能完整，支持标准SQL和JDBC。麻雀虽小五脏俱全；5、支持内嵌模式、服务器模式和集群。</code></pre><h1 id="一、H2简介"><a href="#一、H2简介" class="headerlink" title="一、H2简介"></a>一、H2简介</h1><p>H2是一个用Java开发的嵌入式数据库，它本身只是一个类库，可以直接嵌入到应用项目中。</p><p>Ｈ2最大的用途在于可以同应用程序打包在一起发布，这样可以非常方便地存储少量结构化数据。<br>它的另一个用途是用于单元测试。启动速度快，而且可以关闭持久化功能，每一个用例执行完随即还原到初始状态。</p><p>Ｈ2的第三个用处是作为缓存，作为NoSQL的一个补充。当某些场景下数据模型必须为关系型，可以拿它当Memcached使，作为后端MySQL/Oracle的一个缓冲层，缓存一些不经常变化但需要频繁访问的数据，比如字典表、权限表。不过这样系统架构就会比较复杂了。</p><h1 id="二、下载和安装"><a href="#二、下载和安装" class="headerlink" title="二、下载和安装"></a>二、下载和安装</h1><p>1、下载</p><pre><code>H2数据库下载地址：http://www.h2database.com/html/download.html</code></pre><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-1.png" alt=""></p><p>Windows、Linux下都可以直接解压缩就用。</p><p>2、安装</p><p>解压缩后的目录结构：</p><p>　　h2</p><p>　　|—bin</p><p>　　|    |—h2-1.1.116.jar 　　//H2数据库的jar包（驱动也在里面）</p><p>　　|    |—h2.bat         　　   //Windows控制台启动脚本</p><p>　　|    |—h2.sh                  //Linux控制台启动脚本</p><p>　　|    |—h2w.bat              //Windows控制台启动脚本（不带黑屏窗口）</p><p>　　|—docs                       //H2数据库的帮助文档（内有H2数据库的使用手册）</p><p>　　|—service //通过wrapper包装成服务。</p><p>　　|—src //H2数据库的源代码</p><p>　　|—build.bat //windows构建脚本</p><p>　　|—build.sh //linux构建脚本</p><p>　　此时就算“安装”完成了。</p><h1 id="三、运行模式与运行方式"><a href="#三、运行模式与运行方式" class="headerlink" title="三、运行模式与运行方式"></a>三、运行模式与运行方式</h1><h2 id="1、运行模式"><a href="#1、运行模式" class="headerlink" title="1、运行模式"></a>1、运行模式</h2><p>　　Ｈ2有三种运行模式。</p><pre><code>（1）内嵌模式（Embedded Mode）内嵌模式下，应用和数据库同在一个JVM中，通过JDBC进行连接。 可持久化，但同时只能一个客户端连接。内嵌模式性能会比较好。（2）服务器模式（Server Mode）使用服务器模式和内嵌模式一样，只不过它可以跑在另一个进程里。（3）混合模式第一个应用以内嵌模式启动它，对于后面的应用来说它是服务器模式跑着的。混合模式是内嵌模式和服务器模式的组合。第一个应用通过内嵌模式与数据库建立连接，同时也作为一个服务器启动，于是另外的应用（运行在不同的进程或是虚拟机上）可以同时访问同样的数据。第一个应用的本地连接与嵌入式模式的连接性能一样的快，而其它连接理论上会略慢。 </code></pre><h2 id="2、运行方式"><a href="#2、运行方式" class="headerlink" title="2、运行方式"></a>2、运行方式</h2><p>　　开发中肯定是Server Mode方便，因为需要用工具管理数据。所以进入Ｈ2的bin目录。如下图：</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-2.png" alt=""></p><p>如果你在Win环境可以运行h2.bat或h2w.bat。区别只是后者是后台静默运行</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-3.png" alt=""></p><h1 id="四、应用程序开发"><a href="#四、应用程序开发" class="headerlink" title="四、应用程序开发"></a>四、应用程序开发</h1><h2 id="1、通过远程浏览器来访问h2"><a href="#1、通过远程浏览器来访问h2" class="headerlink" title="1、通过远程浏览器来访问h2"></a>1、通过远程浏览器来访问h2</h2><pre><code>访问地址：http://服务器ip:8082/ ，出现如下页面：</code></pre><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-5.png" alt=""></p><h2 id="２、路径的配置"><a href="#２、路径的配置" class="headerlink" title="２、路径的配置"></a>２、路径的配置</h2><pre><code>jdbc:h2:~/test是H2的路径。User name : sa是h2默认的用户，密码可空。最好设置下密码，尤其当你的Ｈ2部署在公网时。不然会被无聊人把数据删掉。</code></pre><h2 id="3、连接"><a href="#3、连接" class="headerlink" title="3、连接"></a>3、连接</h2><pre><code>点击如图Test connect按钮测试连接。此时如果数据库文件本身不存在则会自动创建。点击Connect，进入管理终端。</code></pre><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-6.png" alt=""></p><p>Ｈ２的管理终端做得很不错的。按Ctrl+Enter执行输入区的SQL，按Shift+Enter执行当前选中的SQL。</p><h1 id="五、应用程序开发"><a href="#五、应用程序开发" class="headerlink" title="五、应用程序开发"></a>五、应用程序开发</h1><h2 id="1、加入Maven依赖"><a href="#1、加入Maven依赖" class="headerlink" title="1、加入Maven依赖"></a>1、加入Maven依赖</h2><pre><code>&lt;dependency&gt;&lt;groupId&gt;com.h2database&lt;/groupId&gt;&lt;artifactId&gt;h2&lt;/artifactId&gt;&lt;version&gt;1.4.195&lt;/version&gt;&lt;/dependency&gt;</code></pre><h2 id="2、创建db-properties"><a href="#2、创建db-properties" class="headerlink" title="2、创建db.properties"></a>2、创建db.properties</h2><pre><code>driverClassName=org.h2.Driver</code></pre><p>此处的写法是使用嵌入模式链接H2库，紧接着那行是使用Server Mode用tcp连接。区别一个是前者性能更好，后者可同时多个客户端连接</p><pre><code>url=jdbc:h2:D:/test#url=jdbc:h2:tcp://1localhost//usr/h2/data/rlibusername=sapassword=</code></pre><h2 id="PS：在使用嵌入模式链接H2库时，使用管理页面连接会报错如下："><a href="#PS：在使用嵌入模式链接H2库时，使用管理页面连接会报错如下：" class="headerlink" title="PS：在使用嵌入模式链接H2库时，使用管理页面连接会报错如下："></a>PS：在使用嵌入模式链接H2库时，使用管理页面连接会报错如下：</h2><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-4.png" alt=""></p><h1 id="六、H2管理工具-DBeaver"><a href="#六、H2管理工具-DBeaver" class="headerlink" title="六、H2管理工具-DBeaver"></a>六、H2管理工具-DBeaver</h1><p>可通过数据库管理工具DBeaver来有效管理H2，直接从网上下载即可，这里不提供下载和安装过程</p><p>打开DBeaver.exe,操作如下图：</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-7.png" alt=""></p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-8.png" alt=""></p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-9.png" alt=""></p><p>输入用户名sa  </p><p>密码自己设置一个  也可以不设，点击下一步</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-10.png" alt=""></p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-11.png" alt=""></p><p>打开test数据库，即可对表进行增删改查操作了</p><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-12.png" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;&lt;p&gt;由于项目中需要将数据库嵌入到程序中，一起打包发给客户使用，所以需要使用嵌入式数据库，目前常用的嵌入式数据库有：Berkeley DB、Cou
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>JAVA-UDP接收和发送json数据</title>
-    <link href="https://wanglinyong.github.io/2018/03/06/UDP%E6%8E%A5%E6%94%B6%E5%92%8C%E5%8F%91%E9%80%81json%E6%95%B0%E6%8D%AE/"/>
-    <id>https://wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/</id>
-    <published>2018-03-06T11:49:09.000Z</published>
-    <updated>2018-03-16T07:21:44.959Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="一、UDP服务端发送数据"><a href="#一、UDP服务端发送数据" class="headerlink" title="一、UDP服务端发送数据"></a>一、UDP服务端发送数据</h1><pre><code>public class UdpClient {public static void main(String[] args) throws Exception {    DatagramSocket socket = new DatagramSocket();    String s = getJsonStr();    byte[] buf = s.getBytes();    //将数据打包    DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName(&quot;192.168.11.139&quot;), 6070);    socket.send(packet);    socket.close();}public  static  String getJsonStr(){    Person p = new Person();    p.setName( &quot;张三&quot; );    p.setAge( 18 );    p.setGender( &quot;男&quot; );    return JSONObject.toJSONString( p );}}</code></pre><p>利用fastjson将对象转换为json字符串</p><pre><code>JSONObject.toJSONString( p );</code></pre><h1 id="二、UDP客户端接收数据"><a href="#二、UDP客户端接收数据" class="headerlink" title="二、UDP客户端接收数据"></a>二、UDP客户端接收数据</h1><pre><code>public class UdpServer {public static void main(String[] args) throws Exception {    // 定义一个接收端，并且指定了接收的端口号    DatagramSocket socket = new DatagramSocket(6070);    while (true) {        byte[] buf = new byte[1024];        // 解析数据包        DatagramPacket packet = new DatagramPacket(buf, buf.length);        socket.receive(packet);        String ip = packet.getAddress().getHostAddress();        buf = packet.getData();        String data = new String(buf, 0, packet.getLength());        System.out.println(&quot;收到 &quot; + ip + &quot; 发来的消息：&quot; + data);        //Person p = JSON.parseObject(data, new TypeReference&lt;Person&gt;() {});        Person p=JSONObject.parseObject(data, Person.class);//JSON字符串转对象        System.out.println(p.toString());    }}}</code></pre><p>利用fastjson将接收到的json字符串转为对象</p><pre><code>Person p=JSONObject.parseObject(data, Person.class);//JSON字符串转对象</code></pre><p>三、实体类Person</p><pre><code>public class Person {private  String  name;private  int age;private String gender;public String getName() {    return name;}public void setName(String name) {    this.name = name;}public int getAge() {    return age;}public void setAge(int age) {    this.age = age;}public String getGender() {    return gender;}public void setGender(String gender) {    this.gender = gender;}@Overridepublic String toString() {    return &quot;Person{&quot; +            &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +            &quot;, age=&quot; + age +            &quot;, gender=&apos;&quot; + gender + &apos;\&apos;&apos; +            &apos;}&apos;;}</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;一、UDP服务端发送数据&quot;&gt;&lt;a href=&quot;#一、UDP服务端发送数据&quot; class=&quot;headerlink&quot; title=&quot;一、UDP服务端发送数据&quot;&gt;&lt;/a&gt;一、UDP服务端发送数据&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;public class UdpClient
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Mysql每天定时清空表</title>
-    <link href="https://wanglinyong.github.io/2018/01/26/mysql%E5%AE%9A%E6%97%B6%E6%B8%85%E7%A9%BA%E8%A1%A8/"/>
-    <id>https://wanglinyong.github.io/2018/01/26/mysql定时清空表/</id>
-    <published>2018-01-26T11:16:36.000Z</published>
-    <updated>2018-03-08T01:16:02.727Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Mysql每天定时清空表"><a href="#Mysql每天定时清空表" class="headerlink" title="Mysql每天定时清空表"></a>Mysql每天定时清空表</h1><p>1.设置开启event scheduler</p><pre><code>SET GLOBAL event_scheduler=1;</code></pre><p>2.验证event_scheduler是否已经开启</p><pre><code>show variables like &apos;%event%&apos;;  #值为 ON 表明已开启SHOW VARIABLES LIKE &apos;event_scheduler&apos;;</code></pre><p>3.创建event</p><pre><code>DROP EVENT IF EXISTS e_delete_upvote; CREATE  EVENT e_delete_upvote    ON SCHEDULE EVERY 1 day STARTS date_add(concat(current_date(), &apos; 00:00:00&apos;), interval 0 second) ON COMPLETION PRESERVE ENABLE DO TRUNCATE TABLE dreamland.upvote;#说明： ON SCHEDULE EVERY 1 day 指定循环间隔为每天执行 STARTS date_add(concat(current_date(), &apos; 23:59:00&apos;), interval 0 second) 指定运行时间为23:59:00 ON COMPLETION PRESERVE ENABLE 指定创建完成后即启用，否则需手动启动</code></pre><p>4.手动关闭事件</p><pre><code>ALTER EVENT e_delete_upvote DISABLE;</code></pre><p>5.手动该事件为可用</p><pre><code>ALTER EVENT e_delete_upvote ENABLE;</code></pre><p>6.查看已有的定时事件任务</p><pre><code>SHOW EVENTS;</code></pre><p>7.删除事件</p><pre><code>DROP EVENT e_delete_upvote;</code></pre><h3 id="注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql-ini文件中加入event-scheduler-ON-的语句"><a href="#注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql-ini文件中加入event-scheduler-ON-的语句" class="headerlink" title="注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql.ini文件中加入event_scheduler = ON; 的语句"></a>注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql.ini文件中加入event_scheduler = ON; 的语句</h3>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;Mysql每天定时清空表&quot;&gt;&lt;a href=&quot;#Mysql每天定时清空表&quot; class=&quot;headerlink&quot; title=&quot;Mysql每天定时清空表&quot;&gt;&lt;/a&gt;Mysql每天定时清空表&lt;/h1&gt;&lt;p&gt;1.设置开启event scheduler&lt;/p&gt;
-&lt;pre
-      
-    
-    </summary>
-    
     
   </entry>
   

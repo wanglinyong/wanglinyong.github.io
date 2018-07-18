@@ -274,6 +274,769 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/05/10/微信小程序Java登录流程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/05/10/微信小程序Java登录流程/" itemprop="url">微信小程序Java登录流程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-10T20:48:25+08:00">
+                2018-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/微信小程序/" itemprop="url" rel="index">
+                    <span itemprop="name">微信小程序</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/05/10/微信小程序Java登录流程/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/05/10/微信小程序Java登录流程/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、登录流程图"><a href="#一、登录流程图" class="headerlink" title="一、登录流程图"></a>一、登录流程图</h1><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/wx-login.png" alt=""></p>
+<h1 id="二、微信小程序端"><a href="#二、微信小程序端" class="headerlink" title="二、微信小程序端"></a>二、微信小程序端</h1><pre><code>doLogin:function(callback = () =&gt;{}){
+let that = this;
+wx.login({
+  success:function(loginRes){
+    if(loginRes){
+      //获取用户信息
+      wx.getUserInfo({
+        withCredentials:true,//非必填  默认为true
+        success:function(infoRes){
+          console.log(infoRes,&apos;&gt;&gt;&gt;&apos;);
+          //请求服务端的登录接口
+          wx.request({
+            url: api.loginUrl,
+            data:{
+              code:loginRes.code,//临时登录凭证
+              rawData:infoRes.rawData,//用户非敏感信息
+              signature:infoRes.signature,//签名
+              encrypteData:infoRes.encryptedData,//用户敏感信息
+              iv:infoRes.iv//解密算法的向量
+            },
+            success:function(res){
+              console.log(&apos;login success&apos;);
+              res = res.data;
+              if(res.result==0){
+                that.globalData.userInfo = res.userInfo;
+                wx.setStorageSync(&apos;userInfo&apos;,JSON.stringify(res.userInfo));
+                wx.setStorageSync(&apos;loginFlag&apos;,res.skey);
+                console.log(&quot;skey=&quot;+res.skey);
+                callback();
+              }else{
+                that.showInfo(&apos;res.errmsg&apos;);
+              }
+            },
+            fail:function(error){
+              //调用服务端登录接口失败
+             // that.showInfo(&apos;调用接口失败&apos;);
+              console.log(error);
+            }
+          });
+        }
+      });
+    }else{
+
+    }
+  }
+});
+}
+</code></pre><p>微信小程序端发起登录请求，携带的参数主要有：</p>
+<pre><code>code:loginRes.code,//临时登录凭证
+rawData:infoRes.rawData,//用户非敏感信息
+signature:infoRes.signature,//签名
+encrypteData:infoRes.encryptedData,//用户敏感信息
+iv:infoRes.iv//解密算法的向量
+</code></pre><p>需要的数据主要有：</p>
+<pre><code>result、userInfo和skey
+</code></pre><p>result用来判断是否登录成功，userInfo是用户的一些信息，保存在缓存中，不用每次都从后台获取，skey是用户登录态标识，也放在缓存中，如果skey存在就直接登录，维护用户的登录状态，具有时效性</p>
+<h1 id="三、Java后台"><a href="#三、Java后台" class="headerlink" title="三、Java后台"></a>三、Java后台</h1><pre><code>@ResponseBody
+@RequestMapping(&quot;/login&quot;)
+public Map&lt;String,Object&gt; doLogin(Model model,
+                                  @RequestParam(value = &quot;code&quot;,required = false) String code,
+                                  @RequestParam(value = &quot;rawData&quot;,required = false) String rawData,
+                                  @RequestParam(value = &quot;signature&quot;,required = false) String signature,
+                                  @RequestParam(value = &quot;encrypteData&quot;,required = false) String encrypteData,
+                                  @RequestParam(value = &quot;iv&quot;,required = false) String iv){
+    log.info( &quot;Start get SessionKey&quot; );
+
+
+    Map&lt;String,Object&gt; map = new HashMap&lt;String, Object&gt;(  );
+    System.out.println(&quot;用户非敏感信息&quot;+rawData);
+
+    JSONObject rawDataJson = JSON.parseObject( rawData );
+
+    System.out.println(&quot;签名&quot;+signature);
+    JSONObject SessionKeyOpenId = getSessionKeyOrOpenId( code );
+    System.out.println(&quot;post请求获取的SessionAndopenId=&quot;+SessionKeyOpenId);
+
+    String openid = SessionKeyOpenId.getString(&quot;openid&quot; );
+
+    String sessionKey = SessionKeyOpenId.getString( &quot;session_key&quot; );
+
+    System.out.println(&quot;openid=&quot;+openid+&quot;,session_key=&quot;+sessionKey);
+
+    User user = userService.findByOpenid( openid );
+    //uuid生成唯一key
+    String skey = UUID.randomUUID().toString();
+    if(user==null){
+        //入库
+        String nickName = rawDataJson.getString( &quot;nickName&quot; );
+        String avatarUrl = rawDataJson.getString( &quot;avatarUrl&quot; );
+        String gender  = rawDataJson.getString( &quot;gender&quot; );
+        String city = rawDataJson.getString( &quot;city&quot; );
+        String country = rawDataJson.getString( &quot;country&quot; );
+        String province = rawDataJson.getString( &quot;province&quot; );
+
+
+        user = new User();
+        user.setUid( openid );
+        user.setCreateTime( new Date(  ) );
+        user.setSessionkey( sessionKey );
+        user.setUbalance( 0 );
+        user.setSkey( skey );
+        user.setUaddress( country+&quot; &quot;+province+&quot; &quot;+city );
+        user.setUavatar( avatarUrl );
+        user.setUgender( Integer.parseInt( gender ) );
+        user.setUname( nickName );
+        user.setUpdateTime( new Date(  ) );
+
+        userService.insert( user );
+    }else {
+        //已存在
+        log.info( &quot;用户openid已存在,不需要插入&quot; );
+    }
+    //根据openid查询skey是否存在
+    String skey_redis = (String) redisTemplate.opsForValue().get( openid );
+    if(StringUtils.isNotBlank( skey_redis )){
+        //存在 删除 skey 重新生成skey 将skey返回
+        redisTemplate.delete( skey_redis );
+
+    }
+        //  缓存一份新的
+        JSONObject sessionObj = new JSONObject(  );
+        sessionObj.put( &quot;openId&quot;,openid );
+        sessionObj.put( &quot;sessionKey&quot;,sessionKey );
+        redisTemplate.opsForValue().set( skey,sessionObj.toJSONString() );
+        redisTemplate.opsForValue().set( openid,skey );
+
+        //把新的sessionKey和oppenid返回给小程序
+        map.put( &quot;skey&quot;,skey );
+
+
+
+    map.put( &quot;result&quot;,&quot;0&quot; );
+
+
+
+    JSONObject userInfo = getUserInfo( encrypteData, sessionKey, iv );
+    System.out.println(&quot;根据解密算法获取的userInfo=&quot;+userInfo);
+    userInfo.put( &quot;balance&quot;,user.getUbalance() );
+    map.put( &quot;userInfo&quot;,userInfo );
+
+    return map;
+}
+</code></pre><p>获取openid和sessionKey方法</p>
+<pre><code>public static JSONObject getSessionKeyOrOpenId(String code){
+    //微信端登录code
+    String wxCode = code;
+    String requestUrl = &quot;https://api.weixin.qq.com/sns/jscode2session&quot;;
+    Map&lt;String,String&gt; requestUrlParam = new HashMap&lt;String, String&gt;(  );
+    requestUrlParam.put( &quot;appid&quot;,&quot;你的小程序appId&quot; );//小程序appId
+    requestUrlParam.put( &quot;secret&quot;,&quot;你的小程序appSecret&quot; );
+    requestUrlParam.put( &quot;js_code&quot;,wxCode );//小程序端返回的code
+    requestUrlParam.put( &quot;grant_type&quot;,&quot;authorization_code&quot; );//默认参数
+
+    //发送post请求读取调用微信接口获取openid用户唯一标识
+    JSONObject jsonObject = JSON.parseObject( UrlUtil.sendPost( requestUrl,requestUrlParam ));
+    return jsonObject;
+}
+</code></pre><p>解密用户敏感数据获取用户信息</p>
+<pre><code>public static JSONObject getUserInfo(String encryptedData,String sessionKey,String iv){
+    // 被加密的数据
+    byte[] dataByte = Base64.decode(encryptedData);
+    // 加密秘钥
+    byte[] keyByte = Base64.decode(sessionKey);
+    // 偏移量
+    byte[] ivByte = Base64.decode(iv);
+    try {
+        // 如果密钥不足16位，那么就补足.  这个if 中的内容很重要
+        int base = 16;
+        if (keyByte.length % base != 0) {
+            int groups = keyByte.length / base + (keyByte.length % base != 0 ? 1 : 0);
+            byte[] temp = new byte[groups * base];
+            Arrays.fill(temp, (byte) 0);
+            System.arraycopy(keyByte, 0, temp, 0, keyByte.length);
+            keyByte = temp;
+        }
+        // 初始化
+        Security.addProvider(new BouncyCastleProvider());
+        Cipher cipher = Cipher.getInstance(&quot;AES/CBC/PKCS7Padding&quot;,&quot;BC&quot;);
+        SecretKeySpec spec = new SecretKeySpec(keyByte, &quot;AES&quot;);
+        AlgorithmParameters parameters = AlgorithmParameters.getInstance(&quot;AES&quot;);
+        parameters.init(new IvParameterSpec(ivByte));
+        cipher.init( Cipher.DECRYPT_MODE, spec, parameters);// 初始化
+        byte[] resultByte = cipher.doFinal(dataByte);
+        if (null != resultByte &amp;&amp; resultByte.length &gt; 0) {
+            String result = new String(resultByte, &quot;UTF-8&quot;);
+            return JSON.parseObject(result);
+        }
+    } catch (NoSuchAlgorithmException e) {
+        log.error(e.getMessage(), e);
+    } catch (NoSuchPaddingException e) {
+        log.error(e.getMessage(), e);
+    } catch (InvalidParameterSpecException e) {
+        log.error(e.getMessage(), e);
+    } catch (IllegalBlockSizeException e) {
+        log.error(e.getMessage(), e);
+    } catch (BadPaddingException e) {
+        log.error(e.getMessage(), e);
+    } catch (UnsupportedEncodingException e) {
+        log.error(e.getMessage(), e);
+    } catch (InvalidKeyException e) {
+        log.error(e.getMessage(), e);
+    } catch (InvalidAlgorithmParameterException e) {
+        log.error(e.getMessage(), e);
+    } catch (NoSuchProviderException e) {
+        log.error(e.getMessage(), e);
+    }
+    return null;
+}
+</code></pre><h1 id="四、流程"><a href="#四、流程" class="headerlink" title="四、流程"></a>四、流程</h1><p>1.小程序端发起请求并携带主要参数</p>
+<p>2.java后台接到/login请求后，根据code去调用微信接口获取用户唯一标识openid和sessionKey</p>
+<p>3.根据openid查询mysql数据库，判断该用户是否存在，如果不存在将用户非敏感信息和其他初始化数据存入到数据库中，如果已存在，不操作</p>
+<p>4.根据openid查询redis数据库，判断openid对应的skey是否存在，如果存在则删除原来老的skey以及对应的openid和sessionKey</p>
+<p>5.通过uuid生成唯一的skey，用openid做键，skey做值，存入到redis中</p>
+<p>6.然后把skey做键，openid和sessionKey的json串做值也重新存入到redis中</p>
+<p>7.根据解密算法，参数有encryptedData、sessionKey和iv，获取用户信息userInfo,如果userInfo字段不满足需要，可通过userInfo.put( “balance”,user.getUbalance() );添加所需要的字段和值</p>
+<p>8.将微信小程序需要的数据封装到map中，返回给小程序端</p>
+<pre><code>map.put( &quot;skey&quot;,skey );
+
+map.put( &quot;result&quot;,&quot;0&quot; );
+
+map.put( &quot;userInfo&quot;,userInfo );    
+
+return map;
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/05/10/Whistle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/05/10/Whistle/" itemprop="url">web调试代理工具Whistle</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-10T20:15:18+08:00">
+                2018-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/whistle/" itemprop="url" rel="index">
+                    <span itemprop="name">whistle</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/05/10/Whistle/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/05/10/Whistle/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>由于最近在学习微信小程序开发，项目中用到了https代理请求，所以用到了基于Node实现的跨平台web调试代理工具Whistle，在此做一记录。</p>
+<p>完成https代理请求总共需要5个步骤。</p>
+<h1 id="一、安装Node-js"><a href="#一、安装Node-js" class="headerlink" title="一、安装Node.js"></a>一、安装Node.js</h1><p>下载地址：</p>
+<pre><code>https://nodejs.org/en/
+</code></pre><p>下载长期支持版：LTS版本</p>
+<p>下载后按步骤进行安装，安装完成后打开cmd命令窗口，执行</p>
+<pre><code>$ node -v
+</code></pre><p>查看版本号，如果出现版本号即安装正确。</p>
+<pre><code>v8.11.1
+</code></pre><h1 id="二、安装并启动Whistle"><a href="#二、安装并启动Whistle" class="headerlink" title="二、安装并启动Whistle"></a>二、安装并启动Whistle</h1><h2 id="1-安装Whistle"><a href="#1-安装Whistle" class="headerlink" title="1.安装Whistle"></a>1.安装Whistle</h2><p>打开cmd命令窗口，执行</p>
+<pre><code>$ npm install -g whistle
+</code></pre><p>npm默认镜像是在国外，有时候安装速度很慢或者出现安装不了的情况，如果无法安装或者安装很慢，可以使用taobao的镜像安装：</p>
+<pre><code>$ npm install cnpm -g --registry=https://registry.npm.taobao.org
+$ cnpm install -g whistle
+</code></pre><p>或者直接指定镜像安装：</p>
+<pre><code>$ npm install whistle -g --registry=https://registry.npm.taobao.org
+</code></pre><h2 id="2-启动Whistle"><a href="#2-启动Whistle" class="headerlink" title="2.启动Whistle"></a>2.启动Whistle</h2><p>在cmd命令窗口中执行启动命令：</p>
+<pre><code>w2 start
+</code></pre><p>停止命令：</p>
+<pre><code>w2 stop
+</code></pre><p>重启命令：</p>
+<pre><code>w2 restart
+</code></pre><h2 id="3-访问Whistle-访问网址："><a href="#3-访问Whistle-访问网址：" class="headerlink" title="3.访问Whistle,访问网址："></a>3.访问Whistle,访问网址：</h2><pre><code>127.0.0.1:8899
+</code></pre><h2 id="三、配置代理"><a href="#三、配置代理" class="headerlink" title="三、配置代理"></a>三、配置代理</h2><p>打开控制面板–&gt;网络和 Internet–&gt;Internet 选项–&gt;连接–&gt;局域网设置</p>
+<p>勾选 为LAN使用代理服务器</p>
+<pre><code>地址(E): 127.0.0.1 端口(T): 8899
+</code></pre><p>然后确定配置。</p>
+<p>如下图：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/whistle.png" alt=""></p>
+<p>此时就可以配置http请求转发了</p>
+<p>1.打开whistle网页（127.0.0.1:8899）</p>
+<p>2.在Rules规则中有一个默认的Default窗口，在此可以配置转发请求</p>
+<pre><code>www.myurl.com 127.0.0.1:8080
+</code></pre><p>这样访问www.myurl.com就会访问127.0.0.1:8080这个地址</p>
+<p>如果不在Default窗口配置，也可以自己新建一个，点击Create创建</p>
+<p>这样只能代理非https请求  如果想代理https请求还得下载https安全证书</p>
+<h1 id="四、下载https安全证书"><a href="#四、下载https安全证书" class="headerlink" title="四、下载https安全证书"></a>四、下载https安全证书</h1><p>点击whistle网页上的HTTPS,会出现一个二维码，在二维码上方有一个Download RootCA,点击下载，在二维码下方有一个Capture HTTPS CONNECTs单选框，勾选表明拦截HTTPS请求。如图：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/whistle-2.png" alt=""></p>
+<p>htpps安全证书下载好以后，打开 –&gt;安装证书–&gt;将所有的证书放入下列存储–&gt;受信任的根证书颁发机构。如下图：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/whistle-3.png" alt=""></p>
+<p>下载安装完成以后得重新配置转发请求。</p>
+<h2 id="五、配置请求转发"><a href="#五、配置请求转发" class="headerlink" title="五、配置请求转发"></a>五、配置请求转发</h2><p>如果配置成：</p>
+<pre><code>https://www.myurl.com 127.0.0.1:8080
+</code></pre><p>会报下面的错误</p>
+<pre><code>From: whistle@1.9.10
+Node: v8.11.1
+Date: 2018-5-4 09:31:21
+Error: write EPROTO 101057795:error:140770FC:SSL routines:SSL23_GET_SERVER_HELLO:unknown protocol:openssl\ssl\s23_clnt.c:827:
+
+at _errnoException (util.js:1022:11)
+at WriteWrap.afterWrite [as oncomplete] (net.js:880:14)
+</code></pre><p>是因为没办法用https请求去访问http服务器，改成下面的配置就OK</p>
+<pre><code>www.myurl.com 127.0.0.1:8080 http://www.myurl.com
+</code></pre><p>这样访问<a href="https://www.myurl.com" target="_blank" rel="external">https://www.myurl.com</a> 就可以访问127.0.0.1:8080这个地址了。</p>
+<p>记得开启拦截HTTPS：勾选 Capture HTTPS CONNECTs</p>
+<p>点击Network可以查看请求信息，如下图：</p>
+<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/whistle-4.png" alt=""></p>
+<p>这只是Whistle的冰山一角，了解更多功能请访问：</p>
+<pre><code>http://wproxy.org/whistle/
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/04/27/linux文件服务器httpd开机自启动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/04/27/linux文件服务器httpd开机自启动/" itemprop="url">linux文件服务器httpd开机自启动</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-27T20:15:18+08:00">
+                2018-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/04/27/linux文件服务器httpd开机自启动/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/04/27/linux文件服务器httpd开机自启动/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、相关命令"><a href="#一、相关命令" class="headerlink" title="一、相关命令"></a>一、相关命令</h1><p>1.查看所有系统服务</p>
+<pre><code>systemctl list-units --all --type=service
+</code></pre><p>2.查询服务状态</p>
+<pre><code>systemctl status httpd.service
+</code></pre><p>3.查询服务是否为开机启动</p>
+<pre><code>systemctl is-enabled httpd.service
+</code></pre><p>enabled是 disabled否</p>
+<p>4.设置服务为开机启动状态</p>
+<pre><code>systemctl enable httpd.service
+</code></pre><p>会自动创建一个系统链接</p>
+<pre><code>Created symlink from /etc/systemd/system/multi-user.target.wants/httpd.service to /usr/lib/systemd/system/httpd.service.
+</code></pre><p>5.设置服务为开机不启动状态</p>
+<p>systemctl disable httpd.service</p>
+<p>会自动移除系统链接</p>
+<pre><code>Removed symlink /etc/systemd/system/multi-user.target.wants/httpd.service.
+</code></pre><p>二、设置httpd开机自启动</p>
+<pre><code>systemctl enable httpd.service
+</code></pre><p>重启即可。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/04/22/linux系统mysql的远程访问/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1817,597 +2580,6 @@ launchd  mysql.sql  README  supervisor  systemd  windows
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/15/嵌入式数据库H2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/03/15/嵌入式数据库H2/" itemprop="url">嵌入式数据库H2</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-15T20:08:23+08:00">
-                2018-03-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/03/15/嵌入式数据库H2/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/15/嵌入式数据库H2/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>由于项目中需要将数据库嵌入到程序中，一起打包发给客户使用，所以需要使用嵌入式数据库，目前常用的嵌入式数据库有：Berkeley DB、Couchbase Lite、LevelDB、SQLite、UnQLite、H2等，由于H2具有以下特点，所以最终选择了H2作为存储数据库。</p>
-<pre><code>1、纯Java编写，不受平台的限制；
-
-2、只有一个jar文件，适合作为嵌入式数据库使用；
-
-3、h2提供了一个十分方便的web控制台用于操作和管理数据库内容；
-
-4、功能完整，支持标准SQL和JDBC。麻雀虽小五脏俱全；
-
-5、支持内嵌模式、服务器模式和集群。
-</code></pre><h1 id="一、H2简介"><a href="#一、H2简介" class="headerlink" title="一、H2简介"></a>一、H2简介</h1><p>H2是一个用Java开发的嵌入式数据库，它本身只是一个类库，可以直接嵌入到应用项目中。</p>
-<p>Ｈ2最大的用途在于可以同应用程序打包在一起发布，这样可以非常方便地存储少量结构化数据。<br>它的另一个用途是用于单元测试。启动速度快，而且可以关闭持久化功能，每一个用例执行完随即还原到初始状态。</p>
-<p>Ｈ2的第三个用处是作为缓存，作为NoSQL的一个补充。当某些场景下数据模型必须为关系型，可以拿它当Memcached使，作为后端MySQL/Oracle的一个缓冲层，缓存一些不经常变化但需要频繁访问的数据，比如字典表、权限表。不过这样系统架构就会比较复杂了。</p>
-<h1 id="二、下载和安装"><a href="#二、下载和安装" class="headerlink" title="二、下载和安装"></a>二、下载和安装</h1><p>1、下载</p>
-<pre><code>H2数据库下载地址：http://www.h2database.com/html/download.html
-</code></pre><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-1.png" alt=""></p>
-<p>Windows、Linux下都可以直接解压缩就用。</p>
-<p>2、安装</p>
-<p>解压缩后的目录结构：</p>
-<p>　　h2</p>
-<p>　　|—bin</p>
-<p>　　|    |—h2-1.1.116.jar 　　//H2数据库的jar包（驱动也在里面）</p>
-<p>　　|    |—h2.bat         　　   //Windows控制台启动脚本</p>
-<p>　　|    |—h2.sh                  //Linux控制台启动脚本</p>
-<p>　　|    |—h2w.bat              //Windows控制台启动脚本（不带黑屏窗口）</p>
-<p>　　|—docs                       //H2数据库的帮助文档（内有H2数据库的使用手册）</p>
-<p>　　|—service //通过wrapper包装成服务。</p>
-<p>　　|—src //H2数据库的源代码</p>
-<p>　　|—build.bat //windows构建脚本</p>
-<p>　　|—build.sh //linux构建脚本</p>
-<p>　　此时就算“安装”完成了。</p>
-<h1 id="三、运行模式与运行方式"><a href="#三、运行模式与运行方式" class="headerlink" title="三、运行模式与运行方式"></a>三、运行模式与运行方式</h1><h2 id="1、运行模式"><a href="#1、运行模式" class="headerlink" title="1、运行模式"></a>1、运行模式</h2><p>　　Ｈ2有三种运行模式。</p>
-<pre><code>（1）内嵌模式（Embedded Mode）
-
-内嵌模式下，应用和数据库同在一个JVM中，通过JDBC进行连接。 可持久化，但同时只能一个客户端连接。内嵌模式性能会比较好。
-
-（2）服务器模式（Server Mode）
-
-使用服务器模式和内嵌模式一样，只不过它可以跑在另一个进程里。
-
-（3）混合模式
-
-第一个应用以内嵌模式启动它，对于后面的应用来说它是服务器模式跑着的。混合模式是内嵌模式和服务器模式的组合。第一个应用通过内嵌模式与数据库建立连接，同时也作为一个服务器启动，于是另外的应用（运行在不同的进程或是虚拟机上）可以同时访问同样的数据。第一个应用的本地连接与嵌入式模式的连接性能一样的快，而其它连接理论上会略慢。 
-</code></pre><h2 id="2、运行方式"><a href="#2、运行方式" class="headerlink" title="2、运行方式"></a>2、运行方式</h2><p>　　开发中肯定是Server Mode方便，因为需要用工具管理数据。所以进入Ｈ2的bin目录。如下图：</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-2.png" alt=""></p>
-<p>如果你在Win环境可以运行h2.bat或h2w.bat。区别只是后者是后台静默运行</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-3.png" alt=""></p>
-<h1 id="四、应用程序开发"><a href="#四、应用程序开发" class="headerlink" title="四、应用程序开发"></a>四、应用程序开发</h1><h2 id="1、通过远程浏览器来访问h2"><a href="#1、通过远程浏览器来访问h2" class="headerlink" title="1、通过远程浏览器来访问h2"></a>1、通过远程浏览器来访问h2</h2><pre><code>访问地址：http://服务器ip:8082/ ，出现如下页面：
-</code></pre><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-5.png" alt=""></p>
-<h2 id="２、路径的配置"><a href="#２、路径的配置" class="headerlink" title="２、路径的配置"></a>２、路径的配置</h2><pre><code>jdbc:h2:~/test是H2的路径。
-User name : sa是h2默认的用户，密码可空。最好设置下密码，尤其当你的Ｈ2部署在公网时。不然会被无聊人把数据删掉。
-</code></pre><h2 id="3、连接"><a href="#3、连接" class="headerlink" title="3、连接"></a>3、连接</h2><pre><code>点击如图Test connect按钮测试连接。此时如果数据库文件本身不存在则会自动创建。点击Connect，进入管理终端。
-</code></pre><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-6.png" alt=""></p>
-<p>Ｈ２的管理终端做得很不错的。按Ctrl+Enter执行输入区的SQL，按Shift+Enter执行当前选中的SQL。</p>
-<h1 id="五、应用程序开发"><a href="#五、应用程序开发" class="headerlink" title="五、应用程序开发"></a>五、应用程序开发</h1><h2 id="1、加入Maven依赖"><a href="#1、加入Maven依赖" class="headerlink" title="1、加入Maven依赖"></a>1、加入Maven依赖</h2><pre><code>&lt;dependency&gt;
-&lt;groupId&gt;com.h2database&lt;/groupId&gt;
-&lt;artifactId&gt;h2&lt;/artifactId&gt;
-&lt;version&gt;1.4.195&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre><h2 id="2、创建db-properties"><a href="#2、创建db-properties" class="headerlink" title="2、创建db.properties"></a>2、创建db.properties</h2><pre><code>driverClassName=org.h2.Driver
-</code></pre><p>此处的写法是使用嵌入模式链接H2库，紧接着那行是使用Server Mode用tcp连接。区别一个是前者性能更好，后者可同时多个客户端连接</p>
-<pre><code>url=jdbc:h2:D:/test
-#url=jdbc:h2:tcp://1localhost//usr/h2/data/rlib
-username=sa
-password=
-</code></pre><h2 id="PS：在使用嵌入模式链接H2库时，使用管理页面连接会报错如下："><a href="#PS：在使用嵌入模式链接H2库时，使用管理页面连接会报错如下：" class="headerlink" title="PS：在使用嵌入模式链接H2库时，使用管理页面连接会报错如下："></a>PS：在使用嵌入模式链接H2库时，使用管理页面连接会报错如下：</h2><p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-4.png" alt=""></p>
-<h1 id="六、H2管理工具-DBeaver"><a href="#六、H2管理工具-DBeaver" class="headerlink" title="六、H2管理工具-DBeaver"></a>六、H2管理工具-DBeaver</h1><p>可通过数据库管理工具DBeaver来有效管理H2，直接从网上下载即可，这里不提供下载和安装过程</p>
-<p>打开DBeaver.exe,操作如下图：</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-7.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-8.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-9.png" alt=""></p>
-<p>输入用户名sa  </p>
-<p>密码自己设置一个  也可以不设，点击下一步</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-10.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-11.png" alt=""></p>
-<p>打开test数据库，即可对表进行增删改查操作了</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/h2-12.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/" itemprop="url">JAVA-UDP接收和发送json数据</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-06T19:49:09+08:00">
-                2018-03-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/03/06/UDP接收和发送json数据/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/03/06/UDP接收和发送json数据/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、UDP服务端发送数据"><a href="#一、UDP服务端发送数据" class="headerlink" title="一、UDP服务端发送数据"></a>一、UDP服务端发送数据</h1><pre><code>public class UdpClient {
-
-public static void main(String[] args) throws Exception {
-    DatagramSocket socket = new DatagramSocket();
-
-    String s = getJsonStr();
-    byte[] buf = s.getBytes();
-    //将数据打包
-    DatagramPacket packet = new DatagramPacket(buf, buf.length, InetAddress.getByName(&quot;192.168.11.139&quot;), 6070);
-    socket.send(packet);
-    socket.close();
-
-}
-
-public  static  String getJsonStr(){
-    Person p = new Person();
-    p.setName( &quot;张三&quot; );
-    p.setAge( 18 );
-    p.setGender( &quot;男&quot; );
-    return JSONObject.toJSONString( p );
-}
-}
-</code></pre><p>利用fastjson将对象转换为json字符串</p>
-<pre><code>JSONObject.toJSONString( p );
-</code></pre><h1 id="二、UDP客户端接收数据"><a href="#二、UDP客户端接收数据" class="headerlink" title="二、UDP客户端接收数据"></a>二、UDP客户端接收数据</h1><pre><code>public class UdpServer {
-
-public static void main(String[] args) throws Exception {
-    // 定义一个接收端，并且指定了接收的端口号
-    DatagramSocket socket = new DatagramSocket(6070);
-
-    while (true) {
-        byte[] buf = new byte[1024];
-        // 解析数据包
-        DatagramPacket packet = new DatagramPacket(buf, buf.length);
-
-        socket.receive(packet);
-
-        String ip = packet.getAddress().getHostAddress();
-
-        buf = packet.getData();
-
-        String data = new String(buf, 0, packet.getLength());
-
-        System.out.println(&quot;收到 &quot; + ip + &quot; 发来的消息：&quot; + data);
-
-        //Person p = JSON.parseObject(data, new TypeReference&lt;Person&gt;() {});
-        Person p=JSONObject.parseObject(data, Person.class);//JSON字符串转对象
-        System.out.println(p.toString());
-    }
-
-}
-}
-</code></pre><p>利用fastjson将接收到的json字符串转为对象</p>
-<pre><code>Person p=JSONObject.parseObject(data, Person.class);//JSON字符串转对象
-</code></pre><p>三、实体类Person</p>
-<pre><code>public class Person {
-private  String  name;
-private  int age;
-private String gender;
-
-public String getName() {
-    return name;
-}
-
-public void setName(String name) {
-    this.name = name;
-}
-
-public int getAge() {
-    return age;
-}
-
-public void setAge(int age) {
-    this.age = age;
-}
-
-public String getGender() {
-    return gender;
-}
-
-public void setGender(String gender) {
-    this.gender = gender;
-}
-
-@Override
-
-public String toString() {
-    return &quot;Person{&quot; +
-            &quot;name=&apos;&quot; + name + &apos;\&apos;&apos; +
-            &quot;, age=&quot; + age +
-            &quot;, gender=&apos;&quot; + gender + &apos;\&apos;&apos; +
-            &apos;}&apos;;
-}
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/01/26/mysql定时清空表/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/01/26/mysql定时清空表/" itemprop="url">Mysql每天定时清空表</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-26T19:16:36+08:00">
-                2018-01-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/01/26/mysql定时清空表/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/01/26/mysql定时清空表/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Mysql每天定时清空表"><a href="#Mysql每天定时清空表" class="headerlink" title="Mysql每天定时清空表"></a>Mysql每天定时清空表</h1><p>1.设置开启event scheduler</p>
-<pre><code>SET GLOBAL event_scheduler=1;
-</code></pre><p>2.验证event_scheduler是否已经开启</p>
-<pre><code>show variables like &apos;%event%&apos;;  #值为 ON 表明已开启
-SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
-</code></pre><p>3.创建event</p>
-<pre><code>DROP EVENT IF EXISTS e_delete_upvote;
- CREATE  EVENT e_delete_upvote   
- ON SCHEDULE EVERY 1 day STARTS date_add(concat(current_date(), &apos; 00:00:00&apos;), interval 0 second)
- ON COMPLETION PRESERVE ENABLE
- DO
- TRUNCATE TABLE dreamland.upvote;
-
-#说明：
- ON SCHEDULE EVERY 1 day 指定循环间隔为每天执行
- STARTS date_add(concat(current_date(), &apos; 23:59:00&apos;), interval 0 second) 指定运行时间为23:59:00
- ON COMPLETION PRESERVE ENABLE 指定创建完成后即启用，否则需手动启动
-</code></pre><p>4.手动关闭事件</p>
-<pre><code>ALTER EVENT e_delete_upvote DISABLE;
-</code></pre><p>5.手动该事件为可用</p>
-<pre><code>ALTER EVENT e_delete_upvote ENABLE;
-</code></pre><p>6.查看已有的定时事件任务</p>
-<pre><code>SHOW EVENTS;
-</code></pre><p>7.删除事件</p>
-<pre><code>DROP EVENT e_delete_upvote;
-</code></pre><h3 id="注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql-ini文件中加入event-scheduler-ON-的语句"><a href="#注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql-ini文件中加入event-scheduler-ON-的语句" class="headerlink" title="注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql.ini文件中加入event_scheduler = ON; 的语句"></a>注意：真实的开发环境中，会遇到mysql服务重启或者断电的情况，此时则会出现事件调度器被关闭的情况，所有事件都不在起作用，要想解决这个办法，则需要在mysql.ini文件中加入event_scheduler = ON; 的语句</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2459,7 +2631,7 @@ SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2470,7 +2642,7 @@ SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
               
               <div class="site-state-item site-state-categories">
                 <a href="/wanglinyong.github.io/categories/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -2481,7 +2653,7 @@ SHOW VARIABLES LIKE &apos;event_scheduler&apos;;
               
               <div class="site-state-item site-state-tags">
                 <a href="/wanglinyong.github.io/tags/index.html">
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
