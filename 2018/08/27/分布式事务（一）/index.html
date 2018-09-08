@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/wanglinyong.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/wanglinyong.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/wanglinyong.github.io/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/wanglinyong.github.io/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/wanglinyong.github.io/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/wanglinyong.github.io/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/wanglinyong.github.io/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="分布式事务," />
+
+
+
+
+
+  <link rel="alternate" href="/wanglinyong.github.io/atom.xml" title="Wang's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="一、数据库事务在介绍分布式事务之前，先简单了解下数据库事务。 数据库事务(Database Transaction) :是指作为单个逻辑工作单元执行的一系列操作，要么完全地执行，要么完全地不执行。 事务具有ACID四个特性： 1、原子性(Atomic)：事务必须是原子工作单元,对于其修改数据，要么全部成功，要么全部失败。 2、一致性(Consistent):事务在完成时，必须使所有的数据都保持一致">
+<meta name="keywords" content="分布式事务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式事务（一）">
+<meta property="og:url" content="https://wanglinyong.github.io/2018/08/27/分布式事务（一）/index.html">
+<meta property="og:site_name" content="Wang&#39;s Blog">
+<meta property="og:description" content="一、数据库事务在介绍分布式事务之前，先简单了解下数据库事务。 数据库事务(Database Transaction) :是指作为单个逻辑工作单元执行的一系列操作，要么完全地执行，要么完全地不执行。 事务具有ACID四个特性： 1、原子性(Atomic)：事务必须是原子工作单元,对于其修改数据，要么全部成功，要么全部失败。 2、一致性(Consistent):事务在完成时，必须使所有的数据都保持一致">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://images.gitbook.cn/f986cf50-a9d5-11e8-95af-1d569340e767">
+<meta property="og:image" content="https://images.gitbook.cn/e1b4c660-a9d1-11e8-93ff-7b60c899eed0">
+<meta property="og:updated_time" content="2018-09-08T03:28:29.684Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式事务（一）">
+<meta name="twitter:description" content="一、数据库事务在介绍分布式事务之前，先简单了解下数据库事务。 数据库事务(Database Transaction) :是指作为单个逻辑工作单元执行的一系列操作，要么完全地执行，要么完全地不执行。 事务具有ACID四个特性： 1、原子性(Atomic)：事务必须是原子工作单元,对于其修改数据，要么全部成功，要么全部失败。 2、一致性(Consistent):事务在完成时，必须使所有的数据都保持一致">
+<meta name="twitter:image" content="https://images.gitbook.cn/f986cf50-a9d5-11e8-95af-1d569340e767">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/wanglinyong.github.io/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wanglinyong.github.io/2018/08/27/分布式事务（一）/"/>
+
+
+
+
+
+  <title>分布式事务（一） | Wang's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?your_id";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/wanglinyong/wanglinyong.github.io/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/wanglinyong.github.io/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/wanglinyong.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/wanglinyong.github.io/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/wanglinyong.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/wanglinyong.github.io/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/wanglinyong.github.io/about/index.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/08/27/分布式事务（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分布式事务（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-27T19:08:22+08:00">
+                2018-08-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/08/27/分布式事务（一）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/08/27/分布式事务（一）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、数据库事务"><a href="#一、数据库事务" class="headerlink" title="一、数据库事务"></a>一、数据库事务</h2><p>在介绍分布式事务之前，先简单了解下数据库事务。</p>
+<p><strong>数据库事务(Database Transaction) :</strong>是指作为单个逻辑工作单元执行的一系列操作，要么完全地执行，要么完全地不执行。</p>
+<p>事务具有ACID四个特性：</p>
+<p>1、原子性(Atomic)：事务必须是原子工作单元,对于其修改数据，要么全部成功，要么全部失败。</p>
+<p>2、一致性(Consistent):事务在完成时，必须使所有的数据都保持一致状态。</p>
+<p>3、隔离性(Insulation):由并发事务所作的修改必须与任何其它并发事务所作的修改隔离。</p>
+<p>4、持久性(Duration):事务完成之后，它对于系统的影响是永久性的。</p>
+<h2 id="二、分布式事务"><a href="#二、分布式事务" class="headerlink" title="二、分布式事务"></a>二、分布式事务</h2><p>在分布式系统中，不止使用一个数据库，比如订单系统使用db_order数据库，产品系统使用的是db_product数据库，在订单系统中只能保证订单相关操作的事务，在产品系统中只能保证产品相关操作的事务。比如：如果在订单系统中进行生成订单、扣减库存的业务，如果出现异常，那么创建订单的事务会回滚，而扣减库存的事务则不会，因为本地事务是不能夸数据库的。跨库的事务就属于分布式事务。</p>
+<p>把分布式系统中两个相关操作看成是一个单元，比如创建订单和修改库存的操作，该单元要么一起成功，要么一起失败，这就是分布式事务。</p>
+<p>关于分布式事务你不得不知的两个理论：</p>
+<h3 id="1、CAP定理"><a href="#1、CAP定理" class="headerlink" title="1、CAP定理"></a>1、CAP定理</h3><p>CAP原则又称CAP定理，指的是在一个分布式系统中，WEB服务无法同时满足以下3个特性：</p>
+<ul>
+<li><p>一致性(Consistency) ： 在分布式系统中数据一旦更新，所有数据变动都是同步的</p>
+</li>
+<li><p>可用性(Availability) ： 好的响应性能，每个操作都必须有预期的响应结束</p>
+</li>
+<li><p>分区容错性(Partition tolerance) ： 在网络分区的情况下，即使出现单个节点无法可用，系统依然正常对外提供服务</p>
+</li>
+</ul>
+<p>首先在分布式系统中，横向扩展策略依赖于数据分区，所以一般会在一致性和可用性上做出牺牲。</p>
+<h3 id="2、BASE理论"><a href="#2、BASE理论" class="headerlink" title="2、BASE理论"></a>2、BASE理论</h3><p>BASE理论中的三个特性：</p>
+<ul>
+<li><p>Basically Available（基本可用）</p>
+</li>
+<li><p>Soft state（软状态）</p>
+</li>
+<li><p>Eventually consistent（最终一致性）</p>
+</li>
+</ul>
+<p>三个特性分别指的是：</p>
+<p>（1）基本可用是指分布式系统在出现不可预知的故障的时候，允许损失部分可用性——但请注意，这绝不等价于系统不可用。</p>
+<p>（2）软状态，和硬状态对应，是指允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统不同节点的数据副本之间进行数据同步的过程存在延时。</p>
+<p>（3）最终一致性强调的是系统所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要试试保证系统数据的强一致性。 </p>
+<p>BASE理论是对CAP中的一致性和可用性进行一个权衡的结果，理论的核心思想就是：我们无法做到强一致，但每个应用都可以根据自身的业务特点，采用适当的方式来使系统达到最终一致性（Eventual consistency）。</p>
+<h2 id="三、分布式事务解决方案"><a href="#三、分布式事务解决方案" class="headerlink" title="三、分布式事务解决方案"></a>三、分布式事务解决方案</h2><p>主要介绍目前主流的两种分布式事务解决方案：</p>
+<h3 id="1、TCC-补偿型事务解决方案"><a href="#1、TCC-补偿型事务解决方案" class="headerlink" title="1、TCC-补偿型事务解决方案"></a>1、TCC-补偿型事务解决方案</h3><p>TCC指的是Try(尝试)、Confirm（确认）、Cancle（取消）,其核心思想是：针对每个操作，都要注册一个与其对应的确认和补偿（撤销）操作。它分为三个阶段：</p>
+<ul>
+<li><p>Try 阶段主要是对业务系统做检测及资源预留</p>
+</li>
+<li><p>Confirm 阶段主要是对业务系统做确认提交，Try阶段执行成功并开始执行 Confirm阶段时，默认 Confirm阶段是不会出错的。即：只要Try成功，Confirm一定成功。</p>
+</li>
+<li><p>Cancel 阶段主要是在业务执行错误，需要回滚的状态下执行的业务取消，预留资源释放。</p>
+</li>
+</ul>
+<p>举个例子，假入 Bob 要向 Smith 转账，思路大概是：</p>
+<p>1、首先在 Try 阶段，要先调用远程接口把 Smith 和 Bob 的钱给冻结起来。</p>
+<p>2、在 Confirm 阶段，执行远程调用的转账的操作，转账成功进行解冻。</p>
+<p>3、如果第2步执行成功，那么转账成功，如果第二步执行失败，则调用远程冻结接口对应的解冻方法 (Cancel)。</p>
+<p>优点： 跟两阶段提交（2PC）比起来，实现以及流程相对简单了一些，但数据的一致性比2PC也要差一些</p>
+<p>缺点： 缺点还是比较明显的，在2,3步中都有可能失败。TCC属于应用层的一种补偿方式，所以需要程序员在实现的时候多写很多补偿的代码，在一些场景中，一些业务流程可能用TCC不太好定义及处理。</p>
+<h3 id="2、基于可靠消息的最终一致性解决方案"><a href="#2、基于可靠消息的最终一致性解决方案" class="headerlink" title="2、基于可靠消息的最终一致性解决方案"></a>2、基于可靠消息的最终一致性解决方案</h3><p>举例说明：订单系统创建订单成功后、产品系统扣减相应库存</p>
+<p><strong>订单系统流程图如下：</strong></p>
+<p><img src="https://images.gitbook.cn/f986cf50-a9d5-11e8-95af-1d569340e767" alt="enter image description here"></p>
+<p>1.创建订单之前，创建预发送消息，保存到消息表中，此时消息状态为：未发送</p>
+<p>2.创建订单，如果创建订单失败则将消息表预发送消息删除</p>
+<p>3.创建订单成功后，修改消息表预发送消息状态为发送中，并发送消息至mq</p>
+<p>4.如果发送消息失败，则订单回滚并删除消息表消息；发送成功则万事大吉</p>
+<p><strong>产品系统流程图如下：</strong></p>
+<p><img src="https://images.gitbook.cn/e1b4c660-a9d1-11e8-93ff-7b60c899eed0" alt="enter image description here"></p>
+<p>1.从mq消息中间件中监听并消费消息，将json消息转为订单对象</p>
+<p>2.根据消息编号查询该消息是否已被消费，保证幂等性</p>
+<p>3.如果消息未被消费（即存在此消息），则产品表扣减库存；如果已经消费（不存在此消息），则不做处理</p>
+<p>4.产品表扣减库存成功，则删除此消息；扣减失败，则不做处理</p>
+<p>5.定时任务会定时扫描消息表中超时未被消费的消息，然后尝试重发，如果超过最大重试次数后仍未被消费，则记录日志并通知工作人员进行人工补偿操作</p>
+<p>基于可靠消息的分布式事务虽然不能保证结果的强一致，但是可以通过可靠消息使得结果最终一致</p>
+<p>下一节将给出基于可靠消息的分布式事务demo源码</p>
+
+      
+    </div>
+    
+    
+    
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/weixin.jpg" alt="WangLinYong 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/zfb.jpg" alt="WangLinYong 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/wanglinyong.github.io/tags/分布式事务/" rel="tag"><i class="fa fa-tag"></i> 分布式事务</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/wanglinyong.github.io/2018/08/21/dubbo/" rel="next" title="dubbo快速入门">
+                <i class="fa fa-chevron-left"></i> dubbo快速入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/wanglinyong.github.io/2018/08/31/分布式事务（二）/" rel="prev" title="分布式事务（二）：基于可靠消息的分布式事务">
+                分布式事务（二）：基于可靠消息的分布式事务 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/08/27/分布式事务（一）/"
+           data-title="分布式事务（一）" data-url="https://wanglinyong.github.io/2018/08/27/分布式事务（一）/">
+      </div>
+    </div>
+
+     
+
+
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WangLinYong</p>
+              <p class="site-description motion-element" itemprop="description">JAVA，Python，C#，Node.js，个人博客，Github，hexo</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/wanglinyong.github.io/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/wanglinyong.github.io/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/wanglinyong.github.io/tags/index.html">
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/wanglinyong.github.io/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/wanglinyong" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/yourname" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、数据库事务"><span class="nav-number">1.</span> <span class="nav-text">一、数据库事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、分布式事务"><span class="nav-number">2.</span> <span class="nav-text">二、分布式事务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、CAP定理"><span class="nav-number">2.1.</span> <span class="nav-text">1、CAP定理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、BASE理论"><span class="nav-number">2.2.</span> <span class="nav-text">2、BASE理论</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、分布式事务解决方案"><span class="nav-number">3.</span> <span class="nav-text">三、分布式事务解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、TCC-补偿型事务解决方案"><span class="nav-number">3.1.</span> <span class="nav-text">1、TCC-补偿型事务解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、基于可靠消息的最终一致性解决方案"><span class="nav-number">3.2.</span> <span class="nav-text">2、基于可靠消息的最终一致性解决方案</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WangLinYong</span>
+
+  
+</div>
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/wanglinyong.github.io/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"your_username"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/wanglinyong.github.io/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/wanglinyong.github.io/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

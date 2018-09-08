@@ -274,6 +274,859 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/08/31/分布式事务（二）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/08/31/分布式事务（二）/" itemprop="url">分布式事务（二）：基于可靠消息的分布式事务</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-31T20:15:09+08:00">
+                2018-08-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/08/31/分布式事务（二）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/08/31/分布式事务（二）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="项目使用技术"><a href="#项目使用技术" class="headerlink" title="项目使用技术"></a>项目使用技术</h2><p>springboot、dubbo、zookeeper、定时任务</p>
+<h2 id="一、项目结构"><a href="#一、项目结构" class="headerlink" title="一、项目结构"></a>一、项目结构</h2><p>maven父子工程：</p>
+<p>父工程：consis</p>
+<p>子工程：api-service、order、product、message</p>
+<p>api-service:该项目主要是提供接口调用的，还包含实体类、枚举等一些通用内容</p>
+<p>order:该项目是专门处理订单相关操作的系统</p>
+<p>product:该项目是专门处理产品相关操作的系统</p>
+<p>message:该项目是提供消息服务的系统，好包括定时任务</p>
+<p>它们的依赖关系如下图：</p>
+<p><img src="https://images.gitbook.cn/a181d460-acf7-11e8-afe5-6ba901a27e1b" alt="enter image description here"></p>
+<p>根据上一篇的原理分别介绍下各个系统的实现</p>
+<h2 id="二、order订单系统"><a href="#二、order订单系统" class="headerlink" title="二、order订单系统"></a>二、order订单系统</h2><p><strong>核心代码：</strong></p>
+<pre><code>@Override
+@Transactional
+public void add(Orders order) {
+    String messageBody = JSONObject.toJSONString( order );
+    //添加消息到数据库
+    String messageId = transactionMessageService.savePreparMessage(order.getMessageId(), messageBody, Constant.ORDER_QUEUE_NAME );
+    log.info(&quot;&gt;&gt;&gt; 预发送消息,消息编号:{}&quot;, messageId);
+    boolean flag = false;
+    boolean success = false;
+    try{
+
+        Orders orders = orderDao.saveAndFlush( order );
+        //int i = 1/0 ;
+        log.info(&quot;&gt;&gt;&gt; 插入订单,订单编号:{}&quot;, orders.getId());
+        flag = true;
+    }catch (Exception e){
+        transactionMessageService.delete( messageId );
+        log.info(&quot;&gt;&gt;&gt; 业务执行异常删除消息,消息编号:{}&quot;, messageId, e);
+        throw new RuntimeException( &quot;&gt;&gt;&gt; 创建订单失败&quot; );
+    }finally {
+        if(flag){
+            try {
+                transactionMessageService.confirmAndSend( messageId );
+                success = true;
+                log.info(&quot;&gt;&gt;&gt; 确认并且发送消息到实时消息中间件,消息编号:{}&quot;, messageId);
+
+            }catch (Exception e){
+                log.error(&quot;&gt;&gt;&gt; 消息确认异常,消息编号:{}&quot;, messageId, e);
+                if(!success){
+                    transactionMessageService.delete( messageId );
+                    throw new RuntimeException( &quot;&gt;&gt;&gt; 确认消息异常，创建订单失败&quot; );
+                }
+            }
+        }
+    }
+}
+</code></pre><ul>
+<li>插入订单表之前，首先创建预发送消息，保存到事务消息表中，此时消息状态为：未发送</li>
+<li>插入订单，如果插入订单失败则将事务消息表中预发送消息删除</li>
+<li>插入订单成功后，修改消息表预发送消息状态为发送中，并发送消息至mq</li>
+<li>如果发送消息失败，则订单回滚并删除事务消息表消息</li>
+</ul>
+<h2 id="三、message消息系统"><a href="#三、message消息系统" class="headerlink" title="三、message消息系统"></a>三、message消息系统</h2><p><strong>核心代码一：</strong></p>
+<pre><code>@Override
+public void sendMessageToMessageQueue(String queueName,final String messageBody) {
+
+    jmsTemplate.convertAndSend( queueName,messageBody );
+
+    log.info(&quot;&gt;&gt;&gt; 发送消息到mq 队列:{},消息内容:{}&quot;, queueName, messageBody);
+}
+</code></pre><ul>
+<li>主要是activemq生产者讲消息发送至MQ消息中间件</li>
+</ul>
+<p><strong>核心代码二：</strong></p>
+<pre><code>/**
+ * 定时重发消息（每分钟）
+ */
+@Scheduled(cron = &quot;0 */1 * * * ?&quot;)
+public void    handler(){
+    //查询transaction_message表中已发送但未被删除的消息
+    List&lt;TransactionMessage&gt; list = transactionMessageService.queryRetryList( Constant.MESSAGE_UNDEAD, maxTimeOut, Constant.MESSAGE_SENDING );
+    if(list!=null &amp;&amp; list.size() &gt; 0){
+        for (TransactionMessage message:list){
+            try {
+                transactionMessageService.retry( message.getMessageId() );
+            } catch (Exception e) {
+                log.warn(&quot;&gt;&gt;&gt; 消息不存在,可能已经被消费,消息编号:{}&quot;, message.getMessageId());
+            }
+        }
+    }
+}
+
+/**
+ * 定时通知工作人员（每隔5分钟）
+ */
+@Scheduled(cron = &quot;0 */5 * * * ?&quot;)
+public void    advance(){
+    List&lt;Long&gt; messages = transactionMessageService.queryDeadList();
+    log.warn(&quot;&gt;&gt;&gt; 共有:{}条消息需要人工处理&quot;, messages.size());
+    String ids = JSONObject.toJSONString( messages );
+    //发邮件或者是发送短信通知工作人员处理
+
+}
+</code></pre><ul>
+<li>定时重发消息</li>
+<li>定时将死亡的消息通知给工作人员，进行人工补偿操作</li>
+</ul>
+<h2 id="四、product产品系统"><a href="#四、product产品系统" class="headerlink" title="四、product产品系统"></a>四、product产品系统</h2><p><strong>核心代码：</strong></p>
+<pre><code>@Transactional
+@JmsListener( destination = Constant.ORDER_QUEUE_NAME)
+public void    receiveQueue(String msg){
+    boolean flag = false;
+    Orders orders = JSONObject.parseObject( msg, Orders.class );
+    log.info(&quot;&gt;&gt;&gt; 接收到mq消息队列，消息编号:{} ,消息内容:{}&quot;, orders.getMessageId(), msg);
+
+    TransactionMessage transactionMessage = transactionMessageService.findByMessageId( orders.getMessageId() );
+    try {
+        //保证幂等性
+        if(transactionMessage!=null){
+            List&lt;OrderDetail&gt; list = orders.getList();
+            for(OrderDetail detail : list){
+                Product product = productService.findById( detail.getId() );
+                Long skuNum = product.getProductSku() - detail.getNum();
+                if(skuNum &gt;= 0){
+                    product.setProductSku( skuNum );
+                    productService.update( product );
+                }else {
+                    throw new Exception( &quot;&gt;&gt;&gt; 库存不足,修改库存失败！&quot; );
+                }
+
+            }
+            //int i = 1 /0 ;
+            flag = true;
+        }
+
+    }catch (Exception e){
+        e.printStackTrace();
+        throw new RuntimeException( e );
+    }finally {
+        if(flag){
+            transactionMessageService.delete( orders.getMessageId() );
+            DbLog dbLog = dbLogService.findByMesageId( orders.getMessageId() );
+            if(dbLog!=null){
+                dbLog.setState( &quot;1&quot; );//已处理成功
+                dbLogService.update( dbLog );
+            }
+            log.info(&quot;&gt;&gt;&gt; 业务执行成功删除消息! messageId:{}&quot;, orders.getMessageId());
+        }
+    }
+
+}
+</code></pre><ul>
+<li>从mq消息中间件中监听并消费消息，将json消息转为订单对象</li>
+<li>根据消息编号查询该消息是否已被消费，保证幂等性</li>
+<li>如果消息未被消费（即存在此消息），则产品表扣减库存；如果已经消费（不存在此消息），则不做处理</li>
+<li>产品表扣减库存成功，则删除此消息，如果待处理消息日志表中有此消息，则更改状态为1，表示已处理；扣减失败，则不做处理</li>
+</ul>
+<p>该项目源码已上传至github和码云，链接如下，<strong>希望喜欢的朋友都能给个star支持一下！谢谢~</strong></p>
+<p>github链接</p>
+<pre><code>https://github.com/wanglinyong/consis
+</code></pre><p>码云链接</p>
+<pre><code>https://gitee.com/wanglinyong/consis
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/08/27/分布式事务（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/08/27/分布式事务（一）/" itemprop="url">分布式事务（一）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-27T19:08:22+08:00">
+                2018-08-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/08/27/分布式事务（一）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/08/27/分布式事务（一）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一、数据库事务"><a href="#一、数据库事务" class="headerlink" title="一、数据库事务"></a>一、数据库事务</h2><p>在介绍分布式事务之前，先简单了解下数据库事务。</p>
+<p><strong>数据库事务(Database Transaction) :</strong>是指作为单个逻辑工作单元执行的一系列操作，要么完全地执行，要么完全地不执行。</p>
+<p>事务具有ACID四个特性：</p>
+<p>1、原子性(Atomic)：事务必须是原子工作单元,对于其修改数据，要么全部成功，要么全部失败。</p>
+<p>2、一致性(Consistent):事务在完成时，必须使所有的数据都保持一致状态。</p>
+<p>3、隔离性(Insulation):由并发事务所作的修改必须与任何其它并发事务所作的修改隔离。</p>
+<p>4、持久性(Duration):事务完成之后，它对于系统的影响是永久性的。</p>
+<h2 id="二、分布式事务"><a href="#二、分布式事务" class="headerlink" title="二、分布式事务"></a>二、分布式事务</h2><p>在分布式系统中，不止使用一个数据库，比如订单系统使用db_order数据库，产品系统使用的是db_product数据库，在订单系统中只能保证订单相关操作的事务，在产品系统中只能保证产品相关操作的事务。比如：如果在订单系统中进行生成订单、扣减库存的业务，如果出现异常，那么创建订单的事务会回滚，而扣减库存的事务则不会，因为本地事务是不能夸数据库的。跨库的事务就属于分布式事务。</p>
+<p>把分布式系统中两个相关操作看成是一个单元，比如创建订单和修改库存的操作，该单元要么一起成功，要么一起失败，这就是分布式事务。</p>
+<p>关于分布式事务你不得不知的两个理论：</p>
+<h3 id="1、CAP定理"><a href="#1、CAP定理" class="headerlink" title="1、CAP定理"></a>1、CAP定理</h3><p>CAP原则又称CAP定理，指的是在一个分布式系统中，WEB服务无法同时满足以下3个特性：</p>
+<ul>
+<li><p>一致性(Consistency) ： 在分布式系统中数据一旦更新，所有数据变动都是同步的</p>
+</li>
+<li><p>可用性(Availability) ： 好的响应性能，每个操作都必须有预期的响应结束</p>
+</li>
+<li><p>分区容错性(Partition tolerance) ： 在网络分区的情况下，即使出现单个节点无法可用，系统依然正常对外提供服务</p>
+</li>
+</ul>
+<p>首先在分布式系统中，横向扩展策略依赖于数据分区，所以一般会在一致性和可用性上做出牺牲。</p>
+<h3 id="2、BASE理论"><a href="#2、BASE理论" class="headerlink" title="2、BASE理论"></a>2、BASE理论</h3><p>BASE理论中的三个特性：</p>
+<ul>
+<li><p>Basically Available（基本可用）</p>
+</li>
+<li><p>Soft state（软状态）</p>
+</li>
+<li><p>Eventually consistent（最终一致性）</p>
+</li>
+</ul>
+<p>三个特性分别指的是：</p>
+<p>（1）基本可用是指分布式系统在出现不可预知的故障的时候，允许损失部分可用性——但请注意，这绝不等价于系统不可用。</p>
+<p>（2）软状态，和硬状态对应，是指允许系统中的数据存在中间状态，并认为该中间状态的存在不会影响系统的整体可用性，即允许系统不同节点的数据副本之间进行数据同步的过程存在延时。</p>
+<p>（3）最终一致性强调的是系统所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要试试保证系统数据的强一致性。 </p>
+<p>BASE理论是对CAP中的一致性和可用性进行一个权衡的结果，理论的核心思想就是：我们无法做到强一致，但每个应用都可以根据自身的业务特点，采用适当的方式来使系统达到最终一致性（Eventual consistency）。</p>
+<h2 id="三、分布式事务解决方案"><a href="#三、分布式事务解决方案" class="headerlink" title="三、分布式事务解决方案"></a>三、分布式事务解决方案</h2><p>主要介绍目前主流的两种分布式事务解决方案：</p>
+<h3 id="1、TCC-补偿型事务解决方案"><a href="#1、TCC-补偿型事务解决方案" class="headerlink" title="1、TCC-补偿型事务解决方案"></a>1、TCC-补偿型事务解决方案</h3><p>TCC指的是Try(尝试)、Confirm（确认）、Cancle（取消）,其核心思想是：针对每个操作，都要注册一个与其对应的确认和补偿（撤销）操作。它分为三个阶段：</p>
+<ul>
+<li><p>Try 阶段主要是对业务系统做检测及资源预留</p>
+</li>
+<li><p>Confirm 阶段主要是对业务系统做确认提交，Try阶段执行成功并开始执行 Confirm阶段时，默认 Confirm阶段是不会出错的。即：只要Try成功，Confirm一定成功。</p>
+</li>
+<li><p>Cancel 阶段主要是在业务执行错误，需要回滚的状态下执行的业务取消，预留资源释放。</p>
+</li>
+</ul>
+<p>举个例子，假入 Bob 要向 Smith 转账，思路大概是：</p>
+<p>1、首先在 Try 阶段，要先调用远程接口把 Smith 和 Bob 的钱给冻结起来。</p>
+<p>2、在 Confirm 阶段，执行远程调用的转账的操作，转账成功进行解冻。</p>
+<p>3、如果第2步执行成功，那么转账成功，如果第二步执行失败，则调用远程冻结接口对应的解冻方法 (Cancel)。</p>
+<p>优点： 跟两阶段提交（2PC）比起来，实现以及流程相对简单了一些，但数据的一致性比2PC也要差一些</p>
+<p>缺点： 缺点还是比较明显的，在2,3步中都有可能失败。TCC属于应用层的一种补偿方式，所以需要程序员在实现的时候多写很多补偿的代码，在一些场景中，一些业务流程可能用TCC不太好定义及处理。</p>
+<h3 id="2、基于可靠消息的最终一致性解决方案"><a href="#2、基于可靠消息的最终一致性解决方案" class="headerlink" title="2、基于可靠消息的最终一致性解决方案"></a>2、基于可靠消息的最终一致性解决方案</h3><p>举例说明：订单系统创建订单成功后、产品系统扣减相应库存</p>
+<p><strong>订单系统流程图如下：</strong></p>
+<p><img src="https://images.gitbook.cn/f986cf50-a9d5-11e8-95af-1d569340e767" alt="enter image description here"></p>
+<p>1.创建订单之前，创建预发送消息，保存到消息表中，此时消息状态为：未发送</p>
+<p>2.创建订单，如果创建订单失败则将消息表预发送消息删除</p>
+<p>3.创建订单成功后，修改消息表预发送消息状态为发送中，并发送消息至mq</p>
+<p>4.如果发送消息失败，则订单回滚并删除消息表消息；发送成功则万事大吉</p>
+<p><strong>产品系统流程图如下：</strong></p>
+<p><img src="https://images.gitbook.cn/e1b4c660-a9d1-11e8-93ff-7b60c899eed0" alt="enter image description here"></p>
+<p>1.从mq消息中间件中监听并消费消息，将json消息转为订单对象</p>
+<p>2.根据消息编号查询该消息是否已被消费，保证幂等性</p>
+<p>3.如果消息未被消费（即存在此消息），则产品表扣减库存；如果已经消费（不存在此消息），则不做处理</p>
+<p>4.产品表扣减库存成功，则删除此消息；扣减失败，则不做处理</p>
+<p>5.定时任务会定时扫描消息表中超时未被消费的消息，然后尝试重发，如果超过最大重试次数后仍未被消费，则记录日志并通知工作人员进行人工补偿操作</p>
+<p>基于可靠消息的分布式事务虽然不能保证结果的强一致，但是可以通过可靠消息使得结果最终一致</p>
+<p>下一节将给出基于可靠消息的分布式事务demo源码</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/08/21/dubbo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/wanglinyong.github.io/2018/08/21/dubbo/" itemprop="url">dubbo快速入门</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-21T18:23:48+08:00">
+                2018-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/08/21/dubbo/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/08/21/dubbo/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="一、dubbo基本原理"><a href="#一、dubbo基本原理" class="headerlink" title="一、dubbo基本原理"></a>一、dubbo基本原理</h2><p> <strong>dubbo架构图如下：</strong></p>
+<p><img src="https://images.gitbook.cn/e0e417a0-a4e9-11e8-a2aa-0bd41466d20f" alt="enter image description here"></p>
+<p>节点角色说明</p>
+<p><img src="https://images.gitbook.cn/5c2ee5c0-a4ea-11e8-a2aa-0bd41466d20f" alt="enter image description here"></p>
+<p>调用关系说明:</p>
+<p>0.服务容器负责启动，加载，运行服务提供者。</p>
+<p>1.服务提供者在启动时，向注册中心注册自己提供的服务。</p>
+<p>2.服务消费者在启动时，向注册中心订阅自己所需的服务。</p>
+<p>3.注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。</p>
+<p>4.服务消费者，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</p>
+<p>5.服务消费者和提供者，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。</p>
+<p>具体详细内容请参加dubbo官方文档</p>
+<pre><code>http://dubbo.apache.org/en-us/
+</code></pre><h2 id="二、入门demo简介"><a href="#二、入门demo简介" class="headerlink" title="二、入门demo简介"></a>二、入门demo简介</h2><p>该demo包含三个项目，分别是：</p>
+<p>服务提供端项目：provider</p>
+<p>服务消费端项目：consumer</p>
+<p>共用服务接口项目：api</p>
+<p>依赖关系如图：</p>
+<p><img src="https://images.gitbook.cn/fa498740-a4ec-11e8-8a5b-85d5618fe6ba" alt="enter image description here"></p>
+<p>api项目是一个jar项目，将生成的jar打包到maven仓库，作为provider和consumer项目的依赖导入。</p>
+<h2 id="三、dubbo-远程调用（RPC）具体实现"><a href="#三、dubbo-远程调用（RPC）具体实现" class="headerlink" title="三、dubbo-远程调用（RPC）具体实现"></a>三、dubbo-远程调用（RPC）具体实现</h2><h3 id="1、启动zookeeper"><a href="#1、启动zookeeper" class="headerlink" title="1、启动zookeeper"></a>1、启动zookeeper</h3><p>在启动服务提供者项目之前要先启动zookeeper,因为我们需要把服务提供方注册到zookeeper中，然后才能被服务消费方发现并调用。</p>
+<p>关于zookeeper这里不做详细介绍了，简单概括就是分布式服务治理框架，用于服务注册与发现，实现远程调用功能等。</p>
+<ul>
+<li><p>zookeeper下载</p>
+<p>  <a href="http://zookeeper.apache.org/" target="_blank" rel="external">http://zookeeper.apache.org/</a></p>
+</li>
+<li><p>解压并修改配置</p>
+</li>
+</ul>
+<p>zookeeper下载完成后解压到合适目录，然后进入到zookeeper的conf目录，找到zoo_sample.cfg文件将其重命名为zoo.cfg，然后打开该文件，<br>将其中的dataDir和dataLogDir修改如下：</p>
+<pre><code>dataDir=E:\\Soft\\zookeeper-3.4.6\\data
+dataLogDir=E:\\Soft\\zookeeper-3.4.6\\log
+</code></pre><p>修改为你本地硬盘的目录</p>
+<ul>
+<li>启动zookeeper</li>
+</ul>
+<p>进入到zookeeper的bin目录下，双击zkServer.cmd,启动zookeeper</p>
+<h3 id="2-dubbo接口服务api项目"><a href="#2-dubbo接口服务api项目" class="headerlink" title="2.dubbo接口服务api项目"></a>2.dubbo接口服务api项目</h3><p>新建maven项目api，注意将其pom.xml中的打包方式改为jar</p>
+<p>然后在com.dubbo.api.service包下新建DemoService接口，如下：</p>
+<pre><code>public interface DemoService {
+
+    String sayHello(String name);
+}
+</code></pre><p>项目结构如图：</p>
+<p><img src="https://images.gitbook.cn/e024d790-a4ef-11e8-a2aa-0bd41466d20f" alt="enter image description here"></p>
+<p>然后将项目打包（install一下即可），在E:\temp\api\target\目录下找到该jar，然后打包到本地maven仓库，打开cmd命令窗口，输入以下令如下：</p>
+<pre><code>mvn install:install-file -Dfile=E:\temp\api\target\api.jar -DgroupId=com.dubbo.api -DartifactId=api -Dversion=1.0.0 -Dpackaging=jar -DgeneratePom=true -DcreateChecksum=true
+</code></pre><p>注意：jar路径该为你自己的路径</p>
+<h3 id="3-dubbo服务提供者provider项目"><a href="#3-dubbo服务提供者provider项目" class="headerlink" title="3.dubbo服务提供者provider项目"></a>3.dubbo服务提供者provider项目</h3><p>新建maven项目provider,并在pom.xml中添加以下依赖：</p>
+<pre><code> &lt;dependency&gt;
+  &lt;groupId&gt;com.dubbo.api&lt;/groupId&gt;
+  &lt;artifactId&gt;api&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- https://mvnrepository.com/artifact/com.alibaba/dubbo --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+  &lt;artifactId&gt;dubbo&lt;/artifactId&gt;
+  &lt;version&gt;2.5.3&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;com.101tec&lt;/groupId&gt;
+  &lt;artifactId&gt;zkclient&lt;/artifactId&gt;
+  &lt;version&gt;0.10&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+  &lt;version&gt;4.0.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p>这里引入了上面的生成的api接口依赖、dubbo依赖、zookeeper客服端依赖以及启动项目必需的依赖</p>
+<p>然后在com.dubbo.provider.service.impl包下新建DemoServiceImp并实现DemoService接口，如下：</p>
+<pre><code>public class DemoServiceImpl implements DemoService{
+@Override
+public String sayHello(String name) {
+    return &quot;Hello &quot; + name;
+}
+</code></pre><p>然后在resources下新建provider.xml文件，配置如下：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+   xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+   xmlns:dubbo=&quot;http://code.alibabatech.com/schema/dubbo&quot;
+   xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://code.alibabatech.com/schema/dubbo
+   http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;&gt;
+&lt;!--定义了提供方应用信息，用于计算依赖关系；在 dubbo-admin 或 dubbo-monitor 会显示这个名字，方便辨识--&gt;
+&lt;dubbo:application name=&quot;demo-provider&quot; owner=&quot;wly&quot; organization=&quot;dubbox&quot;/&gt;
+&lt;!--使用 zookeeper 注册中心暴露服务，注意要先开启 zookeeper--&gt;
+&lt;dubbo:registry address=&quot;zookeeper://localhost:2181&quot;/&gt;
+&lt;!-- 用dubbo协议在20880端口暴露服务 --&gt;
+&lt;dubbo:protocol name=&quot;dubbo&quot; port=&quot;20880&quot; /&gt;
+&lt;!--使用 dubbo 协议实现定义好的 api.PermissionService 接口--&gt;
+&lt;dubbo:service interface=&quot;com.dubbo.api.service.DemoService&quot; ref=&quot;demoService&quot; protocol=&quot;dubbo&quot; /&gt;
+&lt;!--具体实现该接口的 bean--&gt;
+&lt;bean id=&quot;demoService&quot; class=&quot;com.dubbo.provider.service.impl.DemoServiceImpl&quot;/&gt;
+&lt;/beans&gt;
+</code></pre><p>然后在java下直接新建Provider用于启动项目：</p>
+<pre><code>public class Provider {
+public static void main(String[] args) throws IOException {
+    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(&quot;provider.xml&quot;);
+    context.start();
+    System.out.println(&quot;dubbo服务提供端已启动....&quot;);
+    System.in.read(); // 按任意键退出
+}
+}
+</code></pre><p>provider项目结构如图：</p>
+<p><img src="https://images.gitbook.cn/2550e6e0-a4f2-11e8-8b4a-cf3651600922" alt="enter image description here"></p>
+<p>然后直接运行该main函数-dubbo服务提供者已启动！</p>
+<h3 id="4-dubbo服务消费者consumer项目"><a href="#4-dubbo服务消费者consumer项目" class="headerlink" title="4.dubbo服务消费者consumer项目"></a>4.dubbo服务消费者consumer项目</h3><p>新建maven项目consumer,并在pom.xml中添加以下依赖：</p>
+<pre><code> &lt;dependency&gt;
+  &lt;groupId&gt;com.dubbo.api&lt;/groupId&gt;
+  &lt;artifactId&gt;api&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- https://mvnrepository.com/artifact/com.alibaba/dubbo --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+  &lt;artifactId&gt;dubbo&lt;/artifactId&gt;
+  &lt;version&gt;2.5.3&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.101tec&lt;/groupId&gt;
+  &lt;artifactId&gt;zkclient&lt;/artifactId&gt;
+  &lt;version&gt;0.10&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+  &lt;version&gt;4.0.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p>和provider项目添加的依赖一样。</p>
+<p>然后在resources下新建comsumer.xml，配置服务消费者，如下：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+   xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+   xmlns:dubbo=&quot;http://code.alibabatech.com/schema/dubbo&quot;
+   xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;&gt;
+&lt;dubbo:application name=&quot;demo-consumer&quot; owner=&quot;wly&quot; organization=&quot;dubbox&quot;/&gt;
+&lt;!--向 zookeeper 订阅 provider 的地址，由 zookeeper 定时推送--&gt;
+&lt;dubbo:registry address=&quot;zookeeper://localhost:2181&quot;/&gt;
+&lt;!--使用 dubbo 协议调用定义好的 api.PermissionService 接口--&gt;
+&lt;dubbo:reference id=&quot;demoService&quot; interface=&quot;com.dubbo.api.service.DemoService&quot;/&gt;
+&lt;/beans&gt;
+</code></pre><p>然后在java下新建Consumer.class用于启动该项目，如下：</p>
+<pre><code>public class Consumer {
+public static void main(String[] args) throws IOException {
+    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext( &quot;consumer.xml&quot; );
+    context.start();
+    System.out.println(&quot;dubbo服务消费端已启动...&quot;);
+    DemoService demoService = (DemoService)context.getBean( &quot;demoService&quot; );// 获取远程服务代理
+    String hello = demoService.sayHello( &quot;world&quot; );//执行远程方法
+    System.out.println(hello);//显示调用结果
+    System.in.read(); // 按任意键退出
+}
+}
+</code></pre><p>启动该项目，显示调用结果，如图：</p>
+<p><img src="https://images.gitbook.cn/dbfc3520-a4f2-11e8-8a5b-85d5618fe6ba" alt="enter image description here"></p>
+<p>到这里就已经完成了dubbo的远程调用。下面介绍下dubbo-admin管理管理控制台</p>
+<h2 id="四、dubbo-admin管理控制台"><a href="#四、dubbo-admin管理控制台" class="headerlink" title="四、dubbo-admin管理控制台"></a>四、dubbo-admin管理控制台</h2><p>通过dubbo-admin可以更好的管理dubbo服务。</p>
+<p>首先下载dubbo-admin的war包，下载地址：</p>
+<pre><code>http://www.java1234.com/a/javabook/javaweb/2018/0224/10496.html
+</code></pre><p>下载完成后，将dubbo-admin-2.6.0.war复制到tomcat的webapps目录下。然后启动tomcat,访问</p>
+<pre><code>http://localhost:8080/dubbo-admin-2.6.0/
+</code></pre><p>也可以将dubbo-admin-2.6.0重命名为dubbo-admin访问的时候直接访问<a href="http://localhost:8080/dubbo-admin即可" target="_blank" rel="external">http://localhost:8080/dubbo-admin即可</a></p>
+<p>用户名和密码都是root</p>
+<p>登录后就可以通过网页进行管理dubbo服务了，如图：</p>
+<p><img src="https://images.gitbook.cn/4da3b530-a4f4-11e8-a2aa-0bd41466d20f" alt="enter image description here"></p>
+<h2 id="该demo项目以及相关资源下载链接"><a href="#该demo项目以及相关资源下载链接" class="headerlink" title="该demo项目以及相关资源下载链接"></a>该demo项目以及相关资源下载链接</h2><pre><code>https://download.csdn.net/download/abcwanglinyong/10617369
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+<div>
+  
+</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/07/13/solr工作原理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1672,593 +2525,11 @@ if max_size &lt; 100:
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/05/26/从零开始开发SSM项目-博客系统实战/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/05/26/从零开始开发SSM项目-博客系统实战/" itemprop="url">从零开始开发SSM项目-博客系统实战</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-26T19:30:28+08:00">
-                2018-05-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/05/26/从零开始开发SSM项目-博客系统实战/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/05/26/从零开始开发SSM项目-博客系统实战/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、项目包含功能"><a href="#一、项目包含功能" class="headerlink" title="一、项目包含功能"></a>一、项目包含功能</h1><p>使用SSM框架开发一个博客系统，包含的功能大致有:</p>
-<p>1.用户注册与激活，激活方式通过邮件激活</p>
-<p>2.用户的登录和退出，包括账号登录和手机快捷登录</p>
-<p>3.用户账号登录和注册时需要输入验证码验证</p>
-<p>4.首页展示及分页，主要展示文章内容，可进行搜索，将搜索结果高亮显示</p>
-<p>5.首页文章的点赞、踩和评论功能</p>
-<p>6.个人主页模块，包括个人的基本信息，梦分类，发布梦，管理梦以及热梦推荐等</p>
-<p>7.书写文章功能</p>
-<p>8.文章管理功能，包括文章的查看、修改和删除</p>
-<p>9.个人信息修改功能</p>
-<p>10.安全框架 spring-security 的整合，对不符合条件的用户或者 URL 进行拦截</p>
-<p>11.记录用户登录信息，包括登录的时间、IP 等</p>
-<h1 id="二、项目所用技术"><a href="#二、项目所用技术" class="headerlink" title="二、项目所用技术"></a>二、项目所用技术</h1><p>使用到的技术主要有</p>
-<p>1.主体框架：SpringMVC + Spring + Mybatis</p>
-<p>2.安全框架：Spring-Security</p>
-<p>3.数据库：Mysql</p>
-<p>4.缓存技术：Redis</p>
-<p>5.消息中间件：ActiveMQ</p>
-<p>6.搜索引擎：solr</p>
-<p>7.富文本编辑器： Kindeditor</p>
-<p>8.异步更新：Ajax</p>
-<p>9.前端框架：zui、bootstrap、Jquery</p>
-<h1 id="三、部分页面效果如下："><a href="#三、部分页面效果如下：" class="headerlink" title="三、部分页面效果如下："></a>三、部分页面效果如下：</h1><p>1.登录页面（账号登录和手机快捷登录）</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/login-x.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/login-y.png" alt=""></p>
-<p>2.注册页面</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/regist-x.png" alt=""></p>
-<p>3.首页（评论、回复及点赞）</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/index-x.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/chat-x.png" alt=""></p>
-<p>4.写博客页面</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/write-x.png" alt=""></p>
-<p>5.个人主页</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/personal-x.png" alt=""></p>
-<p>6.个人信息页面</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/update.png" alt=""></p>
-<p>7.修改密码页面</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/repassword-x.png" alt=""></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/05/18/csharp借助阿里大于发送短信/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/05/18/csharp借助阿里大于发送短信/" itemprop="url">C# 借助阿里大于平台发送短信</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-18T20:30:18+08:00">
-                2018-05-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/wanglinyong.github.io/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C#</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/05/18/csharp借助阿里大于发送短信/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/05/18/csharp借助阿里大于发送短信/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、首先申请签名和模板"><a href="#一、首先申请签名和模板" class="headerlink" title="一、首先申请签名和模板"></a>一、首先申请签名和模板</h1><p>1.登陆阿里云官网，找到短信服务，开通以后进入管理控制台，找到签名管理，申请一个签名，如下图：</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-1.png" alt=""></p>
-<p>2.然后找到模板管理，申请一个模板，模板里都有格式内容介绍，申请好以后大概是这样：</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-8.png" alt=""></p>
-<p>3.签名名称和模板CODE等会代码中会用到，还有Access Key ID 和 Access Key Secret也要用到，Access Key在个人信息的下拉列表里可以找到，如下图：</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-3.png" alt=""></p>
-<h1 id="二、下载-Net平台下的SDK"><a href="#二、下载-Net平台下的SDK" class="headerlink" title="二、下载.Net平台下的SDK"></a>二、下载.Net平台下的SDK</h1><p>1.点击短信服务列表中的帮助文档</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-4.png" alt=""></p>
-<p>2.点击SDK下载，进入到SDK及DEMO下载页面，找到第4个[NET],点击即可下载。</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-5.png" alt=""></p>
-<p>3.将下载好的压缩包进行解压，找到msg_demo目录，在/msg_demo/alicom-mns-receive有发送短信的demo和dll文件</p>
-<h1 id="三、发短信的具体实现"><a href="#三、发短信的具体实现" class="headerlink" title="三、发短信的具体实现"></a>三、发短信的具体实现</h1><p>1.将/msg_demo/alicom-mns-receive/dll目录下的4个dll文件拷贝到你的项目目录下</p>
-<p>2.在你项目的引用右键添加引用，打开引用管理器，如图：</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-6.png" alt=""></p>
-<p>3.点击浏览，将阿里大于依赖的4个dll文件添加进来，然后点击确定。</p>
-<p><img src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/ali-7.png" alt=""></p>
-<p>4.将/msg_demo/alicom-mns-receive下的sendsms文件拷贝到你的项目中，将其中Access Key ID 、 Access Key Secret、签名名称、模板CODE替换成你自己的即可，还有接收短信的手机号，模板内容等，可以将main函数改成一个方法sendMsg(string phone,string code)，直接调用方法即可，参数改为接收短信的手机号和短信内容：</p>
-<pre><code>namespace ConsoleApplication1
-{
-class sendsms
-{
-    static String product = &quot;Dysmsapi&quot;;//短信API产品名称
-    static String domain = &quot;dysmsapi.aliyuncs.com&quot;;//短信API产品域名
-    static String accessId = &quot;你的Key&quot;;
-    static String accessSecret = &quot;你的Secret&quot;;
-    static String regionIdForPop = &quot;cn-hangzhou&quot;;
-   public  static void sendMsg(string phone,string code)
-    {
-
-
-        IClientProfile profile = DefaultProfile.GetProfile(regionIdForPop, accessId, accessSecret);
-        DefaultProfile.AddEndpoint(regionIdForPop, regionIdForPop, product, domain);
-        IAcsClient acsClient = new DefaultAcsClient(profile);
-        SendSmsRequest request = new SendSmsRequest();
-        try
-        {
-            //request.SignName = &quot;上云预发测试&quot;;//&quot;管理控制台中配置的短信签名（状态必须是验证通过）&quot;
-            //request.TemplateCode = &quot;SMS_71130001&quot;;//管理控制台中配置的审核通过的短信模板的模板CODE（状态必须是验证通过）&quot;
-            //request.RecNum = &quot;13567939485&quot;;//&quot;接收号码，多个号码可以逗号分隔&quot;
-            //request.ParamString = &quot;{\&quot;name\&quot;:\&quot;123\&quot;}&quot;;//短信模板中的变量；数字需要转换为字符串；个人用户每个变量长度必须小于15个字符。&quot;
-            //SingleSendSmsResponse httpResponse = client.GetAcsResponse(request);
-            request.PhoneNumbers = phone;//接收短信的手机号
-            request.SignName = &quot;签名名称&quot;;
-            request.TemplateCode = &quot;模板CODE&quot;;
-            request.TemplateParam = &quot;{\&quot;code\&quot;:\&quot;&quot; + code + &quot;\&quot;}&quot;;//模板内容
-           // request.OutId = &quot;xxxxxxxx&quot;;  //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
-            //请求失败这里会抛ClientException异常
-            SendSmsResponse sendSmsResponse = acsClient.GetAcsResponse(request);
-            System.Console.WriteLine(sendSmsResponse.Message);
-
-        }
-        catch (ServerException e)
-        {
-            System.Console.WriteLine(&quot;ServerException&quot;);
-        }
-        catch (ClientException e)
-        {
-            System.Console.WriteLine(&quot;ClientException&quot;);
-        }
-    }
-}
-}
-</code></pre><p>5.运行程序，调用发送短信方法进行测试，测试成功！</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/05/11/微信小程序日期格式化/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="WangLinYong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Wang's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/wanglinyong.github.io/2018/05/11/微信小程序日期格式化/" itemprop="url">微信小程序日期格式化</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-11T20:15:18+08:00">
-                2018-05-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/wanglinyong.github.io/categories/微信小程序/" itemprop="url" rel="index">
-                    <span itemprop="name">微信小程序</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/wanglinyong.github.io/2018/05/11/微信小程序日期格式化/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/05/11/微信小程序日期格式化/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="1-微信小程序util-js下有一个日期格式化函数"><a href="#1-微信小程序util-js下有一个日期格式化函数" class="headerlink" title="1.微信小程序util.js下有一个日期格式化函数"></a>1.微信小程序util.js下有一个日期格式化函数</h2><pre><code>const formatTime = date =&gt; {
-  var date = new Date(date);  
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hour = date.getHours()
-  const minute = date.getMinutes()
-  const second = date.getSeconds()
-
-  return [year, month, day].map(formatNumber).join(&apos;-&apos;) + &apos; &apos; + [hour, minute, second].map(formatNumber).join(&apos;:&apos;)
-}
-
-module.exports = {
-  formatTime: formatTime
-}
-</code></pre><p>但是它原来是没有下面的这段代码的  它要求传入的data是一个日期参数，为了方便将日期字符串作为参数传递，将date转换一下（这里的参数date就是日期字符串）：</p>
-<pre><code>var date = new Date(date);  
-</code></pre><h2 id="2-获取后台的list列表数据后，遍历对其进行日期格式化："><a href="#2-获取后台的list列表数据后，遍历对其进行日期格式化：" class="headerlink" title="2.获取后台的list列表数据后，遍历对其进行日期格式化："></a>2.获取后台的list列表数据后，遍历对其进行日期格式化：</h2><p>引入util.js</p>
-<pre><code>var util = require(&apos;../../utils/util.js&apos;);
-</code></pre><p>评论列表日期格式化代码：</p>
-<pre><code>  if (res.data.result == 0) {
-  let comms = res.data.lists
-  console.log(comms)
-  for(let c in comms){
-    let  date = util.formatTime(comms[c].ctime)
-    comms[c].ctime = date
-  }
-  that.setData({
-    commentList: comms || [],
-    bookIsBuy: res.data.is_buy
-  });
-
-  setTimeout(function () {
-    that.setData({
-      commentLoading: false
-    });
-  }, 500);
-
-} 
-</code></pre><p>调用util.js中的方法</p>
-<pre><code>let  date = util.formatTime(comms[c].ctime)
-</code></pre>
-          
-        
-      
-    </div>
-    
-    
-    
-<div>
-  
-</div>
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/wanglinyong.github.io/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/wanglinyong.github.io/page/4/">4</a><a class="extend next" rel="next" href="/wanglinyong.github.io/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/wanglinyong.github.io/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/wanglinyong.github.io/page/5/">5</a><a class="extend next" rel="next" href="/wanglinyong.github.io/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -2305,7 +2576,7 @@ module.exports = {
               
                 <a href="/wanglinyong.github.io/archives/">
               
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2327,7 +2598,7 @@ module.exports = {
               
               <div class="site-state-item site-state-tags">
                 <a href="/wanglinyong.github.io/tags/index.html">
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

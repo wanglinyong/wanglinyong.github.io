@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/wanglinyong.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/wanglinyong.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/wanglinyong.github.io/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/wanglinyong.github.io/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/wanglinyong.github.io/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/wanglinyong.github.io/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/wanglinyong.github.io/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,dubbo," />
+
+
+
+
+
+  <link rel="alternate" href="/wanglinyong.github.io/atom.xml" title="Wang's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="一、dubbo基本原理 dubbo架构图如下：  节点角色说明  调用关系说明: 0.服务容器负责启动，加载，运行服务提供者。 1.服务提供者在启动时，向注册中心注册自己提供的服务。 2.服务消费者在启动时，向注册中心订阅自己所需的服务。 3.注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。 4.服务消费者，从提供者地址列表中，基于软负载均衡算法，选一">
+<meta name="keywords" content="Java,dubbo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dubbo快速入门">
+<meta property="og:url" content="https://wanglinyong.github.io/2018/08/21/dubbo/index.html">
+<meta property="og:site_name" content="Wang&#39;s Blog">
+<meta property="og:description" content="一、dubbo基本原理 dubbo架构图如下：  节点角色说明  调用关系说明: 0.服务容器负责启动，加载，运行服务提供者。 1.服务提供者在启动时，向注册中心注册自己提供的服务。 2.服务消费者在启动时，向注册中心订阅自己所需的服务。 3.注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。 4.服务消费者，从提供者地址列表中，基于软负载均衡算法，选一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://images.gitbook.cn/e0e417a0-a4e9-11e8-a2aa-0bd41466d20f">
+<meta property="og:image" content="https://images.gitbook.cn/5c2ee5c0-a4ea-11e8-a2aa-0bd41466d20f">
+<meta property="og:image" content="https://images.gitbook.cn/fa498740-a4ec-11e8-8a5b-85d5618fe6ba">
+<meta property="og:image" content="https://images.gitbook.cn/e024d790-a4ef-11e8-a2aa-0bd41466d20f">
+<meta property="og:image" content="https://images.gitbook.cn/2550e6e0-a4f2-11e8-8b4a-cf3651600922">
+<meta property="og:image" content="https://images.gitbook.cn/dbfc3520-a4f2-11e8-8a5b-85d5618fe6ba">
+<meta property="og:image" content="https://images.gitbook.cn/4da3b530-a4f4-11e8-a2aa-0bd41466d20f">
+<meta property="og:updated_time" content="2018-09-08T03:26:36.739Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="dubbo快速入门">
+<meta name="twitter:description" content="一、dubbo基本原理 dubbo架构图如下：  节点角色说明  调用关系说明: 0.服务容器负责启动，加载，运行服务提供者。 1.服务提供者在启动时，向注册中心注册自己提供的服务。 2.服务消费者在启动时，向注册中心订阅自己所需的服务。 3.注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。 4.服务消费者，从提供者地址列表中，基于软负载均衡算法，选一">
+<meta name="twitter:image" content="https://images.gitbook.cn/e0e417a0-a4e9-11e8-a2aa-0bd41466d20f">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/wanglinyong.github.io/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wanglinyong.github.io/2018/08/21/dubbo/"/>
+
+
+
+
+
+  <title>dubbo快速入门 | Wang's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?your_id";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/wanglinyong/wanglinyong.github.io/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/wanglinyong.github.io/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/wanglinyong.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/wanglinyong.github.io/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/wanglinyong.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/wanglinyong.github.io/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/wanglinyong.github.io/about/index.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/08/21/dubbo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">dubbo快速入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-21T18:23:48+08:00">
+                2018-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/08/21/dubbo/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/08/21/dubbo/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、dubbo基本原理"><a href="#一、dubbo基本原理" class="headerlink" title="一、dubbo基本原理"></a>一、dubbo基本原理</h2><p> <strong>dubbo架构图如下：</strong></p>
+<p><img src="https://images.gitbook.cn/e0e417a0-a4e9-11e8-a2aa-0bd41466d20f" alt="enter image description here"></p>
+<p>节点角色说明</p>
+<p><img src="https://images.gitbook.cn/5c2ee5c0-a4ea-11e8-a2aa-0bd41466d20f" alt="enter image description here"></p>
+<p>调用关系说明:</p>
+<p>0.服务容器负责启动，加载，运行服务提供者。</p>
+<p>1.服务提供者在启动时，向注册中心注册自己提供的服务。</p>
+<p>2.服务消费者在启动时，向注册中心订阅自己所需的服务。</p>
+<p>3.注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。</p>
+<p>4.服务消费者，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</p>
+<p>5.服务消费者和提供者，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。</p>
+<p>具体详细内容请参加dubbo官方文档</p>
+<pre><code>http://dubbo.apache.org/en-us/
+</code></pre><h2 id="二、入门demo简介"><a href="#二、入门demo简介" class="headerlink" title="二、入门demo简介"></a>二、入门demo简介</h2><p>该demo包含三个项目，分别是：</p>
+<p>服务提供端项目：provider</p>
+<p>服务消费端项目：consumer</p>
+<p>共用服务接口项目：api</p>
+<p>依赖关系如图：</p>
+<p><img src="https://images.gitbook.cn/fa498740-a4ec-11e8-8a5b-85d5618fe6ba" alt="enter image description here"></p>
+<p>api项目是一个jar项目，将生成的jar打包到maven仓库，作为provider和consumer项目的依赖导入。</p>
+<h2 id="三、dubbo-远程调用（RPC）具体实现"><a href="#三、dubbo-远程调用（RPC）具体实现" class="headerlink" title="三、dubbo-远程调用（RPC）具体实现"></a>三、dubbo-远程调用（RPC）具体实现</h2><h3 id="1、启动zookeeper"><a href="#1、启动zookeeper" class="headerlink" title="1、启动zookeeper"></a>1、启动zookeeper</h3><p>在启动服务提供者项目之前要先启动zookeeper,因为我们需要把服务提供方注册到zookeeper中，然后才能被服务消费方发现并调用。</p>
+<p>关于zookeeper这里不做详细介绍了，简单概括就是分布式服务治理框架，用于服务注册与发现，实现远程调用功能等。</p>
+<ul>
+<li><p>zookeeper下载</p>
+<p>  <a href="http://zookeeper.apache.org/" target="_blank" rel="external">http://zookeeper.apache.org/</a></p>
+</li>
+<li><p>解压并修改配置</p>
+</li>
+</ul>
+<p>zookeeper下载完成后解压到合适目录，然后进入到zookeeper的conf目录，找到zoo_sample.cfg文件将其重命名为zoo.cfg，然后打开该文件，<br>将其中的dataDir和dataLogDir修改如下：</p>
+<pre><code>dataDir=E:\\Soft\\zookeeper-3.4.6\\data
+dataLogDir=E:\\Soft\\zookeeper-3.4.6\\log
+</code></pre><p>修改为你本地硬盘的目录</p>
+<ul>
+<li>启动zookeeper</li>
+</ul>
+<p>进入到zookeeper的bin目录下，双击zkServer.cmd,启动zookeeper</p>
+<h3 id="2-dubbo接口服务api项目"><a href="#2-dubbo接口服务api项目" class="headerlink" title="2.dubbo接口服务api项目"></a>2.dubbo接口服务api项目</h3><p>新建maven项目api，注意将其pom.xml中的打包方式改为jar</p>
+<p>然后在com.dubbo.api.service包下新建DemoService接口，如下：</p>
+<pre><code>public interface DemoService {
+
+    String sayHello(String name);
+}
+</code></pre><p>项目结构如图：</p>
+<p><img src="https://images.gitbook.cn/e024d790-a4ef-11e8-a2aa-0bd41466d20f" alt="enter image description here"></p>
+<p>然后将项目打包（install一下即可），在E:\temp\api\target\目录下找到该jar，然后打包到本地maven仓库，打开cmd命令窗口，输入以下令如下：</p>
+<pre><code>mvn install:install-file -Dfile=E:\temp\api\target\api.jar -DgroupId=com.dubbo.api -DartifactId=api -Dversion=1.0.0 -Dpackaging=jar -DgeneratePom=true -DcreateChecksum=true
+</code></pre><p>注意：jar路径该为你自己的路径</p>
+<h3 id="3-dubbo服务提供者provider项目"><a href="#3-dubbo服务提供者provider项目" class="headerlink" title="3.dubbo服务提供者provider项目"></a>3.dubbo服务提供者provider项目</h3><p>新建maven项目provider,并在pom.xml中添加以下依赖：</p>
+<pre><code> &lt;dependency&gt;
+  &lt;groupId&gt;com.dubbo.api&lt;/groupId&gt;
+  &lt;artifactId&gt;api&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- https://mvnrepository.com/artifact/com.alibaba/dubbo --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+  &lt;artifactId&gt;dubbo&lt;/artifactId&gt;
+  &lt;version&gt;2.5.3&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;com.101tec&lt;/groupId&gt;
+  &lt;artifactId&gt;zkclient&lt;/artifactId&gt;
+  &lt;version&gt;0.10&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+  &lt;version&gt;4.0.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p>这里引入了上面的生成的api接口依赖、dubbo依赖、zookeeper客服端依赖以及启动项目必需的依赖</p>
+<p>然后在com.dubbo.provider.service.impl包下新建DemoServiceImp并实现DemoService接口，如下：</p>
+<pre><code>public class DemoServiceImpl implements DemoService{
+@Override
+public String sayHello(String name) {
+    return &quot;Hello &quot; + name;
+}
+</code></pre><p>然后在resources下新建provider.xml文件，配置如下：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+   xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+   xmlns:dubbo=&quot;http://code.alibabatech.com/schema/dubbo&quot;
+   xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://code.alibabatech.com/schema/dubbo
+   http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;&gt;
+&lt;!--定义了提供方应用信息，用于计算依赖关系；在 dubbo-admin 或 dubbo-monitor 会显示这个名字，方便辨识--&gt;
+&lt;dubbo:application name=&quot;demo-provider&quot; owner=&quot;wly&quot; organization=&quot;dubbox&quot;/&gt;
+&lt;!--使用 zookeeper 注册中心暴露服务，注意要先开启 zookeeper--&gt;
+&lt;dubbo:registry address=&quot;zookeeper://localhost:2181&quot;/&gt;
+&lt;!-- 用dubbo协议在20880端口暴露服务 --&gt;
+&lt;dubbo:protocol name=&quot;dubbo&quot; port=&quot;20880&quot; /&gt;
+&lt;!--使用 dubbo 协议实现定义好的 api.PermissionService 接口--&gt;
+&lt;dubbo:service interface=&quot;com.dubbo.api.service.DemoService&quot; ref=&quot;demoService&quot; protocol=&quot;dubbo&quot; /&gt;
+&lt;!--具体实现该接口的 bean--&gt;
+&lt;bean id=&quot;demoService&quot; class=&quot;com.dubbo.provider.service.impl.DemoServiceImpl&quot;/&gt;
+&lt;/beans&gt;
+</code></pre><p>然后在java下直接新建Provider用于启动项目：</p>
+<pre><code>public class Provider {
+public static void main(String[] args) throws IOException {
+    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(&quot;provider.xml&quot;);
+    context.start();
+    System.out.println(&quot;dubbo服务提供端已启动....&quot;);
+    System.in.read(); // 按任意键退出
+}
+}
+</code></pre><p>provider项目结构如图：</p>
+<p><img src="https://images.gitbook.cn/2550e6e0-a4f2-11e8-8b4a-cf3651600922" alt="enter image description here"></p>
+<p>然后直接运行该main函数-dubbo服务提供者已启动！</p>
+<h3 id="4-dubbo服务消费者consumer项目"><a href="#4-dubbo服务消费者consumer项目" class="headerlink" title="4.dubbo服务消费者consumer项目"></a>4.dubbo服务消费者consumer项目</h3><p>新建maven项目consumer,并在pom.xml中添加以下依赖：</p>
+<pre><code> &lt;dependency&gt;
+  &lt;groupId&gt;com.dubbo.api&lt;/groupId&gt;
+  &lt;artifactId&gt;api&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;!-- https://mvnrepository.com/artifact/com.alibaba/dubbo --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+  &lt;artifactId&gt;dubbo&lt;/artifactId&gt;
+  &lt;version&gt;2.5.3&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.101tec&lt;/groupId&gt;
+  &lt;artifactId&gt;zkclient&lt;/artifactId&gt;
+  &lt;version&gt;0.10&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+  &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+  &lt;version&gt;4.0.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre><p>和provider项目添加的依赖一样。</p>
+<p>然后在resources下新建comsumer.xml，配置服务消费者，如下：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+   xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+   xmlns:dubbo=&quot;http://code.alibabatech.com/schema/dubbo&quot;
+   xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;&gt;
+&lt;dubbo:application name=&quot;demo-consumer&quot; owner=&quot;wly&quot; organization=&quot;dubbox&quot;/&gt;
+&lt;!--向 zookeeper 订阅 provider 的地址，由 zookeeper 定时推送--&gt;
+&lt;dubbo:registry address=&quot;zookeeper://localhost:2181&quot;/&gt;
+&lt;!--使用 dubbo 协议调用定义好的 api.PermissionService 接口--&gt;
+&lt;dubbo:reference id=&quot;demoService&quot; interface=&quot;com.dubbo.api.service.DemoService&quot;/&gt;
+&lt;/beans&gt;
+</code></pre><p>然后在java下新建Consumer.class用于启动该项目，如下：</p>
+<pre><code>public class Consumer {
+public static void main(String[] args) throws IOException {
+    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext( &quot;consumer.xml&quot; );
+    context.start();
+    System.out.println(&quot;dubbo服务消费端已启动...&quot;);
+    DemoService demoService = (DemoService)context.getBean( &quot;demoService&quot; );// 获取远程服务代理
+    String hello = demoService.sayHello( &quot;world&quot; );//执行远程方法
+    System.out.println(hello);//显示调用结果
+    System.in.read(); // 按任意键退出
+}
+}
+</code></pre><p>启动该项目，显示调用结果，如图：</p>
+<p><img src="https://images.gitbook.cn/dbfc3520-a4f2-11e8-8a5b-85d5618fe6ba" alt="enter image description here"></p>
+<p>到这里就已经完成了dubbo的远程调用。下面介绍下dubbo-admin管理管理控制台</p>
+<h2 id="四、dubbo-admin管理控制台"><a href="#四、dubbo-admin管理控制台" class="headerlink" title="四、dubbo-admin管理控制台"></a>四、dubbo-admin管理控制台</h2><p>通过dubbo-admin可以更好的管理dubbo服务。</p>
+<p>首先下载dubbo-admin的war包，下载地址：</p>
+<pre><code>http://www.java1234.com/a/javabook/javaweb/2018/0224/10496.html
+</code></pre><p>下载完成后，将dubbo-admin-2.6.0.war复制到tomcat的webapps目录下。然后启动tomcat,访问</p>
+<pre><code>http://localhost:8080/dubbo-admin-2.6.0/
+</code></pre><p>也可以将dubbo-admin-2.6.0重命名为dubbo-admin访问的时候直接访问<a href="http://localhost:8080/dubbo-admin即可" target="_blank" rel="external">http://localhost:8080/dubbo-admin即可</a></p>
+<p>用户名和密码都是root</p>
+<p>登录后就可以通过网页进行管理dubbo服务了，如图：</p>
+<p><img src="https://images.gitbook.cn/4da3b530-a4f4-11e8-a2aa-0bd41466d20f" alt="enter image description here"></p>
+<h2 id="该demo项目以及相关资源下载链接"><a href="#该demo项目以及相关资源下载链接" class="headerlink" title="该demo项目以及相关资源下载链接"></a>该demo项目以及相关资源下载链接</h2><pre><code>https://download.csdn.net/download/abcwanglinyong/10617369
+</code></pre>
+      
+    </div>
+    
+    
+    
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/weixin.jpg" alt="WangLinYong 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/zfb.jpg" alt="WangLinYong 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/wanglinyong.github.io/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a>
+          
+            <a href="/wanglinyong.github.io/tags/dubbo/" rel="tag"><i class="fa fa-tag"></i> dubbo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/wanglinyong.github.io/2018/07/13/solr工作原理/" rel="next" title="Solr工作原理">
+                <i class="fa fa-chevron-left"></i> Solr工作原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/wanglinyong.github.io/2018/08/27/分布式事务（一）/" rel="prev" title="分布式事务（一）">
+                分布式事务（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/08/21/dubbo/"
+           data-title="dubbo快速入门" data-url="https://wanglinyong.github.io/2018/08/21/dubbo/">
+      </div>
+    </div>
+
+     
+
+
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WangLinYong</p>
+              <p class="site-description motion-element" itemprop="description">JAVA，Python，C#，Node.js，个人博客，Github，hexo</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/wanglinyong.github.io/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/wanglinyong.github.io/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/wanglinyong.github.io/tags/index.html">
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/wanglinyong.github.io/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/wanglinyong" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/yourname" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、dubbo基本原理"><span class="nav-number">1.</span> <span class="nav-text">一、dubbo基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、入门demo简介"><span class="nav-number">2.</span> <span class="nav-text">二、入门demo简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、dubbo-远程调用（RPC）具体实现"><span class="nav-number">3.</span> <span class="nav-text">三、dubbo-远程调用（RPC）具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、启动zookeeper"><span class="nav-number">3.1.</span> <span class="nav-text">1、启动zookeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-dubbo接口服务api项目"><span class="nav-number">3.2.</span> <span class="nav-text">2.dubbo接口服务api项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-dubbo服务提供者provider项目"><span class="nav-number">3.3.</span> <span class="nav-text">3.dubbo服务提供者provider项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-dubbo服务消费者consumer项目"><span class="nav-number">3.4.</span> <span class="nav-text">4.dubbo服务消费者consumer项目</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、dubbo-admin管理控制台"><span class="nav-number">4.</span> <span class="nav-text">四、dubbo-admin管理控制台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#该demo项目以及相关资源下载链接"><span class="nav-number">5.</span> <span class="nav-text">该demo项目以及相关资源下载链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WangLinYong</span>
+
+  
+</div>
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/wanglinyong.github.io/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"your_username"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/wanglinyong.github.io/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/wanglinyong.github.io/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

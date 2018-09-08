@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/wanglinyong.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/wanglinyong.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/wanglinyong.github.io/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/wanglinyong.github.io/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/wanglinyong.github.io/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/wanglinyong.github.io/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/wanglinyong.github.io/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="分布式事务," />
+
+
+
+
+
+  <link rel="alternate" href="/wanglinyong.github.io/atom.xml" title="Wang's Blog" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="项目使用技术springboot、dubbo、zookeeper、定时任务 一、项目结构maven父子工程： 父工程：consis 子工程：api-service、order、product、message api-service:该项目主要是提供接口调用的，还包含实体类、枚举等一些通用内容 order:该项目是专门处理订单相关操作的系统 product:该项目是专门处理产品相关操作的系统 mes">
+<meta name="keywords" content="分布式事务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式事务（二）：基于可靠消息的分布式事务">
+<meta property="og:url" content="https://wanglinyong.github.io/2018/08/31/分布式事务（二）/index.html">
+<meta property="og:site_name" content="Wang&#39;s Blog">
+<meta property="og:description" content="项目使用技术springboot、dubbo、zookeeper、定时任务 一、项目结构maven父子工程： 父工程：consis 子工程：api-service、order、product、message api-service:该项目主要是提供接口调用的，还包含实体类、枚举等一些通用内容 order:该项目是专门处理订单相关操作的系统 product:该项目是专门处理产品相关操作的系统 mes">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://images.gitbook.cn/a181d460-acf7-11e8-afe5-6ba901a27e1b">
+<meta property="og:updated_time" content="2018-09-08T03:30:30.050Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式事务（二）：基于可靠消息的分布式事务">
+<meta name="twitter:description" content="项目使用技术springboot、dubbo、zookeeper、定时任务 一、项目结构maven父子工程： 父工程：consis 子工程：api-service、order、product、message api-service:该项目主要是提供接口调用的，还包含实体类、枚举等一些通用内容 order:该项目是专门处理订单相关操作的系统 product:该项目是专门处理产品相关操作的系统 mes">
+<meta name="twitter:image" content="https://images.gitbook.cn/a181d460-acf7-11e8-afe5-6ba901a27e1b">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/wanglinyong.github.io/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wanglinyong.github.io/2018/08/31/分布式事务（二）/"/>
+
+
+
+
+
+  <title>分布式事务（二）：基于可靠消息的分布式事务 | Wang's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?your_id";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/wanglinyong/wanglinyong.github.io/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/wanglinyong.github.io/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wang's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/wanglinyong.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/wanglinyong.github.io/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/wanglinyong.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/wanglinyong.github.io/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/wanglinyong.github.io/about/index.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wanglinyong.github.io/wanglinyong.github.io/2018/08/31/分布式事务（二）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WangLinYong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/wanglinyong.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分布式事务（二）：基于可靠消息的分布式事务</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-31T20:15:09+08:00">
+                2018-08-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/wanglinyong.github.io/categories/Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/wanglinyong.github.io/2018/08/31/分布式事务（二）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/08/31/分布式事务（二）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="项目使用技术"><a href="#项目使用技术" class="headerlink" title="项目使用技术"></a>项目使用技术</h2><p>springboot、dubbo、zookeeper、定时任务</p>
+<h2 id="一、项目结构"><a href="#一、项目结构" class="headerlink" title="一、项目结构"></a>一、项目结构</h2><p>maven父子工程：</p>
+<p>父工程：consis</p>
+<p>子工程：api-service、order、product、message</p>
+<p>api-service:该项目主要是提供接口调用的，还包含实体类、枚举等一些通用内容</p>
+<p>order:该项目是专门处理订单相关操作的系统</p>
+<p>product:该项目是专门处理产品相关操作的系统</p>
+<p>message:该项目是提供消息服务的系统，好包括定时任务</p>
+<p>它们的依赖关系如下图：</p>
+<p><img src="https://images.gitbook.cn/a181d460-acf7-11e8-afe5-6ba901a27e1b" alt="enter image description here"></p>
+<p>根据上一篇的原理分别介绍下各个系统的实现</p>
+<h2 id="二、order订单系统"><a href="#二、order订单系统" class="headerlink" title="二、order订单系统"></a>二、order订单系统</h2><p><strong>核心代码：</strong></p>
+<pre><code>@Override
+@Transactional
+public void add(Orders order) {
+    String messageBody = JSONObject.toJSONString( order );
+    //添加消息到数据库
+    String messageId = transactionMessageService.savePreparMessage(order.getMessageId(), messageBody, Constant.ORDER_QUEUE_NAME );
+    log.info(&quot;&gt;&gt;&gt; 预发送消息,消息编号:{}&quot;, messageId);
+    boolean flag = false;
+    boolean success = false;
+    try{
+
+        Orders orders = orderDao.saveAndFlush( order );
+        //int i = 1/0 ;
+        log.info(&quot;&gt;&gt;&gt; 插入订单,订单编号:{}&quot;, orders.getId());
+        flag = true;
+    }catch (Exception e){
+        transactionMessageService.delete( messageId );
+        log.info(&quot;&gt;&gt;&gt; 业务执行异常删除消息,消息编号:{}&quot;, messageId, e);
+        throw new RuntimeException( &quot;&gt;&gt;&gt; 创建订单失败&quot; );
+    }finally {
+        if(flag){
+            try {
+                transactionMessageService.confirmAndSend( messageId );
+                success = true;
+                log.info(&quot;&gt;&gt;&gt; 确认并且发送消息到实时消息中间件,消息编号:{}&quot;, messageId);
+
+            }catch (Exception e){
+                log.error(&quot;&gt;&gt;&gt; 消息确认异常,消息编号:{}&quot;, messageId, e);
+                if(!success){
+                    transactionMessageService.delete( messageId );
+                    throw new RuntimeException( &quot;&gt;&gt;&gt; 确认消息异常，创建订单失败&quot; );
+                }
+            }
+        }
+    }
+}
+</code></pre><ul>
+<li>插入订单表之前，首先创建预发送消息，保存到事务消息表中，此时消息状态为：未发送</li>
+<li>插入订单，如果插入订单失败则将事务消息表中预发送消息删除</li>
+<li>插入订单成功后，修改消息表预发送消息状态为发送中，并发送消息至mq</li>
+<li>如果发送消息失败，则订单回滚并删除事务消息表消息</li>
+</ul>
+<h2 id="三、message消息系统"><a href="#三、message消息系统" class="headerlink" title="三、message消息系统"></a>三、message消息系统</h2><p><strong>核心代码一：</strong></p>
+<pre><code>@Override
+public void sendMessageToMessageQueue(String queueName,final String messageBody) {
+
+    jmsTemplate.convertAndSend( queueName,messageBody );
+
+    log.info(&quot;&gt;&gt;&gt; 发送消息到mq 队列:{},消息内容:{}&quot;, queueName, messageBody);
+}
+</code></pre><ul>
+<li>主要是activemq生产者讲消息发送至MQ消息中间件</li>
+</ul>
+<p><strong>核心代码二：</strong></p>
+<pre><code>/**
+ * 定时重发消息（每分钟）
+ */
+@Scheduled(cron = &quot;0 */1 * * * ?&quot;)
+public void    handler(){
+    //查询transaction_message表中已发送但未被删除的消息
+    List&lt;TransactionMessage&gt; list = transactionMessageService.queryRetryList( Constant.MESSAGE_UNDEAD, maxTimeOut, Constant.MESSAGE_SENDING );
+    if(list!=null &amp;&amp; list.size() &gt; 0){
+        for (TransactionMessage message:list){
+            try {
+                transactionMessageService.retry( message.getMessageId() );
+            } catch (Exception e) {
+                log.warn(&quot;&gt;&gt;&gt; 消息不存在,可能已经被消费,消息编号:{}&quot;, message.getMessageId());
+            }
+        }
+    }
+}
+
+/**
+ * 定时通知工作人员（每隔5分钟）
+ */
+@Scheduled(cron = &quot;0 */5 * * * ?&quot;)
+public void    advance(){
+    List&lt;Long&gt; messages = transactionMessageService.queryDeadList();
+    log.warn(&quot;&gt;&gt;&gt; 共有:{}条消息需要人工处理&quot;, messages.size());
+    String ids = JSONObject.toJSONString( messages );
+    //发邮件或者是发送短信通知工作人员处理
+
+}
+</code></pre><ul>
+<li>定时重发消息</li>
+<li>定时将死亡的消息通知给工作人员，进行人工补偿操作</li>
+</ul>
+<h2 id="四、product产品系统"><a href="#四、product产品系统" class="headerlink" title="四、product产品系统"></a>四、product产品系统</h2><p><strong>核心代码：</strong></p>
+<pre><code>@Transactional
+@JmsListener( destination = Constant.ORDER_QUEUE_NAME)
+public void    receiveQueue(String msg){
+    boolean flag = false;
+    Orders orders = JSONObject.parseObject( msg, Orders.class );
+    log.info(&quot;&gt;&gt;&gt; 接收到mq消息队列，消息编号:{} ,消息内容:{}&quot;, orders.getMessageId(), msg);
+
+    TransactionMessage transactionMessage = transactionMessageService.findByMessageId( orders.getMessageId() );
+    try {
+        //保证幂等性
+        if(transactionMessage!=null){
+            List&lt;OrderDetail&gt; list = orders.getList();
+            for(OrderDetail detail : list){
+                Product product = productService.findById( detail.getId() );
+                Long skuNum = product.getProductSku() - detail.getNum();
+                if(skuNum &gt;= 0){
+                    product.setProductSku( skuNum );
+                    productService.update( product );
+                }else {
+                    throw new Exception( &quot;&gt;&gt;&gt; 库存不足,修改库存失败！&quot; );
+                }
+
+            }
+            //int i = 1 /0 ;
+            flag = true;
+        }
+
+    }catch (Exception e){
+        e.printStackTrace();
+        throw new RuntimeException( e );
+    }finally {
+        if(flag){
+            transactionMessageService.delete( orders.getMessageId() );
+            DbLog dbLog = dbLogService.findByMesageId( orders.getMessageId() );
+            if(dbLog!=null){
+                dbLog.setState( &quot;1&quot; );//已处理成功
+                dbLogService.update( dbLog );
+            }
+            log.info(&quot;&gt;&gt;&gt; 业务执行成功删除消息! messageId:{}&quot;, orders.getMessageId());
+        }
+    }
+
+}
+</code></pre><ul>
+<li>从mq消息中间件中监听并消费消息，将json消息转为订单对象</li>
+<li>根据消息编号查询该消息是否已被消费，保证幂等性</li>
+<li>如果消息未被消费（即存在此消息），则产品表扣减库存；如果已经消费（不存在此消息），则不做处理</li>
+<li>产品表扣减库存成功，则删除此消息，如果待处理消息日志表中有此消息，则更改状态为1，表示已处理；扣减失败，则不做处理</li>
+</ul>
+<p>该项目源码已上传至github和码云，链接如下，<strong>希望喜欢的朋友都能给个star支持一下！谢谢~</strong></p>
+<p>github链接</p>
+<pre><code>https://github.com/wanglinyong/consis
+</code></pre><p>码云链接</p>
+<pre><code>https://gitee.com/wanglinyong/consis
+</code></pre>
+      
+    </div>
+    
+    
+    
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/weixin.jpg" alt="WangLinYong 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://raw.githubusercontent.com/wiki/wanglinyong/wanglinyong.github.io/zfb.jpg" alt="WangLinYong 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/wanglinyong.github.io/tags/分布式事务/" rel="tag"><i class="fa fa-tag"></i> 分布式事务</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/wanglinyong.github.io/2018/08/27/分布式事务（一）/" rel="next" title="分布式事务（一）">
+                <i class="fa fa-chevron-left"></i> 分布式事务（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2018/08/31/分布式事务（二）/"
+           data-title="分布式事务（二）：基于可靠消息的分布式事务" data-url="https://wanglinyong.github.io/2018/08/31/分布式事务（二）/">
+      </div>
+    </div>
+
+     
+
+
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WangLinYong</p>
+              <p class="site-description motion-element" itemprop="description">JAVA，Python，C#，Node.js，个人博客，Github，hexo</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/wanglinyong.github.io/archives/">
+              
+                  <span class="site-state-item-count">41</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/wanglinyong.github.io/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/wanglinyong.github.io/tags/index.html">
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/wanglinyong.github.io/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/wanglinyong" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://twitter.com/yourname" target="_blank" title="Twitter">
+                    
+                      <i class="fa fa-fw fa-twitter"></i>Twitter</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#项目使用技术"><span class="nav-number">1.</span> <span class="nav-text">项目使用技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、项目结构"><span class="nav-number">2.</span> <span class="nav-text">一、项目结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、order订单系统"><span class="nav-number">3.</span> <span class="nav-text">二、order订单系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、message消息系统"><span class="nav-number">4.</span> <span class="nav-text">三、message消息系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、product产品系统"><span class="nav-number">5.</span> <span class="nav-text">四、product产品系统</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WangLinYong</span>
+
+  
+</div>
+
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+  本站访客数:<span id="busuanzi_value_site_uv"></span>
+</span>
+</div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/wanglinyong.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/wanglinyong.github.io/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/wanglinyong.github.io/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"your_username"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/wanglinyong.github.io/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/wanglinyong.github.io/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
